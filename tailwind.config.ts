@@ -20,6 +20,8 @@ export default {
     extend: {
       colors: {
         border: "hsl(var(--border))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         "eda-green": {
           DEFAULT: "#2E7D32",
           light: "#4CAF50",
