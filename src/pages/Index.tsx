@@ -68,17 +68,18 @@ const UseCases = () => (
     ].map((useCase, index) => (
       <div
         key={index}
-        className="relative overflow-hidden rounded-lg group cursor-pointer"
+        className="relative overflow-hidden rounded-lg group cursor-pointer animate-fade-in"
         style={{
           backgroundImage: `url(https://images.unsplash.com/${useCase.bgImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          height: '200px'
+          height: '200px',
+          animationDelay: `${index * 0.1}s`
         }}
       >
-        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors" />
-        <div className="absolute inset-0 p-4 flex flex-col justify-end text-white">
-          <div className="mb-2">{useCase.icon}</div>
+        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors duration-300" />
+        <div className="absolute inset-0 p-4 flex flex-col justify-end text-white transform transition-transform duration-300 group-hover:translate-y-[-8px]">
+          <div className="mb-2 transform transition-transform duration-300 group-hover:scale-110">{useCase.icon}</div>
           <h3 className="text-lg font-bold mb-1">{useCase.title}</h3>
           <p className="text-sm opacity-80">{useCase.description}</p>
         </div>
@@ -91,13 +92,23 @@ const Index = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentText, setCurrentText] = useState("Olá, meu nome é Eda");
   const [showRotatingSubtitles, setShowRotatingSubtitles] = useState(true);
-  const [showChat, setShowChat] = useState(true);
+  const [activeSection, setActiveSection] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const sectionsRef = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
-      setShowChat(scrollPosition < 300);
+      const windowHeight = window.innerHeight;
+      
+      sectionsRef.current.forEach((section, index) => {
+        if (section) {
+          const rect = section.getBoundingClientRect();
+          if (rect.top <= windowHeight * 0.5 && rect.bottom >= windowHeight * 0.5) {
+            setActiveSection(index);
+          }
+        }
+      });
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -136,35 +147,67 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-eda-green-light/10 to-white">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-          <div className="space-y-6">
-            <div className="text-4xl md:text-6xl font-bold text-eda-green">
-              <TypewriterText text={currentText} />
+      <div 
+        ref={el => sectionsRef.current[0] = el!}
+        className={`min-h-screen transition-opacity duration-500 ${activeSection === 0 ? 'opacity-100' : 'opacity-0'}`}
+      >
+        <div className="container mx-auto px-4 py-12 h-screen flex items-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+            <div className="space-y-6 animate-fade-in">
+              <div className="text-4xl md:text-6xl font-bold text-eda-green">
+                <TypewriterText text={currentText} />
+              </div>
+              {showRotatingSubtitles && <RotatingSubtitles />}
             </div>
-            {showRotatingSubtitles && <RotatingSubtitles />}
-          </div>
 
-          <div className="flex justify-center items-center">
-            <AudioPlayer
-              isPlaying={isPlaying}
-              onPlay={handlePlay}
-              onPause={handlePause}
-            />
-          </div>
+            <div className="flex justify-center items-center animate-scale-in">
+              <AudioPlayer
+                isPlaying={isPlaying}
+                onPlay={handlePlay}
+                onPause={handlePause}
+              />
+            </div>
 
-          <div className="hidden md:block">
-            <ExampleChat />
+            <div className="hidden md:block animate-slide-in-right">
+              <ExampleChat />
+            </div>
           </div>
         </div>
       </div>
 
       {/* Next Section */}
-      <div className="bg-white py-24">
-        <div className="container mx-auto px-4">
-          <div className="md:hidden mb-12">
-            <ExampleChat />
+      <div 
+        ref={el => sectionsRef.current[1] = el!}
+        className={`min-h-screen bg-white transition-opacity duration-500 ${activeSection === 1 ? 'opacity-100' : 'opacity-0'}`}
+      >
+        <div className="container mx-auto px-4 py-12 h-screen flex items-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+            <div className="space-y-6 animate-fade-in">
+              <h2 className="text-4xl md:text-6xl font-bold text-eda-green">
+                Explore Nossos Serviços
+              </h2>
+              <p className="text-lg text-gray-600">
+                Descubra como a Eda pode ajudar você a fazer a diferença no mundo.
+              </p>
+            </div>
+
+            <div className="flex justify-center items-center animate-scale-in">
+              <AudioPlayer
+                isPlaying={isPlaying}
+                onPlay={handlePlay}
+                onPause={handlePause}
+              />
+            </div>
+
+            <div className="hidden md:block animate-slide-in-right">
+              <UseCases />
+            </div>
           </div>
+        </div>
+      </div>
+
+      <div className="md:hidden">
+        <div className="container mx-auto px-4 py-12">
           <UseCases />
         </div>
       </div>
