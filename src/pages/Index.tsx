@@ -135,9 +135,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-eda-green-light/10 to-white">
+      {/* Hero Section */}
       <div className="container mx-auto px-4 py-12">
-        {/* Hero Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
           <div className="space-y-6">
             <div className="text-4xl md:text-6xl font-bold text-eda-green">
               <TypewriterText text={currentText} />
@@ -152,11 +152,20 @@ const Index = () => {
               onPause={handlePause}
             />
           </div>
-        </div>
 
-        {/* Chat/Use Cases Section */}
-        <div className="mt-8">
-          {showChat ? <ExampleChat /> : <UseCases />}
+          <div className="hidden md:block">
+            <ExampleChat />
+          </div>
+        </div>
+      </div>
+
+      {/* Next Section */}
+      <div className="bg-white py-24">
+        <div className="container mx-auto px-4">
+          <div className="md:hidden mb-12">
+            <ExampleChat />
+          </div>
+          <UseCases />
         </div>
       </div>
 
