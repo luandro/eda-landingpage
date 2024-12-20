@@ -7,7 +7,11 @@ interface AudioPlayerProps {
   isPlaying: boolean;
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ onPlay, onPause, isPlaying }) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({
+  onPlay,
+  onPause,
+  isPlaying,
+}) => {
   return (
     <button
       onClick={() => (isPlaying ? onPause() : onPlay())}

@@ -22,7 +22,11 @@ const subtitles = [
 ];
 
 const categories = [
-  { id: 1, title: "Sustentabilidade", description: "Práticas sustentáveis e conservação" },
+  {
+    id: 1,
+    title: "Sustentabilidade",
+    description: "Práticas sustentáveis e conservação",
+  },
   { id: 2, title: "Educação", description: "Recursos educacionais ambientais" },
   { id: 3, title: "Comunidade", description: "Iniciativas comunitárias" },
   { id: 4, title: "Inovação", description: "Soluções tecnológicas verdes" },
@@ -60,7 +64,7 @@ const Index = () => {
       const currentTime = audioRef.current.currentTime;
       const currentSubtitle = subtitles.find(
         (subtitle) =>
-          currentTime >= subtitle.startTime && currentTime <= subtitle.endTime
+          currentTime >= subtitle.startTime && currentTime <= subtitle.endTime,
       );
       if (currentSubtitle) {
         setCurrentText(currentSubtitle.text);
@@ -121,11 +125,11 @@ const Index = () => {
             </div>
           </div>
         </div>
-        <div 
+        <div
           className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent to-white/20"
           style={{
             transform: `translateY(${(1 - activeSection) * 20}%)`,
-            transition: 'transform 0.8s ease-in-out'
+            transition: "transform 0.8s ease-in-out",
           }}
         />
       </section>
@@ -142,9 +146,13 @@ const Index = () => {
         <div className="container mx-auto px-4 py-12">
           <div className="relative w-full h-full">
             {/* Categories Grid */}
-            <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 transition-transform duration-500 ${
-              selectedCategory !== null ? "-translate-x-full" : "translate-x-0"
-            }`}>
+            <div
+              className={`grid grid-cols-1 md:grid-cols-2 gap-6 transition-transform duration-500 ${
+                selectedCategory !== null
+                  ? "-translate-x-full"
+                  : "translate-x-0"
+              }`}
+            >
               {categories.map((category) => (
                 <button
                   key={category.id}
@@ -161,9 +169,11 @@ const Index = () => {
             </div>
 
             {/* Chat Interface */}
-            <div className={`absolute top-0 left-0 w-full h-full transition-transform duration-500 ${
-              selectedCategory !== null ? "translate-x-0" : "translate-x-full"
-            }`}>
+            <div
+              className={`absolute top-0 left-0 w-full h-full transition-transform duration-500 ${
+                selectedCategory !== null ? "translate-x-0" : "translate-x-full"
+              }`}
+            >
               <div className="relative h-full bg-white p-6 rounded-lg shadow-lg">
                 <Button
                   variant="ghost"
@@ -194,21 +204,39 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* Contact Information */}
             <div className="space-y-8 animate-fade-in">
-              <h2 className="text-3xl font-bold text-eda-green mb-6">Entre em Contato</h2>
+              <h2 className="text-3xl font-bold text-eda-green mb-6">
+                Entre em Contato
+              </h2>
               <div className="space-y-4">
-                <a href="mailto:contact@example.com" className="flex items-center space-x-3 text-gray-600 hover:text-eda-green transition-colors">
+                <a
+                  href="mailto:contact@example.com"
+                  className="flex items-center space-x-3 text-gray-600 hover:text-eda-green transition-colors"
+                >
                   <Mail className="h-5 w-5" />
                   <span>contact@example.com</span>
                 </a>
-                <a href="tel:+123456789" className="flex items-center space-x-3 text-gray-600 hover:text-eda-green transition-colors">
+                <a
+                  href="tel:+123456789"
+                  className="flex items-center space-x-3 text-gray-600 hover:text-eda-green transition-colors"
+                >
                   <Phone className="h-5 w-5" />
                   <span>+55 (11) 1234-5678</span>
                 </a>
-                <a href="https://example.com" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-3 text-gray-600 hover:text-eda-green transition-colors">
+                <a
+                  href="https://example.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-3 text-gray-600 hover:text-eda-green transition-colors"
+                >
                   <Globe className="h-5 w-5" />
                   <span>www.example.com</span>
                 </a>
-                <a href="https://github.com/example" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-3 text-gray-600 hover:text-eda-green transition-colors">
+                <a
+                  href="https://github.com/example"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-3 text-gray-600 hover:text-eda-green transition-colors"
+                >
                   <Github className="h-5 w-5" />
                   <span>GitHub</span>
                 </a>
@@ -217,13 +245,23 @@ const Index = () => {
 
             {/* Acknowledgments */}
             <div className="space-y-8 animate-fade-in delay-200">
-              <h2 className="text-3xl font-bold text-eda-green mb-6">Agradecimentos</h2>
+              <h2 className="text-3xl font-bold text-eda-green mb-6">
+                Agradecimentos
+              </h2>
               <div className="grid grid-cols-2 gap-6">
                 {[1, 2, 3, 4].map((index) => (
-                  <div key={index} className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                  <div
+                    key={index}
+                    className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                  >
                     <div className="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full" />
-                    <h3 className="text-lg font-semibold text-center mb-2">Organização {index}</h3>
-                    <p className="text-sm text-gray-600 text-center">Breve descrição da contribuição desta organização para o projeto.</p>
+                    <h3 className="text-lg font-semibold text-center mb-2">
+                      Organização {index}
+                    </h3>
+                    <p className="text-sm text-gray-600 text-center">
+                      Breve descrição da contribuição desta organização para o
+                      projeto.
+                    </p>
                   </div>
                 ))}
               </div>
