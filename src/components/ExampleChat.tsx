@@ -16,7 +16,11 @@ const ExampleChat = () => (
         <MessageSquare size={20} />
       </div>
       <div className="flex-1 bg-eda-orange/10 rounded-lg p-4 shadow-sm">
-        <p className="text-sm">Existem várias maneiras de proteger o meio ambiente! Você pode começar reduzindo seu consumo de plástico, economizando água e energia, reciclando corretamente, e apoiando iniciativas locais de conservação.</p>
+        <p className="text-sm">
+          Existem várias maneiras de proteger o meio ambiente! Você pode começar
+          reduzindo seu consumo de plástico, economizando água e energia,
+          reciclando corretamente, e apoiando iniciativas locais de conservação.
+        </p>
       </div>
     </div>
   </div>
