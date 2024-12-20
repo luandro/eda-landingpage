@@ -23,6 +23,7 @@ const Index = () => {
   const [currentText, setCurrentText] = useState("Olá, meu nome é Eda");
   const [showRotatingSubtitles, setShowRotatingSubtitles] = useState(true);
   const [activeSection, setActiveSection] = useState(0);
+  const [isUnwriting, setIsUnwriting] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const sectionsRef = useRef<HTMLDivElement[]>([]);
 
@@ -36,6 +37,7 @@ const Index = () => {
           const rect = section.getBoundingClientRect();
           if (rect.top <= windowHeight * 0.5 && rect.bottom >= windowHeight * 0.5) {
             setActiveSection(index);
+            setIsUnwriting(true);
           }
         }
       });
@@ -85,20 +87,25 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
             <div className="space-y-6 animate-fade-in">
               <div className="text-4xl md:text-6xl font-bold text-eda-green">
-                <TypewriterText text={currentText} />
+                <TypewriterText 
+                  text={currentText} 
+                  isUnwriting={isUnwriting}
+                  onComplete={() => setIsUnwriting(false)}
+                />
               </div>
               {showRotatingSubtitles && <RotatingSubtitles />}
             </div>
 
-            <div className="flex justify-center items-center animate-scale-in">
+            <div className="flex justify-center items-center">
               <AudioPlayer
                 isPlaying={isPlaying}
                 onPlay={handlePlay}
                 onPause={handlePause}
+                showNextSection={true}
               />
             </div>
 
-            <div className="block animate-slide-in-right">
+            <div className="animate-slide-in-left">
               <ExampleChat />
             </div>
           </div>
@@ -114,14 +121,18 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
             <div className="space-y-6 animate-fade-in">
               <h2 className="text-4xl md:text-6xl font-bold text-eda-green">
-                Explore Nossos Serviços
+                <TypewriterText 
+                  text="Explore Nossos Serviços"
+                  isUnwriting={isUnwriting}
+                  onComplete={() => setIsUnwriting(false)}
+                />
               </h2>
               <p className="text-lg text-gray-600">
                 Descubra como a Eda pode ajudar você a fazer a diferença no mundo.
               </p>
             </div>
 
-            <div className="flex justify-center items-center animate-scale-in">
+            <div className="flex justify-center items-center">
               <AudioPlayer
                 isPlaying={isPlaying}
                 onPlay={handlePlay}
@@ -129,7 +140,7 @@ const Index = () => {
               />
             </div>
 
-            <div className="block animate-slide-in-right">
+            <div className="animate-slide-in-left">
               <UseCases />
             </div>
           </div>
