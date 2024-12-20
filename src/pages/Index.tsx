@@ -92,7 +92,7 @@ const Index = () => {
 
       {/* Hero Section */}
       <section
-        ref={(el) => {
+        ref={(el: HTMLDivElement | null) => {
           if (el) sectionsRef.current[0] = el;
         }}
         className={`min-h-screen relative flex items-center justify-center transition-opacity duration-1000 ${
@@ -132,7 +132,7 @@ const Index = () => {
 
       {/* Categories Section */}
       <section
-        ref={(el) => {
+        ref={(el: HTMLDivElement | null) => {
           if (el) sectionsRef.current[1] = el;
         }}
         className={`min-h-screen relative flex items-center justify-center transition-all duration-1000 ${
@@ -183,7 +183,7 @@ const Index = () => {
 
       {/* Contact Section */}
       <section
-        ref={(el) => {
+        ref={(el: HTMLDivElement | null) => {
           if (el) sectionsRef.current[2] = el;
         }}
         className={`min-h-screen relative flex items-center justify-center bg-gradient-to-b from-white to-gray-50 transition-opacity duration-1000 ${
