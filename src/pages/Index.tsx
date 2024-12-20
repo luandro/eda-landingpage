@@ -1,9 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import TypewriterText from "../components/TypewriterText";
 import RotatingSubtitles from "../components/RotatingSubtitles";
 import AudioPlayer from "../components/AudioPlayer";
 import ExampleChat from "../components/ExampleChat";
 import UseCases from "../components/UseCases";
+import { useSmoothScroll } from "../hooks/useSmoothScroll";
 
 const subtitles = [
   {
@@ -22,28 +23,8 @@ const Index = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentText, setCurrentText] = useState("Olá, meu nome é Eda");
   const [showRotatingSubtitles, setShowRotatingSubtitles] = useState(true);
-  const [activeSection, setActiveSection] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const sectionsRef = useRef<HTMLDivElement[]>([]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const windowHeight = window.innerHeight;
-      
-      sectionsRef.current.forEach((section, index) => {
-        if (section) {
-          const rect = section.getBoundingClientRect();
-          if (rect.top <= windowHeight * 0.5 && rect.bottom >= windowHeight * 0.5) {
-            setActiveSection(index);
-          }
-        }
-      });
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const { activeSection, sectionsRef } = useSmoothScroll();
 
   const handlePlay = () => {
     if (audioRef.current) {
@@ -75,15 +56,17 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-eda-green-light/10 to-white">
+    <div className="min-h-screen overflow-hidden">
       {/* Hero Section */}
-      <div 
-        ref={el => sectionsRef.current[0] = el!}
-        className={`min-h-screen transition-opacity duration-500 ${activeSection === 0 ? 'opacity-100' : 'opacity-0'}`}
+      <section
+        ref={(el) => (sectionsRef.current[0] = el!)}
+        className={`min-h-screen relative transition-opacity duration-1000 ${
+          activeSection === 0 ? "opacity-100" : "opacity-0"
+        }`}
       >
         <div className="container mx-auto px-4 py-12 h-screen flex items-center">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-6 animate-fade-in transform translate-y-0 transition-transform duration-1000">
               <div className="text-4xl md:text-6xl font-bold text-eda-green">
                 <TypewriterText text={currentText} />
               </div>
@@ -103,16 +86,20 @@ const Index = () => {
             </div>
           </div>
         </div>
-      </div>
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent to-white/20 transform translate-y-[10%] transition-transform duration-1000" 
+             style={{ transform: `translateY(${activeSection * 10}%)` }} />
+      </section>
 
-      {/* Next Section */}
-      <div 
-        ref={el => sectionsRef.current[1] = el!}
-        className={`min-h-screen bg-white transition-opacity duration-500 ${activeSection === 1 ? 'opacity-100' : 'opacity-0'}`}
+      {/* Features Section */}
+      <section
+        ref={(el) => (sectionsRef.current[1] = el!)}
+        className={`min-h-screen relative transition-opacity duration-1000 ${
+          activeSection === 1 ? "opacity-100" : "opacity-0"
+        }`}
       >
         <div className="container mx-auto px-4 py-12 h-screen flex items-center">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-6 animate-fade-in transform translate-y-0 transition-transform duration-1000">
               <h2 className="text-4xl md:text-6xl font-bold text-eda-green">
                 Explore Nossos Serviços
               </h2>
@@ -134,7 +121,9 @@ const Index = () => {
             </div>
           </div>
         </div>
-      </div>
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent to-white/20 transform -translate-y-[10%] transition-transform duration-1000"
+             style={{ transform: `translateY(${(1 - activeSection) * 10}%)` }} />
+      </section>
 
       <audio
         ref={audioRef}
