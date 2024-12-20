@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { ArrowLeft, Mail, Phone, Globe, Github } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import TypewriterText from "../components/TypewriterText";
@@ -7,120 +7,73 @@ import AudioPlayer from "../components/AudioPlayer";
 import ExampleChat from "../components/ExampleChat";
 import UseCases from "../components/UseCases";
 import Section from "../components/Section";
+import { NavigationDots } from "@/components/ui/navigation-dots";
 import { useSmoothScroll } from "../hooks/useSmoothScroll";
+import { useAudioPlayer } from "../hooks/useAudioPlayer";
 import { Button } from "@/components/ui/button";
+import {
+  subtitles,
+  categories,
+  contactInfo,
+  organizations,
+} from "../config/content";
 
 const swipeConfidenceThreshold = 10000;
 const swipePower = (offset: number, velocity: number) => {
   return Math.abs(offset) * velocity;
 };
 
-const subtitles = [
-  {
-    startTime: 0.76,
-    endTime: 3.44,
-    text: "Olá, meu nome é Eda.",
-  },
-  {
-    startTime: 5.84,
-    endTime: 13.6,
-    text: "Sou uma assistente virtual de voz para Guardiões da Terra.",
-  },
-];
-
-const categories = [
-  {
-    id: 1,
-    title: "Sustentabilidade",
-    description: "Práticas sustentáveis e conservação",
-  },
-  { id: 2, title: "Educação", description: "Recursos educacionais ambientais" },
-  { id: 3, title: "Comunidade", description: "Iniciativas comunitárias" },
-  { id: 4, title: "Inovação", description: "Soluções tecnológicas verdes" },
-];
-
 const Index = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
   const [currentText, setCurrentText] = useState("Olá, meu nome é Eda");
-  const [showRotatingSubtitles, setShowRotatingSubtitles] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const { activeSection, sectionsRef, scrollToSection } = useSmoothScroll({
     threshold: 50,
     animationDuration: 800,
   });
 
-  const handlePlay = () => {
-    if (audioRef.current) {
-      audioRef.current.play();
-      setIsPlaying(true);
-      setShowRotatingSubtitles(false);
-    }
-  };
+  const {
+    isPlaying,
+    showSubtitles: showRotatingSubtitles,
+    audioRef,
+    handlePlay,
+    handlePause,
+  } = useAudioPlayer({
+    subtitles,
+    onTextChange: setCurrentText,
+  });
 
-  const handlePause = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-      setShowRotatingSubtitles(true);
-    }
-  };
-
-  const handleTimeUpdate = () => {
-    if (audioRef.current) {
-      const currentTime = audioRef.current.currentTime;
-      const currentSubtitle = subtitles.find(
-        (subtitle) =>
-          currentTime >= subtitle.startTime && currentTime <= subtitle.endTime,
-      );
-      if (currentSubtitle) {
-        setCurrentText(currentSubtitle.text);
-      }
-    }
-  };
-
-  // Prevent body scroll when chat is open
-  React.useEffect(() => {
-    if (selectedCategory !== null) {
-      document.body.style.overflow = "hidden";
-      document.body.style.position = "fixed";
-      document.body.style.width = "100%";
-    } else {
-      document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.width = "";
-    }
-
-    return () => {
-      document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.width = "";
-    };
-  }, [selectedCategory]);
-
-  const handleCategorySelect = (categoryId: number) => {
+  // Handle category selection and body scroll
+  const handleCategorySelect = useCallback((categoryId: number) => {
     setSelectedCategory(categoryId);
-  };
+    // Use a class instead of inline styles for better performance
+    document.body.classList.add("category-open");
+  }, []);
+
+  // Handle category close
+  const handleCategoryClose = useCallback(() => {
+    setSelectedCategory(null);
+    document.body.classList.remove("category-open");
+    // Ensure we're back to the categories section
+    // Use a small delay to ensure smooth transition
+    setTimeout(() => {
+      scrollToSection(1);
+    }, 100);
+  }, [scrollToSection]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove("category-open");
+    };
+  }, []);
 
   return (
     <div className="min-h-screen overflow-hidden">
-      {/* Navigation Dots */}
-      <div className="fixed right-6 top-1/2 transform -translate-y-1/2 z-50">
-        <div className="flex flex-col items-center space-y-4">
-          {[0, 1, 2].map((index) => (
-            <button
-              key={index}
-              onClick={() => scrollToSection(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                activeSection === index
-                  ? "bg-eda-green scale-125"
-                  : "bg-gray-300 hover:bg-gray-400"
-              }`}
-              aria-label={`Go to section ${index + 1}`}
-            />
-          ))}
-        </div>
-      </div>
+      <NavigationDots
+        totalSections={3}
+        activeSection={activeSection}
+        onSectionChange={scrollToSection}
+      />
 
       {/* Hero Section */}
       <Section
@@ -219,25 +172,24 @@ const Index = () => {
             {selectedCategory !== null && (
               <>
                 <motion.div
-                  className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+                  className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 category-transition"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  onClick={() => setSelectedCategory(null)}
+                  onClick={handleCategoryClose}
                 />
                 <motion.div
-                  className="fixed inset-0 bg-white z-50 touch-pan-x"
+                  className="fixed inset-0 bg-white z-50 touch-pan-x category-transition"
                   role="dialog"
                   aria-modal="true"
                   aria-label="Chat interface"
-                  initial={{ x: "100%", opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: "100%", opacity: 0 }}
+                  initial="category-enter"
+                  animate="category-enter-active"
+                  exit="category-exit-active"
                   transition={{
                     type: "spring",
                     stiffness: 300,
                     damping: 30,
-                    opacity: { duration: 0.2 },
                   }}
                   drag="x"
                   dragConstraints={{ left: 0, right: 0 }}
@@ -245,16 +197,12 @@ const Index = () => {
                   onDragEnd={(e, { offset, velocity }) => {
                     const swipe = swipePower(offset.x, velocity.x);
                     if (swipe > swipeConfidenceThreshold || offset.x > 100) {
-                      setSelectedCategory(null);
-                      // Ensure we're in the categories section
-                      scrollToSection(1);
+                      handleCategoryClose();
                     }
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Escape" || e.key === "ArrowLeft") {
-                      setSelectedCategory(null);
-                      // Ensure we're in the categories section
-                      scrollToSection(1);
+                      handleCategoryClose();
                     }
                   }}
                   tabIndex={0}
@@ -268,11 +216,8 @@ const Index = () => {
                     >
                       <Button
                         variant="ghost"
-                        onClick={() => {
-                          setSelectedCategory(null);
-                          scrollToSection(1);
-                        }}
-                        className="group flex items-center text-eda-green hover:text-eda-green/80 transition-all duration-300"
+                        onClick={handleCategoryClose}
+                        className="group flex items-center text-eda-green hover:text-eda-green/80 transition-all duration-300 category-transition"
                         aria-label="Back to categories"
                       >
                         <ArrowLeft className="mr-2 transition-transform group-hover:-translate-x-2" />
@@ -329,30 +274,30 @@ const Index = () => {
             </h2>
             <div className="space-y-4">
               <a
-                href="mailto:contact@example.com"
+                href={`mailto:${contactInfo.email}`}
                 className="flex items-center space-x-3 text-gray-600 hover:text-eda-green transition-colors"
               >
                 <Mail className="h-5 w-5" />
-                <span>contact@example.com</span>
+                <span>{contactInfo.email}</span>
               </a>
               <a
-                href="tel:+123456789"
+                href={`tel:${contactInfo.phone}`}
                 className="flex items-center space-x-3 text-gray-600 hover:text-eda-green transition-colors"
               >
                 <Phone className="h-5 w-5" />
-                <span>+55 (11) 1234-5678</span>
+                <span>{contactInfo.phone}</span>
               </a>
               <a
-                href="https://example.com"
+                href={`https://${contactInfo.website}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-3 text-gray-600 hover:text-eda-green transition-colors"
               >
                 <Globe className="h-5 w-5" />
-                <span>www.example.com</span>
+                <span>{contactInfo.website}</span>
               </a>
               <a
-                href="https://github.com/example"
+                href={contactInfo.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-3 text-gray-600 hover:text-eda-green transition-colors"
@@ -369,18 +314,17 @@ const Index = () => {
               Agradecimentos
             </h2>
             <div className="grid grid-cols-2 gap-6">
-              {[1, 2, 3, 4].map((index) => (
+              {organizations.map((org) => (
                 <div
-                  key={index}
+                  key={org.id}
                   className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
                 >
                   <div className="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full" />
                   <h3 className="text-lg font-semibold text-center mb-2">
-                    Organização {index}
+                    {org.name}
                   </h3>
                   <p className="text-sm text-gray-600 text-center">
-                    Breve descrição da contribuição desta organização para o
-                    projeto.
+                    {org.description}
                   </p>
                 </div>
               ))}
@@ -389,14 +333,7 @@ const Index = () => {
         </div>
       </Section>
 
-      <audio
-        ref={audioRef}
-        onTimeUpdate={handleTimeUpdate}
-        onEnded={() => {
-          setIsPlaying(false);
-          setShowRotatingSubtitles(true);
-        }}
-      >
+      <audio ref={audioRef}>
         <source src="/path-to-your-audio.mp3" type="audio/mpeg" />
         Your browser does not support the audio element.
       </audio>
