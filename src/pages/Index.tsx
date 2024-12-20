@@ -59,7 +59,7 @@ const Index = () => {
     <div className="min-h-screen overflow-hidden">
       {/* Hero Section */}
       <section
-        ref={(el) => {
+        ref={(el: HTMLDivElement | null) => {
           if (el) sectionsRef.current[0] = el;
         }}
         className={`min-h-screen relative transition-opacity duration-1000 ${
@@ -94,7 +94,7 @@ const Index = () => {
 
       {/* Features Section */}
       <section
-        ref={(el) => {
+        ref={(el: HTMLDivElement | null) => {
           if (el) sectionsRef.current[1] = el;
         }}
         className={`min-h-screen relative transition-opacity duration-1000 ${
