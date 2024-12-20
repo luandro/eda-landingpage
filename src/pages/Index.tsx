@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import TypewriterText from "../components/TypewriterText";
 import RotatingSubtitles from "../components/RotatingSubtitles";
 import AudioPlayer from "../components/AudioPlayer";
-import { MessageSquare, BookOpen, Sprout, Brain, PiggyBank } from "lucide-react";
+import ExampleChat from "../components/ExampleChat";
+import UseCases from "../components/UseCases";
 
 const subtitles = [
   {
@@ -16,77 +17,6 @@ const subtitles = [
     text: "Sou uma assistente virtual de voz para Guardiões da Terra.",
   },
 ];
-
-const ExampleChat = () => (
-  <div className="bg-black/5 rounded-lg p-6 space-y-4 h-[400px] md:h-[600px] overflow-y-auto">
-    <div className="flex items-start gap-4">
-      <div className="bg-eda-green text-white p-2 rounded-full">
-        <MessageSquare size={20} />
-      </div>
-      <div className="flex-1 bg-white rounded-lg p-4 shadow-sm">
-        <p className="text-sm">Como posso ajudar a proteger o meio ambiente?</p>
-      </div>
-    </div>
-    <div className="flex items-start gap-4 flex-row-reverse">
-      <div className="bg-eda-orange text-white p-2 rounded-full">
-        <MessageSquare size={20} />
-      </div>
-      <div className="flex-1 bg-eda-orange/10 rounded-lg p-4 shadow-sm">
-        <p className="text-sm">Existem várias maneiras de proteger o meio ambiente! Você pode começar reduzindo seu consumo de plástico, economizando água e energia, reciclando corretamente, e apoiando iniciativas locais de conservação.</p>
-      </div>
-    </div>
-  </div>
-);
-
-const UseCases = () => (
-  <div className="grid grid-cols-2 gap-4">
-    {[
-      {
-        icon: <PiggyBank className="h-8 w-8" />,
-        title: "Fundraising",
-        description: "Apoie projetos ambientais",
-        bgImage: "photo-1581091226825-a6a2a5aee158"
-      },
-      {
-        icon: <BookOpen className="h-8 w-8" />,
-        title: "Courses",
-        description: "Aprenda sobre sustentabilidade",
-        bgImage: "photo-1487058792275-0ad4aaf24ca7"
-      },
-      {
-        icon: <Sprout className="h-8 w-8" />,
-        title: "Agro-ecology",
-        description: "Práticas sustentáveis",
-        bgImage: "photo-1472396961693-142e6e269027"
-      },
-      {
-        icon: <Brain className="h-8 w-8" />,
-        title: "Bioeconomy",
-        description: "Soluções inovadoras",
-        bgImage: "photo-1485827404703-89b55fcc595e"
-      }
-    ].map((useCase, index) => (
-      <div
-        key={index}
-        className="relative overflow-hidden rounded-lg group cursor-pointer animate-fade-in"
-        style={{
-          backgroundImage: `url(https://images.unsplash.com/${useCase.bgImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          height: '200px',
-          animationDelay: `${index * 0.1}s`
-        }}
-      >
-        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors duration-300" />
-        <div className="absolute inset-0 p-4 flex flex-col justify-end text-white transform transition-transform duration-300 group-hover:translate-y-[-8px]">
-          <div className="mb-2 transform transition-transform duration-300 group-hover:scale-110">{useCase.icon}</div>
-          <h3 className="text-lg font-bold mb-1">{useCase.title}</h3>
-          <p className="text-sm opacity-80">{useCase.description}</p>
-        </div>
-      </div>
-    ))}
-  </div>
-);
 
 const Index = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -168,7 +98,7 @@ const Index = () => {
               />
             </div>
 
-            <div className="hidden md:block animate-slide-in-right">
+            <div className="block animate-slide-in-right">
               <ExampleChat />
             </div>
           </div>
@@ -199,16 +129,10 @@ const Index = () => {
               />
             </div>
 
-            <div className="hidden md:block animate-slide-in-right">
+            <div className="block animate-slide-in-right">
               <UseCases />
             </div>
           </div>
-        </div>
-      </div>
-
-      <div className="md:hidden">
-        <div className="container mx-auto px-4 py-12">
-          <UseCases />
         </div>
       </div>
 
