@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { ArrowLeft, Mail, Phone, Globe, Github } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import TypewriterText from "../components/TypewriterText";
 import RotatingSubtitles from "../components/RotatingSubtitles";
 import AudioPlayer from "../components/AudioPlayer";
@@ -7,6 +8,11 @@ import ExampleChat from "../components/ExampleChat";
 import UseCases from "../components/UseCases";
 import { useSmoothScroll } from "../hooks/useSmoothScroll";
 import { Button } from "@/components/ui/button";
+
+const swipeConfidenceThreshold = 10000;
+const swipePower = (offset: number, velocity: number) => {
+  return Math.abs(offset) * velocity;
+};
 
 const subtitles = [
   {
@@ -71,6 +77,25 @@ const Index = () => {
       }
     }
   };
+
+  // Prevent body scroll when chat is open
+  React.useEffect(() => {
+    if (selectedCategory !== null) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    };
+  }, [selectedCategory]);
 
   const handleCategorySelect = (categoryId: number) => {
     setSelectedCategory(categoryId);
@@ -146,47 +171,134 @@ const Index = () => {
         <div className="container mx-auto px-4 py-12">
           <div className="relative w-full h-full">
             {/* Categories Grid */}
-            <div
-              className={`grid grid-cols-1 md:grid-cols-2 gap-6 transition-transform duration-500 ${
-                selectedCategory !== null
-                  ? "-translate-x-full"
-                  : "translate-x-0"
+            <div 
+              className={`grid grid-cols-1 md:grid-cols-2 gap-6 transition-all duration-500 ease-in-out ${
+                selectedCategory !== null ? "opacity-0 -translate-x-full" : "opacity-100 translate-x-0"
               }`}
+              role="grid"
+              aria-label="Categories"
             >
               {categories.map((category) => (
-                <button
+                <motion.button
                   key={category.id}
                   onClick={() => handleCategorySelect(category.id)}
-                  className="group p-6 bg-white/5 rounded-lg border border-gray-200 hover:border-eda-green transition-all duration-300 text-left"
+                  className={`group p-8 bg-white/5 rounded-lg border-2 transition-all duration-300 text-left hover:shadow-lg ${
+                    selectedCategory === category.id 
+                      ? "border-eda-green bg-eda-green/5" 
+                      : "border-gray-200 hover:border-eda-green"
+                  }`}
                   aria-label={`Select ${category.title} category`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  <h3 className="text-xl font-semibold text-eda-green mb-2 group-hover:translate-x-2 transition-transform">
-                    {category.title}
-                  </h3>
-                  <p className="text-gray-600">{category.description}</p>
-                </button>
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-semibold text-eda-green mb-2 group-hover:translate-x-2 transition-transform">
+                      {category.title}
+                    </h3>
+                    <motion.div
+                      className="text-eda-green opacity-0 group-hover:opacity-100"
+                      initial={{ x: -10 }}
+                      animate={{ x: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ArrowLeft className="transform rotate-180" size={20} />
+                    </motion.div>
+                  </div>
+                  <p className="text-gray-600 leading-relaxed">{category.description}</p>
+                </motion.button>
               ))}
             </div>
 
             {/* Chat Interface */}
-            <div
-              className={`absolute top-0 left-0 w-full h-full transition-transform duration-500 ${
-                selectedCategory !== null ? "translate-x-0" : "translate-x-full"
-              }`}
-            >
-              <div className="relative h-full bg-white p-6 rounded-lg shadow-lg">
-                <Button
-                  variant="ghost"
-                  onClick={() => setSelectedCategory(null)}
-                  className="absolute top-4 left-4"
-                  aria-label="Go back to categories"
-                >
-                  <ArrowLeft className="mr-2" />
-                  Voltar
-                </Button>
-                <ExampleChat />
-              </div>
-            </div>
+            <AnimatePresence mode="wait">
+              {selectedCategory !== null && (
+                <>
+                  <motion.div
+                    className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => setSelectedCategory(null)}
+                  />
+                  <motion.div 
+                    className="fixed inset-0 bg-white z-50 touch-pan-x touch-pan-y-none"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Chat interface"
+                    initial={{ x: "100%" }}
+                    animate={{ x: 0 }}
+                    exit={{ x: "100%" }}
+                    transition={{ 
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 30
+                    }}
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.2}
+                    onDragEnd={(e, { offset, velocity }) => {
+                      const swipe = swipePower(offset.x, velocity.x);
+                      if (swipe > swipeConfidenceThreshold) {
+                        setSelectedCategory(null);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Escape' || e.key === 'ArrowLeft') {
+                        setSelectedCategory(null);
+                      }
+                    }}
+                    tabIndex={0}
+                  >
+                    <div className="h-full max-h-screen overflow-hidden">
+                      <motion.div 
+                        className="fixed top-4 left-4 z-10"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        <Button
+                          variant="ghost"
+                          onClick={() => setSelectedCategory(null)}
+                          className="group flex items-center text-eda-green hover:text-eda-green/80 transition-colors"
+                          aria-label="Back to categories"
+                        >
+                          <ArrowLeft className="mr-2 transition-transform group-hover:-translate-x-1" />
+                          <span className="font-medium">Voltar</span>
+                        </Button>
+                      </motion.div>
+                      
+                      <motion.div 
+                        className="pt-16 px-4 h-full"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.3 }}
+                      >
+                        <ExampleChat className="max-w-4xl mx-auto" />
+                      </motion.div>
+
+                      <motion.div
+                        className="fixed bottom-8 left-1/2 transform -translate-x-1/2 text-gray-400 flex items-center gap-2 pointer-events-none select-none"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: [0, 1, 0] }}
+                        transition={{ 
+                          delay: 1,
+                          duration: 2,
+                          times: [0, 0.5, 1],
+                          repeat: Infinity,
+                          repeatDelay: 3
+                        }}
+                      >
+                        <ArrowLeft size={16} />
+                        <span className="text-sm">Deslize para voltar</span>
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </section>
