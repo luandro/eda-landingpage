@@ -40,3 +40,38 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Category modal styles */
+body.category-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+/* Smooth transitions */
+.category-transition {
+  transition:
+    transform 0.3s ease-in-out,
+    opacity 0.3s ease-in-out;
+}
+
+.category-enter {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.category-enter-active {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.category-exit {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.category-exit-active {
+  transform: translateX(100%);
+  opacity: 0;
+}
