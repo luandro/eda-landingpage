@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 interface SmoothScrollOptions {
   threshold?: number; // Minimum scroll distance to trigger transition
   animationDuration?: number; // Duration of scroll animation in ms
+  debounceTime?: number; // Time to wait between scroll events
 }
 
 export const useSmoothScroll = (options: SmoothScrollOptions = {}) => {
@@ -10,43 +11,79 @@ export const useSmoothScroll = (options: SmoothScrollOptions = {}) => {
   const [isScrolling, setIsScrolling] = useState(false);
   const sectionsRef = useRef<HTMLDivElement[]>([]);
   const lastScrollTime = useRef(Date.now());
-  const { threshold = 50, animationDuration = 1000 } = options;
+  const scrollTimeout = useRef<NodeJS.Timeout>();
+  const {
+    threshold = 50,
+    animationDuration = 1000,
+    debounceTime = 50,
+  } = options;
 
-  const scrollToSection = (index: number) => {
-    if (isScrolling || index === activeSection) return;
+  const isValidSection = useCallback((index: number) => {
+    return index >= 0 && index < sectionsRef.current.length;
+  }, []);
 
-    setIsScrolling(true);
-    setActiveSection(index);
+  const scrollToSection = useCallback(
+    (index: number) => {
+      // Prevent invalid section indices
+      if (!isValidSection(index)) return;
 
-    sectionsRef.current[index]?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+      // Prevent scrolling to same section or while already scrolling
+      if (isScrolling || index === activeSection) return;
 
-    // Reset scrolling state after animation
-    setTimeout(() => setIsScrolling(false), animationDuration);
-  };
+      // Clear any existing scroll timeout
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+      }
+
+      setIsScrolling(true);
+      setActiveSection(index);
+
+      // Smooth scroll to section
+      sectionsRef.current[index]?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+
+      // Ensure the page doesn't get stuck between sections
+      document.body.style.overflow = "hidden";
+
+      // Reset scrolling state after animation
+      scrollTimeout.current = setTimeout(() => {
+        setIsScrolling(false);
+        document.body.style.overflow = "";
+      }, animationDuration);
+    },
+    [isScrolling, activeSection, animationDuration, isValidSection],
+  );
 
   useEffect(() => {
     let touchStartY = 0;
-    const scrollThreshold = 50; // ms between scroll events
+    let lastScrollTimeout: NodeJS.Timeout;
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
 
+      // Debounce scroll events
       const currentTime = Date.now();
-      if (currentTime - lastScrollTime.current < scrollThreshold) return;
+      if (currentTime - lastScrollTime.current < debounceTime) return;
       lastScrollTime.current = currentTime;
 
       if (isScrolling) return;
 
-      const direction = e.deltaY > 0 ? 1 : -1;
-      const nextSection = Math.min(
-        Math.max(activeSection + direction, 0),
-        sectionsRef.current.length - 1,
-      );
+      // Clear any existing timeout
+      if (lastScrollTimeout) {
+        clearTimeout(lastScrollTimeout);
+      }
 
-      scrollToSection(nextSection);
+      // Schedule the scroll after a brief delay to prevent rapid scrolling
+      lastScrollTimeout = setTimeout(() => {
+        const direction = e.deltaY > 0 ? 1 : -1;
+        const nextSection = activeSection + direction;
+
+        if (isValidSection(nextSection)) {
+          scrollToSection(nextSection);
+        }
+      }, 50);
     };
 
     const handleTouchStart = (e: TouchEvent) => {
@@ -54,6 +91,7 @@ export const useSmoothScroll = (options: SmoothScrollOptions = {}) => {
     };
 
     const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
       if (isScrolling) return;
 
       const touchEndY = e.touches[0].clientY;
@@ -61,33 +99,40 @@ export const useSmoothScroll = (options: SmoothScrollOptions = {}) => {
 
       if (Math.abs(deltaY) > threshold) {
         const direction = deltaY > 0 ? 1 : -1;
-        const nextSection = Math.min(
-          Math.max(activeSection + direction, 0),
-          sectionsRef.current.length - 1,
-        );
-        scrollToSection(nextSection);
+        const nextSection = activeSection + direction;
+
+        if (isValidSection(nextSection)) {
+          scrollToSection(nextSection);
+        }
       }
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isScrolling) return;
 
+      let nextSection = activeSection;
+
       switch (e.key) {
         case "ArrowDown":
         case "PageDown":
           e.preventDefault();
-          scrollToSection(
-            Math.min(activeSection + 1, sectionsRef.current.length - 1),
-          );
+          nextSection = activeSection + 1;
           break;
         case "ArrowUp":
         case "PageUp":
           e.preventDefault();
-          scrollToSection(Math.max(activeSection - 1, 0));
+          nextSection = activeSection - 1;
           break;
+        default:
+          return;
+      }
+
+      if (isValidSection(nextSection)) {
+        scrollToSection(nextSection);
       }
     };
 
+    // Add event listeners with proper options
     document.addEventListener("wheel", handleWheel, { passive: false });
     document.addEventListener("touchstart", handleTouchStart, {
       passive: true,
@@ -95,13 +140,34 @@ export const useSmoothScroll = (options: SmoothScrollOptions = {}) => {
     document.addEventListener("touchmove", handleTouchMove, { passive: false });
     document.addEventListener("keydown", handleKeyDown);
 
+    // Cleanup function
     return () => {
+      // Remove event listeners
       document.removeEventListener("wheel", handleWheel);
       document.removeEventListener("touchstart", handleTouchStart);
       document.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("keydown", handleKeyDown);
+
+      // Clear any pending timeouts
+      if (lastScrollTimeout) {
+        clearTimeout(lastScrollTimeout);
+      }
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+      }
+
+      // Reset body overflow
+      document.body.style.overflow = "";
     };
-  }, [activeSection, isScrolling, threshold, animationDuration]);
+  }, [
+    activeSection,
+    isScrolling,
+    threshold,
+    animationDuration,
+    debounceTime,
+    isValidSection,
+    scrollToSection,
+  ]);
 
   return { activeSection, sectionsRef, scrollToSection };
 };

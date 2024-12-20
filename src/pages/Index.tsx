@@ -81,19 +81,19 @@ const Index = () => {
   // Prevent body scroll when chat is open
   React.useEffect(() => {
     if (selectedCategory !== null) {
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
     } else {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
     }
-    
+
     return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
     };
   }, [selectedCategory]);
 
@@ -104,19 +104,21 @@ const Index = () => {
   return (
     <div className="min-h-screen overflow-hidden">
       {/* Navigation Dots */}
-      <div className="fixed right-4 top-1/2 transform -translate-y-1/2 z-50 space-y-2">
-        {[0, 1, 2].map((index) => (
-          <button
-            key={index}
-            onClick={() => scrollToSection(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              activeSection === index
-                ? "bg-eda-green scale-125"
-                : "bg-gray-300 hover:bg-gray-400"
-            }`}
-            aria-label={`Go to section ${index + 1}`}
-          />
-        ))}
+      <div className="fixed right-6 top-1/2 transform -translate-y-1/2 z-50">
+        <div className="flex flex-col items-center space-y-4">
+          {[0, 1, 2].map((index) => (
+            <button
+              key={index}
+              onClick={() => scrollToSection(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                activeSection === index
+                  ? "bg-eda-green scale-125"
+                  : "bg-gray-300 hover:bg-gray-400"
+              }`}
+              aria-label={`Go to section ${index + 1}`}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Hero Section */}
@@ -171,9 +173,11 @@ const Index = () => {
         <div className="container mx-auto px-4 py-12">
           <div className="relative w-full h-full">
             {/* Categories Grid */}
-            <div 
+            <div
               className={`grid grid-cols-1 md:grid-cols-2 gap-6 transition-all duration-500 ease-in-out ${
-                selectedCategory !== null ? "opacity-0 -translate-x-full" : "opacity-100 translate-x-0"
+                selectedCategory !== null
+                  ? "opacity-0 -translate-x-full"
+                  : "opacity-100 translate-x-0"
               }`}
               role="grid"
               aria-label="Categories"
@@ -183,8 +187,8 @@ const Index = () => {
                   key={category.id}
                   onClick={() => handleCategorySelect(category.id)}
                   className={`group p-8 bg-white/5 rounded-lg border-2 transition-all duration-300 text-left hover:shadow-lg ${
-                    selectedCategory === category.id 
-                      ? "border-eda-green bg-eda-green/5" 
+                    selectedCategory === category.id
+                      ? "border-eda-green bg-eda-green/5"
                       : "border-gray-200 hover:border-eda-green"
                   }`}
                   aria-label={`Select ${category.title} category`}
@@ -207,7 +211,9 @@ const Index = () => {
                       <ArrowLeft className="transform rotate-180" size={20} />
                     </motion.div>
                   </div>
-                  <p className="text-gray-600 leading-relaxed">{category.description}</p>
+                  <p className="text-gray-600 leading-relaxed">
+                    {category.description}
+                  </p>
                 </motion.button>
               ))}
             </div>
@@ -223,37 +229,42 @@ const Index = () => {
                     exit={{ opacity: 0 }}
                     onClick={() => setSelectedCategory(null)}
                   />
-                  <motion.div 
-                    className="fixed inset-0 bg-white z-50 touch-pan-x touch-pan-y-none"
+                  <motion.div
+                    className="fixed inset-0 bg-white z-50 touch-pan-x"
                     role="dialog"
                     aria-modal="true"
                     aria-label="Chat interface"
-                    initial={{ x: "100%" }}
-                    animate={{ x: 0 }}
-                    exit={{ x: "100%" }}
-                    transition={{ 
+                    initial={{ x: "100%", opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: "100%", opacity: 0 }}
+                    transition={{
                       type: "spring",
                       stiffness: 300,
-                      damping: 30
+                      damping: 30,
+                      opacity: { duration: 0.2 },
                     }}
                     drag="x"
                     dragConstraints={{ left: 0, right: 0 }}
                     dragElastic={0.2}
                     onDragEnd={(e, { offset, velocity }) => {
                       const swipe = swipePower(offset.x, velocity.x);
-                      if (swipe > swipeConfidenceThreshold) {
+                      if (swipe > swipeConfidenceThreshold || offset.x > 100) {
                         setSelectedCategory(null);
+                        // Ensure we're in the categories section
+                        scrollToSection(1);
                       }
                     }}
                     onKeyDown={(e) => {
-                      if (e.key === 'Escape' || e.key === 'ArrowLeft') {
+                      if (e.key === "Escape" || e.key === "ArrowLeft") {
                         setSelectedCategory(null);
+                        // Ensure we're in the categories section
+                        scrollToSection(1);
                       }
                     }}
                     tabIndex={0}
                   >
                     <div className="h-full max-h-screen overflow-hidden">
-                      <motion.div 
+                      <motion.div
                         className="fixed top-4 left-4 z-10"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -261,16 +272,19 @@ const Index = () => {
                       >
                         <Button
                           variant="ghost"
-                          onClick={() => setSelectedCategory(null)}
-                          className="group flex items-center text-eda-green hover:text-eda-green/80 transition-colors"
+                          onClick={() => {
+                            setSelectedCategory(null);
+                            scrollToSection(1);
+                          }}
+                          className="group flex items-center text-eda-green hover:text-eda-green/80 transition-all duration-300"
                           aria-label="Back to categories"
                         >
-                          <ArrowLeft className="mr-2 transition-transform group-hover:-translate-x-1" />
+                          <ArrowLeft className="mr-2 transition-transform group-hover:-translate-x-2" />
                           <span className="font-medium">Voltar</span>
                         </Button>
                       </motion.div>
-                      
-                      <motion.div 
+
+                      <motion.div
                         className="pt-16 px-4 h-full"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -283,12 +297,12 @@ const Index = () => {
                         className="fixed bottom-8 left-1/2 transform -translate-x-1/2 text-gray-400 flex items-center gap-2 pointer-events-none select-none"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: [0, 1, 0] }}
-                        transition={{ 
+                        transition={{
                           delay: 1,
                           duration: 2,
                           times: [0, 0.5, 1],
                           repeat: Infinity,
-                          repeatDelay: 3
+                          repeatDelay: 3,
                         }}
                       >
                         <ArrowLeft size={16} />
