@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -12,7 +11,13 @@ export const useCategoryNavigation = (
 
   useEffect(() => {
     const categoryId = location.pathname.match(/\/category\/(\d+)/)?.[1];
-    setSelectedCategory(categoryId ? parseInt(categoryId) : null);
+    const parsedId = categoryId ? parseInt(categoryId) : null;
+
+    if (parsedId) {
+      setSelectedCategory(parsedId);
+    } else {
+      setSelectedCategory(null);
+    }
   }, [location]);
 
   const handleCategorySelect = useCallback((categoryId: number) => {

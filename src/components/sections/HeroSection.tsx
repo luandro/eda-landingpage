@@ -76,7 +76,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
     <div className="relative grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
       <DividingLine />
       <div className="mb-12 text-2xl md:text-3xl lg:text-4xl space-y-6 animate-fade-in transform translate-y-0 transition-transform duration-1000">
-        <div className="h-[15vh] md:h-[30vh] font-bold text-eda-green items-start">
+        <div className="h-[17vh] sm:h-[15vh] md:h-[30vh] font-bold text-eda-green items-start">
           <TypewriterText
             text={'Olá sou a <span style="color: orange;">EDA</span>! Uma assistente por voz para lhe auxiliar a...'}
             subtitles={subtitlesCases}
@@ -84,9 +84,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             delay={50}
           />
         </div>
-        <div className="h-[10vh] md:h-[34vh] font-bold text-eda-green">
+        <div className="h-[17vh] sm:h-[15vh] md:h-[34vh] font-bold text-eda-green">
           <TypewriterText
-            text={'Fui desenvovida por uma [coligação de organizações](#about) para...'}
+            text={'Fui desenvovida por uma [ aliança de organizações](#about) para...'}
             subtitles={missionSubtitles}
             rotationSpeed={6000}
             initialDelay={8000}
