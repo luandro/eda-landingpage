@@ -14,15 +14,28 @@ interface HeroSectionProps {
 }
 
 const subtitles = [
-  "Protegendo nossa casa comum",
-  "Defendendo os direitos da natureza",
-  "Unindo vozes pela Terra",
-  "Construindo um futuro sustentável",
-];
-
-const subtitleLinks = [
-  { subtitle: "Construindo um futuro sustentável", href: "#sustainability" },
-  { subtitle: "Unindo vozes pela Terra", href: "#community" },
+  {
+    text: "Protegendo nossa casa comum",
+    backgroundColor: "#4CAF50",
+    textColor: "white"
+  },
+  {
+    text: "Defendendo os direitos da natureza",
+    backgroundColor: "#FF5722",
+    textColor: "white"
+  },
+  {
+    text: "Unindo vozes pela Terra",
+    backgroundColor: "#2196F3",
+    textColor: "white",
+    href: "#community"
+  },
+  {
+    text: "Construindo um futuro sustentável",
+    backgroundColor: "#4CAF50",
+    textColor: "white",
+    href: "#sustainability"
+  }
 ];
 
 const HeroSection: React.FC<HeroSectionProps> = ({
@@ -43,9 +56,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           <RotatingSubtitles
             subtitles={subtitles}
             rotationSpeed={4000}
-            backgroundColor="#4CAF50"
-            textColor="white"
-            links={subtitleLinks}
             className="animate-fade-in"
           />
         )}

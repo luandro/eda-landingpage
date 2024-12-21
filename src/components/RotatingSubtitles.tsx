@@ -1,35 +1,26 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
-interface SubtitleLink {
-  subtitle: string;
-  href: string;
+interface SubtitleItem {
+  text: string;
+  backgroundColor?: string;
+  textColor?: "white" | "dark";
+  href?: string;
 }
 
 interface RotatingSubtitlesProps {
-  subtitles: string[];
+  subtitles: SubtitleItem[];
   rotationSpeed?: number;
-  backgroundColor?: string;
-  textColor?: "white" | "dark";
-  links?: SubtitleLink[];
   className?: string;
 }
 
 const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
   subtitles,
-  rotationSpeed = 3000,
-  backgroundColor = "#4CAF50",
-  textColor = "white",
-  links = [],
+  rotationSpeed = 4000,
   className,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
-
-  // Function to determine if current subtitle is clickable
-  const getCurrentLink = useCallback(() => {
-    return links.find((link) => link.subtitle === subtitles[currentIndex]);
-  }, [links, currentIndex, subtitles]);
 
   // Function to handle smooth scroll
   const scrollToSection = (href: string) => {
@@ -59,10 +50,12 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
     };
   }, [rotationSpeed, subtitles.length]);
 
-  // Calculate contrast color for text
-  const getTextColorClass = () => {
+  // Calculate contrast color for text if not provided
+  const getTextColorClass = (backgroundColor?: string, textColor?: "white" | "dark") => {
     if (textColor === "white") return "text-white";
     if (textColor === "dark") return "text-gray-900";
+    
+    if (!backgroundColor) return "text-white";
     
     // Auto calculate based on background color
     const r = parseInt(backgroundColor.slice(1, 3), 16);
@@ -73,38 +66,38 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
     return brightness > 128 ? "text-gray-900" : "text-white";
   };
 
-  const currentLink = getCurrentLink();
-  const subtitle = subtitles[currentIndex];
+  const currentSubtitle = subtitles[currentIndex];
 
   return (
     <div 
       className={cn(
-        "h-8 flex items-center justify-center px-4 py-6 rounded-md",
+        "font-mono inline-flex items-center justify-center px-4 py-2 rounded-md transition-all duration-500",
         className
       )}
-      style={{ backgroundColor }}
+      style={{ 
+        backgroundColor: currentSubtitle.backgroundColor || "#4CAF50",
+        opacity: isVisible ? 1 : 0,
+        transform: `translateY(${isVisible ? 0 : 10}px)`
+      }}
     >
-      {currentLink ? (
+      {currentSubtitle.href ? (
         <button
-          onClick={() => scrollToSection(currentLink.href)}
+          onClick={() => currentSubtitle.href && scrollToSection(currentSubtitle.href)}
           className={cn(
-            "transition-opacity duration-500 hover:underline focus:outline-none",
-            getTextColorClass(),
-            isVisible ? "opacity-100" : "opacity-0"
+            "transition-colors hover:underline focus:outline-none",
+            getTextColorClass(currentSubtitle.backgroundColor, currentSubtitle.textColor)
           )}
         >
-          {subtitle}
+          {currentSubtitle.text}
         </button>
       ) : (
-        <p
+        <span
           className={cn(
-            "transition-opacity duration-500",
-            getTextColorClass(),
-            isVisible ? "opacity-100" : "opacity-0"
+            getTextColorClass(currentSubtitle.backgroundColor, currentSubtitle.textColor)
           )}
         >
-          {subtitle}
-        </p>
+          {currentSubtitle.text}
+        </span>
       )}
     </div>
   );
