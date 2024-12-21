@@ -22,12 +22,12 @@ const Section: React.FC<SectionProps> = ({
     <section
       ref={setRef}
       className={`
-        min-h-screen 
-        relative 
-        flex 
-        items-center 
-        justify-center 
-        transition-opacity 
+        min-h-screen
+        relative
+        flex
+        items-center
+        justify-center
+        transition-opacity
         duration-1000
         ${background}
         ${activeSection === index ? "opacity-100" : "opacity-0"}

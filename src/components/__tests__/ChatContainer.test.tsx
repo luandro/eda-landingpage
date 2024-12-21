@@ -50,15 +50,15 @@ describe('ChatContainer', () => {
 
   it('applies continuous animation with correct timing', async () => {
     render(<ChatContainer />);
-    
+
     // Wait for messages to be loaded
     const message1 = await screen.findByText('Test message 1');
     expect(message1).toBeInTheDocument();
-    
+
     const containerDiv = screen.getByTestId('chat-container');
     const animate = JSON.parse(containerDiv.getAttribute('data-animate') || '{}');
     const transition = JSON.parse(containerDiv.getAttribute('data-transition') || '{}');
-    
+
     // Check animation properties
     expect(animate.y).toEqual([0, '-150px', '-150px', 0]); // 1 message * 150px
     expect(transition).toEqual({
@@ -72,10 +72,10 @@ describe('ChatContainer', () => {
 
   it('has no overflow-y-auto class', async () => {
     render(<ChatContainer />);
-    
+
     // Wait for messages to be loaded
     await screen.findByText('Test message 1');
-    
+
     const containerDiv = screen.getByTestId('chat-container');
     expect(containerDiv.className).toContain('overflow-hidden');
     expect(containerDiv.className).not.toContain('overflow-y-auto');

@@ -20,7 +20,7 @@ describe("TypewriterText", () => {
       act(() => {
         jest.advanceTimersByTime(100);
       });
-      
+
       // Wait for the current substring to appear
       await waitFor(() => {
         const expectedText = "Hello".substring(0, i + 1);
