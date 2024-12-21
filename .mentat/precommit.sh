@@ -1,3 +1,3 @@
-npx prettier --write .
-npm run lint -- --fix || true
-npx tsc --noEmit
+npx prettier --write "**/*.{ts,tsx,js,jsx,json,css,md}"
+npm run lint -- --fix
+npm test
