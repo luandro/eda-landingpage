@@ -11,7 +11,13 @@ describe("TypewriterText", () => {
   ];
 
   it("renders text character by character", async () => {
-    render(<TypewriterText text="Hello" delay={100} />);
+    render(
+      <TypewriterText 
+        text="Hello" 
+        delay={100} 
+        subtitles={mockSubtitles}
+      />
+    );
 
     expect(screen.getByText("|")).toBeInTheDocument();
 
@@ -32,7 +38,14 @@ describe("TypewriterText", () => {
 
   it("calls onComplete when typing finishes", async () => {
     const onComplete = jest.fn();
-    render(<TypewriterText text="Hi" delay={100} onComplete={onComplete} />);
+    render(
+      <TypewriterText 
+        text="Hi" 
+        delay={100} 
+        onComplete={onComplete}
+        subtitles={mockSubtitles}
+      />
+    );
 
     // Type each character
     for (let i = 0; i < "Hi".length; i++) {
@@ -53,8 +66,7 @@ describe("TypewriterText", () => {
         text="Hello {rotating} world"
         delay={100}
         subtitles={mockSubtitles}
-        showSubtitles={true}
-      />,
+      />
     );
 
     // Type until placeholder
