@@ -26,7 +26,7 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [currentText, setCurrentText] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(typewriterEnabled);
 
   // Function to handle smooth scroll
   const scrollToSection = (href: string) => {

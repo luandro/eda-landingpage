@@ -11,30 +11,56 @@ interface HeroSectionProps {
   activeSection: number;
 }
 
-const subtitles = [
+const subtitlesCases = [
   {
-    text: "Protegendo nossa casa comum",
+    text: "buscar e escrever financiamentos",
     backgroundColor: "#4CAF50",
     textColor: "white" as const,
   },
   {
-    text: "Defendendo os direitos da natureza",
+    text: "aprender com cursos online",
     backgroundColor: "#FF5722",
     textColor: "white" as const,
   },
   {
-    text: "Unindo vozes pela Terra",
+    text: "dominar novas ferramentas",
+    backgroundColor: "#2196F3",
+    textColor: "white" as const,
+    href: "#tools",
+  },
+  {
+    text: "desenvolver sua autonomia",
+    backgroundColor: "#4CAF50",
+    textColor: "white" as const,
+    href: "#autonomy",
+  },
+];
+
+const missionSubtitles = [
+  {
+    text: "revolucionar a defesa do meio ambiente",
+    backgroundColor: "#4CAF50",
+    textColor: "white" as const,
+  },
+  {
+    text: "dar voz à natureza e seus defensores",
+    backgroundColor: "#FF5722",
+    textColor: "white" as const,
+  },
+  {
+    text: "fortalecer a luta socioambiental",
     backgroundColor: "#2196F3",
     textColor: "white" as const,
     href: "#community",
   },
   {
-    text: "Construindo um futuro sustentável",
+    text: "democratizar o acesso à justiça ambiental",
     backgroundColor: "#4CAF50",
     textColor: "white" as const,
     href: "#sustainability",
   },
 ];
+
 
 const HeroSection: React.FC<HeroSectionProps> = ({
   isPlaying,
@@ -44,24 +70,27 @@ const HeroSection: React.FC<HeroSectionProps> = ({
 }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-      <div className="space-y-6 animate-fade-in transform translate-y-0 transition-transform duration-1000">
-        <div className="md:-mt-48 text-4xl md:text-6xl font-bold text-eda-green h-[15vh] md:h-[32vh] items-start">
+      <div className="mb-12 text-2xl md:text-3xl lg:text-4xl space-y-6 animate-fade-in transform translate-y-0 transition-transform duration-1000">
+        <div className="h-[15vh] md:h-[34vh] font-bold text-eda-green items-start">
           <TypewriterText
-            text={'Olá sou a Eda'}
-            subtitles={subtitles}
+            text={'Olá sou a <span style="color: orange;">EDA</span>! Uma assistente por voz para lhe auxiliar a...'}
+            subtitles={subtitlesCases}
             rotationSpeed={4000}
+            delay={50}
           />
         </div>
-        <div className="text-4xl md:text-6xl font-bold text-eda-green h-[10vh]">
+        <div className="h-[10vh] md:h-[34vh] font-bold text-eda-green">
           <TypewriterText
-            text={'Sua assistente por voz para'}
-            subtitles={subtitles}
-            rotationSpeed={4000}
+            text={'Fui desenvovida por uma [coligação de organizações](#about) para...'}
+            subtitles={missionSubtitles}
+            rotationSpeed={6000}
+            initialDelay={8000}
+            delay={50}
           />
         </div>
       </div>
 
-      <div className="flex justify-center items-center animate-scale-in">
+      <div className="flex justify-center items-center animate-scale-in -mb-12">
         <AudioPlayer isPlaying={isPlaying} onPlay={onPlay} onPause={onPause} />
       </div>
 

@@ -7,6 +7,7 @@ interface TypewriterTextProps {
   subtitles: SubtitleItem[];
   rotationSpeed?: number;
   delay?: number;
+  initialDelay?: number;
   onComplete?: () => void;
 }
 
@@ -15,16 +16,28 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   subtitles,
   rotationSpeed = 4000,
   delay = 100,
+  initialDelay = 0,
   onComplete,
 }) => {
   const [currentText, setCurrentText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showRotating, setShowRotating] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
 
   // Split the text into parts (before and after the first period)
-  const processedText = `${text.split(".")[0]}... ${text.split(".")[1] || ""}`;
+  const processedText = text.replace(/\[(.*?)\]\((.*?)\)/g, (_, text, url) => `<a href="${url}">${text}</a>`).split(".")[0] + "... " + (text.split(".")[1] || "");
 
   useEffect(() => {
+    const startTimeout = setTimeout(() => {
+      setHasStarted(true);
+    }, initialDelay);
+
+    return () => clearTimeout(startTimeout);
+  }, [initialDelay]);
+
+  useEffect(() => {
+    if (!hasStarted) return;
+
     if (currentIndex < processedText.length) {
       const timeout = setTimeout(() => {
         setCurrentText((prevText) => prevText + processedText[currentIndex]);
@@ -40,7 +53,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
     } else if (onComplete) {
       onComplete();
     }
-  }, [currentIndex, delay, processedText, onComplete]);
+  }, [currentIndex, delay, processedText, onComplete, hasStarted]);
 
   // Split the current text at the "..." position
   const currentParts = currentText.split("...");
@@ -49,7 +62,12 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
     <div className="font-mono tabular-nums">
       {currentParts.map((part, index) => (
         <React.Fragment key={index}>
-          {part}
+          <span
+            dangerouslySetInnerHTML={{
+              __html: part
+            }}
+            className="[&_a]:text-eda-green [&_a]:underline [&_a]:hover:text-eda-green/80 [&_a]:transition-colors"
+          />
           {index < currentParts.length - 1 && showRotating && (
             <RotatingSubtitles
               subtitles={subtitles}
