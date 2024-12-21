@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Section from "../components/Section";
 import DividingLine from "../components/DividingLine";
-import { NavigationDots } from "@/components/ui/navigation-dots";
+import { NavigationDots } from "../components/ui/navigation-dots";
 import { useSmoothScroll } from "../hooks/useSmoothScroll";
 import { useAudioPlayer } from "../hooks/useAudioPlayer";
 import { useCategoryNavigation } from "../hooks/useCategoryNavigation";
 import { subtitles } from "../config/content";
-import HeroSection from "@/components/sections/HeroSection";
-import CategoriesSection from "@/components/sections/CategoriesSection";
-import ContactSection from "@/components/sections/ContactSection";
+import HeroSection from "../components/sections/HeroSection";
+import CategoriesSection from "../components/sections/CategoriesSection";
+import ContactSection from "../components/sections/ContactSection";
 
 const Index = () => {
   const [currentText, setCurrentText] = useState("Olá, meu nome é Eda");
@@ -20,7 +20,6 @@ const Index = () => {
 
   const {
     isPlaying,
-    showSubtitles: showRotatingSubtitles,
     audioRef,
     handlePlay,
     handlePause,
@@ -60,7 +59,6 @@ const Index = () => {
         <HeroSection
           currentText={currentText}
           isPlaying={isPlaying}
-          showRotatingSubtitles={showRotatingSubtitles}
           onPlay={handlePlay}
           onPause={handlePause}
           activeSection={activeSection}

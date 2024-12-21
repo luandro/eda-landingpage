@@ -4,37 +4,34 @@ import { SubtitleItem } from "./RotatingSubtitles";
 
 interface TypewriterTextProps {
   text: string;
+  subtitles: SubtitleItem[];
+  rotationSpeed?: number;
   delay?: number;
   onComplete?: () => void;
-  subtitles?: SubtitleItem[];
-  showSubtitles?: boolean;
-  rotationSpeed?: number;
 }
 
 const TypewriterText: React.FC<TypewriterTextProps> = ({
   text,
+  subtitles,
+  rotationSpeed = 4000,
   delay = 100,
   onComplete,
-  subtitles = [],
-  showSubtitles = false,
-  rotationSpeed = 4000,
 }) => {
   const [currentText, setCurrentText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showRotating, setShowRotating] = useState(false);
 
-  // Find the placeholder position for subtitles
-  const subtitlePlaceholder = "...";
-  const parts = text.split(subtitlePlaceholder);
+  // Split the text into parts (before and after the first period)
+  const processedText = `${text.split(".")[0]}... ${text.split(".")[1] || ""}`;
 
   useEffect(() => {
-    if (currentIndex < text.length) {
+    if (currentIndex < processedText.length) {
       const timeout = setTimeout(() => {
-        setCurrentText((prevText) => prevText + text[currentIndex]);
+        setCurrentText((prevText) => prevText + processedText[currentIndex]);
         setCurrentIndex((prevIndex) => prevIndex + 1);
 
-        // Check if we've reached the placeholder position
-        if (text.substring(0, currentIndex + 1).includes(subtitlePlaceholder)) {
+        // Show subtitles when we reach the "..."
+        if (processedText.substring(0, currentIndex + 1).includes("...")) {
           setShowRotating(true);
         }
       }, delay);
@@ -43,17 +40,17 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
     } else if (onComplete) {
       onComplete();
     }
-  }, [currentIndex, delay, text, onComplete]);
+  }, [currentIndex, delay, processedText, onComplete]);
 
-  // Split the current text at the placeholder position
-  const currentParts = currentText.split(subtitlePlaceholder);
+  // Split the current text at the "..." position
+  const currentParts = currentText.split("...");
 
   return (
-    <div className={`font-mono tabular-nums`}>
+    <div className="font-mono tabular-nums">
       {currentParts.map((part, index) => (
         <React.Fragment key={index}>
-          {part}{''}
-          {index < currentParts.length - 1 && showSubtitles && showRotating && (
+          {part}
+          {index < currentParts.length - 1 && showRotating && (
             <RotatingSubtitles
               subtitles={subtitles}
               rotationSpeed={rotationSpeed}

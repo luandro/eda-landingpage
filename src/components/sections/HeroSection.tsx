@@ -1,13 +1,11 @@
 import React from "react";
 import TypewriterText from "../TypewriterText";
-import RotatingSubtitles from "../RotatingSubtitles";
 import AudioPlayer from "../AudioPlayer";
 import ExampleChat from "../ExampleChat";
 
 interface HeroSectionProps {
   currentText: string;
   isPlaying: boolean;
-  showRotatingSubtitles: boolean;
   onPlay: () => void;
   onPause: () => void;
   activeSection: number;
@@ -39,9 +37,7 @@ const subtitles = [
 ];
 
 const HeroSection: React.FC<HeroSectionProps> = ({
-  currentText,
   isPlaying,
-  showRotatingSubtitles,
   onPlay,
   onPause,
   activeSection,
@@ -51,21 +47,18 @@ const HeroSection: React.FC<HeroSectionProps> = ({
       <div className="space-y-6 animate-fade-in transform translate-y-0 transition-transform duration-1000">
         <div className="md:-mt-48 text-4xl md:text-6xl font-bold text-eda-green h-[15vh] md:h-[32vh] items-start">
           <TypewriterText
-            text={`${currentText.split(".")[0]}... ${currentText.split(".")[1] || ""}`}
+            text={'Olá sou a Eda'}
             subtitles={subtitles}
-            showSubtitles={showRotatingSubtitles}
             rotationSpeed={4000}
           />
         </div>
         <div className="text-4xl md:text-6xl font-bold text-eda-green h-[10vh]">
           <TypewriterText
-            text={`${currentText.split(".")[0]}... ${currentText.split(".")[1] || ""}`}
+            text={'Sua assistente por voz para'}
             subtitles={subtitles}
-            showSubtitles={showRotatingSubtitles}
             rotationSpeed={4000}
           />
         </div>
-
       </div>
 
       <div className="flex justify-center items-center animate-scale-in">
