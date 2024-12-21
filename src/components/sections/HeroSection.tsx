@@ -3,7 +3,6 @@ import TypewriterText from "../TypewriterText";
 import RotatingSubtitles from "../RotatingSubtitles";
 import AudioPlayer from "../AudioPlayer";
 import ExampleChat from "../ExampleChat";
-import { motion } from "framer-motion";
 
 interface HeroSectionProps {
   currentText: string;
@@ -13,6 +12,18 @@ interface HeroSectionProps {
   onPause: () => void;
   activeSection: number;
 }
+
+const subtitles = [
+  "Protegendo nossa casa comum",
+  "Defendendo os direitos da natureza",
+  "Unindo vozes pela Terra",
+  "Construindo um futuro sustentável",
+];
+
+const subtitleLinks = [
+  { subtitle: "Construindo um futuro sustentável", href: "#sustainability" },
+  { subtitle: "Unindo vozes pela Terra", href: "#community" },
+];
 
 const HeroSection: React.FC<HeroSectionProps> = ({
   currentText,
@@ -28,7 +39,16 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="text-4xl md:text-6xl font-bold text-eda-green">
           <TypewriterText text={currentText} />
         </div>
-        {showRotatingSubtitles && <RotatingSubtitles />}
+        {showRotatingSubtitles && (
+          <RotatingSubtitles
+            subtitles={subtitles}
+            rotationSpeed={4000}
+            backgroundColor="#4CAF50"
+            textColor="white"
+            links={subtitleLinks}
+            className="animate-fade-in"
+          />
+        )}
       </div>
 
       <div className="flex justify-center items-center animate-scale-in">
