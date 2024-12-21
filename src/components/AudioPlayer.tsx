@@ -1,6 +1,5 @@
 import React from "react";
 import { Play, Pause } from "lucide-react";
-import DividingLine from "./DividingLine";
 
 interface AudioPlayerProps {
   onPlay: () => void;
@@ -25,9 +24,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
           <Play className="w-8 h-8 ml-1" />
         )}
       </button>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <DividingLine />
-      </div>
     </div>
   );
 };

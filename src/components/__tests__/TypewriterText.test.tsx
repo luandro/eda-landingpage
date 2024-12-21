@@ -12,9 +12,9 @@ describe("TypewriterText", () => {
 
   it("renders text character by character", async () => {
     render(
-      <TypewriterText 
-        text="Hello" 
-        delay={100} 
+      <TypewriterText
+        text="Hello"
+        delay={100}
         subtitles={mockSubtitles}
       />
     );
@@ -39,9 +39,9 @@ describe("TypewriterText", () => {
   it("calls onComplete when typing finishes", async () => {
     const onComplete = jest.fn();
     render(
-      <TypewriterText 
-        text="Hi" 
-        delay={100} 
+      <TypewriterText
+        text="Hi"
+        delay={100}
         onComplete={onComplete}
         subtitles={mockSubtitles}
       />

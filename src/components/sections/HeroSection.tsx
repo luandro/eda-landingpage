@@ -2,6 +2,7 @@ import React from "react";
 import TypewriterText from "../TypewriterText";
 import AudioPlayer from "../AudioPlayer";
 import ExampleChat from "../ExampleChat";
+import DividingLine from "../DividingLine";
 
 interface HeroSectionProps {
   currentText: string;
@@ -69,7 +70,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   activeSection,
 }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+    <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+      <DividingLine />
       <div className="mb-12 text-2xl md:text-3xl lg:text-4xl space-y-6 animate-fade-in transform translate-y-0 transition-transform duration-1000">
         <div className="h-[15vh] md:h-[34vh] font-bold text-eda-green items-start">
           <TypewriterText
