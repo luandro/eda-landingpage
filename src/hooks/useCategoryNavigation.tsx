@@ -1,6 +1,8 @@
 import { useState, useCallback } from "react";
 
-export const useCategoryNavigation = (onSectionChange: (index: number) => void) => {
+export const useCategoryNavigation = (
+  onSectionChange: (index: number) => void,
+) => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
   const handleCategorySelect = useCallback((categoryId: number) => {

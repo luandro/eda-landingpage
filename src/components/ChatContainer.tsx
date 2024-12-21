@@ -28,7 +28,7 @@ const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
   useEffect(() => {
     // Type assertion to ensure chatContent matches our interface
     const typedChatContent = chatContent as ChatContent;
-    
+
     // Add validation to ensure we have conversations
     if (!typedChatContent.conversations?.length) {
       console.error("No conversations found in chat content");
@@ -36,7 +36,7 @@ const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
     }
 
     const conversation = typedChatContent.conversations[0];
-    
+
     // Validate conversation has messages
     if (!conversation?.messages?.length) {
       console.error("No messages found in conversation");
@@ -49,7 +49,7 @@ const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
       if (currentIndex < conversation.messages.length) {
         const newMessage = conversation.messages[currentIndex];
         // Validate message before adding
-        if (newMessage && typeof newMessage.type === 'string') {
+        if (newMessage && typeof newMessage.type === "string") {
           setMessages((prev) => [...prev, newMessage]);
           currentIndex++;
 
@@ -57,7 +57,7 @@ const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
             // Create smooth auto-scroll animation
             chatRef.current.scrollTo({
               top: chatRef.current.scrollHeight,
-              behavior: 'smooth'
+              behavior: "smooth",
             });
           }
         } else {
@@ -83,7 +83,7 @@ const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
   // Add null check before rendering messages
   if (!messages?.length) {
     return (
-      <div 
+      <div
         className={`bg-black/5 rounded-lg p-6 h-[calc(100vh-200px)] flex items-center justify-center ${className}`}
       >
         <p className="text-gray-500">Loading messages...</p>
@@ -100,20 +100,22 @@ const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
         aria-label="Chat messages"
       >
         <AnimatePresence>
-          {messages.map((message) => (
-            message && message.type && (
-              <ChatMessage
-                key={message.id}
-                type={message.type}
-                content={message.content}
-                timestamp={message.timestamp}
-                steps={message.type === "agent" ? message.steps : undefined}
-              />
-            )
-          ))}
+          {messages.map(
+            (message) =>
+              message &&
+              message.type && (
+                <ChatMessage
+                  key={message.id}
+                  type={message.type}
+                  content={message.content}
+                  timestamp={message.timestamp}
+                  steps={message.type === "agent" ? message.steps : undefined}
+                />
+              ),
+          )}
         </AnimatePresence>
       </div>
-      
+
       {/* Scroll Prompt */}
       <AnimatePresence>
         {showScrollPrompt && (
