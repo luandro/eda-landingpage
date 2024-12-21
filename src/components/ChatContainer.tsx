@@ -46,11 +46,17 @@ const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
 
     const addMessage = () => {
       if (currentIndex < conversation.messages.length) {
-        setMessages((prev) => [...prev, conversation.messages[currentIndex]]);
-        currentIndex++;
+        const newMessage = conversation.messages[currentIndex];
+        // Validate message before adding
+        if (newMessage && typeof newMessage.type === 'string') {
+          setMessages((prev) => [...prev, newMessage]);
+          currentIndex++;
 
-        if (chatRef.current) {
-          chatRef.current.scrollTop = chatRef.current.scrollHeight;
+          if (chatRef.current) {
+            chatRef.current.scrollTop = chatRef.current.scrollHeight;
+          }
+        } else {
+          console.error("Invalid message format:", newMessage);
         }
       }
     };
@@ -62,7 +68,7 @@ const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
   }, []);
 
   // Add null check before rendering messages
-  if (!messages.length) {
+  if (!messages?.length) {
     return (
       <div 
         className={`bg-black/5 rounded-lg p-6 h-[calc(100vh-200px)] flex items-center justify-center ${className}`}
@@ -81,13 +87,15 @@ const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
     >
       <AnimatePresence>
         {messages.map((message) => (
-          <ChatMessage
-            key={message.id}
-            type={message.type}
-            content={message.content}
-            timestamp={message.timestamp}
-            steps={message.type === "agent" ? message.steps : undefined}
-          />
+          message && message.type && (
+            <ChatMessage
+              key={message.id}
+              type={message.type}
+              content={message.content}
+              timestamp={message.timestamp}
+              steps={message.type === "agent" ? message.steps : undefined}
+            />
+          )
         ))}
       </AnimatePresence>
     </div>
