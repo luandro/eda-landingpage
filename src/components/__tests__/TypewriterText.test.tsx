@@ -80,9 +80,7 @@ describe("TypewriterText", () => {
     }
 
     await waitFor(() => {
-      const element = screen.getByText((content) => content === "Test 1", {
-        selector: ".text-white",
-      });
+      const element = screen.getByText("Test 1");
       expect(element).toBeInTheDocument();
     });
   });

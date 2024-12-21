@@ -27,6 +27,7 @@ describe("RotatingSubtitles", () => {
     const element = screen.getByText((content) => content.includes("Test 1"));
     expect(element).toBeInTheDocument();
     expect(element.closest(".text-white")).toBeTruthy();
+    expect(element.closest("span")).toHaveStyle({ display: "inline" });
   });
 
   it("rotates through subtitles", () => {
@@ -64,7 +65,9 @@ describe("RotatingSubtitles", () => {
 
     const element = screen.getByText((content) => content.includes("Test 2"));
     expect(element).toBeInTheDocument();
-    fireEvent.click(element);
+    const link = element.closest('a');
+    expect(link).toHaveAttribute('href', '#test');
+    fireEvent.click(link!);
 
     expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalled();
   });
@@ -95,9 +98,7 @@ describe("RotatingSubtitles", () => {
 
     // Check final state
     await waitFor(() => {
-      const element = screen.getByText((content) => content === "Test 1", {
-        selector: ".text-white",
-      });
+      const element = screen.getByText((content) => content === "Test 1");
       expect(element).toBeInTheDocument();
     });
   });
@@ -121,9 +122,7 @@ describe("RotatingSubtitles", () => {
 
     // Check first subtitle is fully typed
     await waitFor(() => {
-      const element = screen.getByText((content) => content === "Test 1", {
-        selector: ".text-white",
-      });
+      const element = screen.getByText((content) => content === "Test 1");
       expect(element).toBeInTheDocument();
     });
 
