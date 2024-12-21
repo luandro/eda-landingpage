@@ -3,8 +3,10 @@ import { MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-interface ChatMessageProps {
-  type: "user" | "agent";
+export type MessageType = "user" | "agent";
+
+export interface ChatMessageProps {
+  type: MessageType;
   content: string;
   timestamp: string;
   steps?: string[];

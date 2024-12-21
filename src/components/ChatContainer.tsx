@@ -1,11 +1,19 @@
 import React, { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import ChatMessage from "./ChatMessage";
+import ChatMessage, { MessageType } from "./ChatMessage";
 import chatContent from "../config/chatContent.json";
+
+interface Message {
+  id: string;
+  type: MessageType;
+  content: string;
+  timestamp: string;
+  steps?: string[];
+}
 
 const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
   const chatRef = useRef<HTMLDivElement>(null);
-  const [messages, setMessages] = React.useState<typeof chatContent.conversations[0]["messages"]>([]);
+  const [messages, setMessages] = React.useState<Message[]>([]);
 
   useEffect(() => {
     const conversation = chatContent.conversations[0];
