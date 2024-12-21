@@ -27,7 +27,21 @@ const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
   useEffect(() => {
     // Type assertion to ensure chatContent matches our interface
     const typedChatContent = chatContent as ChatContent;
+    
+    // Add validation to ensure we have conversations
+    if (!typedChatContent.conversations?.length) {
+      console.error("No conversations found in chat content");
+      return;
+    }
+
     const conversation = typedChatContent.conversations[0];
+    
+    // Validate conversation has messages
+    if (!conversation?.messages?.length) {
+      console.error("No messages found in conversation");
+      return;
+    }
+
     let currentIndex = 0;
 
     const addMessage = () => {
@@ -46,6 +60,17 @@ const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Add null check before rendering messages
+  if (!messages.length) {
+    return (
+      <div 
+        className={`bg-black/5 rounded-lg p-6 h-[calc(100vh-200px)] flex items-center justify-center ${className}`}
+      >
+        <p className="text-gray-500">Loading messages...</p>
+      </div>
+    );
+  }
 
   return (
     <div
