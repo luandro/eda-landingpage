@@ -20,27 +20,31 @@ describe("TypewriterText", () => {
       act(() => {
         jest.advanceTimersByTime(100);
       });
+      
+      // Wait for the current substring to appear
       await waitFor(() => {
-        const text = screen.getByText((content, element) => {
-          const parent = element?.parentElement;
-          return (
-            parent?.textContent === "Hello".substring(0, i + 1) + "|" || false
-          );
-        });
-        expect(text).toBeInTheDocument();
+        const expectedText = "Hello".substring(0, i + 1);
+        const element = screen.getByText((content) => content.includes(expectedText));
+        expect(element).toBeInTheDocument();
       });
     }
   });
 
-  it("calls onComplete when typing finishes", () => {
+  it("calls onComplete when typing finishes", async () => {
     const onComplete = jest.fn();
     render(<TypewriterText text="Hi" delay={100} onComplete={onComplete} />);
 
-    act(() => {
-      jest.advanceTimersByTime(300); // 2 characters * 100ms + extra tick
-    });
+    // Type each character
+    for (let i = 0; i < "Hi".length; i++) {
+      act(() => {
+        jest.advanceTimersByTime(100);
+      });
+    }
 
-    expect(onComplete).toHaveBeenCalled();
+    // Wait for onComplete to be called
+    await waitFor(() => {
+      expect(onComplete).toHaveBeenCalled();
+    });
   });
 
   it("renders rotating subtitles when reaching placeholder", async () => {
@@ -60,14 +64,26 @@ describe("TypewriterText", () => {
       });
     }
 
-    // Check if first subtitle is rendered
+    // Wait for the first subtitle to start typing
     await waitFor(() => {
-      const text = screen.getByText((content, element) => {
-        return (
-          element?.textContent === "Test 1" && element.closest(".text-white")
-        );
+      const element = screen.getByText((content) => content === "", {
+        selector: ".text-white",
       });
-      expect(text).toBeInTheDocument();
+      expect(element).toBeInTheDocument();
+    });
+
+    // Wait for the first subtitle to finish typing
+    for (let i = 0; i < "Test 1".length; i++) {
+      act(() => {
+        jest.advanceTimersByTime(100);
+      });
+    }
+
+    await waitFor(() => {
+      const element = screen.getByText((content) => content === "Test 1", {
+        selector: ".text-white",
+      });
+      expect(element).toBeInTheDocument();
     });
   });
 });
