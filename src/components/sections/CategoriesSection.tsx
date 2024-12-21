@@ -61,7 +61,9 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
                 <ArrowLeft className="transform rotate-180" size={20} />
               </motion.div>
             </div>
-            <p className="text-gray-600 leading-relaxed">{category.description}</p>
+            <p className="text-gray-600 leading-relaxed">
+              {category.description}
+            </p>
           </motion.button>
         ))}
       </div>

@@ -1,19 +1,22 @@
-import type { Config } from 'jest';
+import type { Config } from "jest";
 
 const config: Config = {
-  preset: 'ts-jest',
-  testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
+  preset: "ts-jest",
+  testEnvironment: "jsdom",
+  setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
+    "^@/(.*)$": "<rootDir>/src/$1",
   },
   transform: {
-    '^.+\\.(ts|tsx)$': ['ts-jest', {
-      tsconfig: {
-        jsx: 'react-jsx',
-        esModuleInterop: true,
+    "^.+\\.(ts|tsx)$": [
+      "ts-jest",
+      {
+        tsconfig: {
+          jsx: "react-jsx",
+          esModuleInterop: true,
+        },
       },
-    }],
+    ],
   },
 };
 

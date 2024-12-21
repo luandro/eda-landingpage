@@ -32,7 +32,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
       const timeout = setTimeout(() => {
         setCurrentText((prevText) => prevText + text[currentIndex]);
         setCurrentIndex((prevIndex) => prevIndex + 1);
-        
+
         // Check if we've reached the placeholder position
         if (text.substring(0, currentIndex + 1).includes(subtitlePlaceholder)) {
           setShowRotating(true);

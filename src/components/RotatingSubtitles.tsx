@@ -38,7 +38,7 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
 
     const intervalId = setInterval(() => {
       setIsVisible(false);
-      
+
       setTimeout(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % subtitles.length);
         setIsVisible(true);
@@ -51,30 +51,33 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
   }, [rotationSpeed, subtitles.length]);
 
   // Calculate contrast color for text if not provided
-  const getTextColorClass = (backgroundColor?: string, textColor?: "white" | "dark") => {
+  const getTextColorClass = (
+    backgroundColor?: string,
+    textColor?: "white" | "dark",
+  ) => {
     if (textColor === "white") return "text-white";
     if (textColor === "dark") return "text-gray-900";
-    
+
     if (!backgroundColor) return "text-white";
-    
+
     // Auto calculate based on background color
     const r = parseInt(backgroundColor.slice(1, 3), 16);
     const g = parseInt(backgroundColor.slice(3, 5), 16);
     const b = parseInt(backgroundColor.slice(5, 7), 16);
     const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-    
+
     return brightness > 128 ? "text-gray-900" : "text-white";
   };
 
   const currentSubtitle = subtitles[currentIndex];
 
   return (
-    <span 
+    <span
       className={cn(
         "font-mono inline-flex items-center transition-all duration-500",
-        className
+        className,
       )}
-      style={{ 
+      style={{
         backgroundColor: currentSubtitle.backgroundColor || "#4CAF50",
         opacity: isVisible ? 1 : 0,
       }}
@@ -88,7 +91,10 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
           }}
           className={cn(
             "transition-colors hover:underline focus:outline-none",
-            getTextColorClass(currentSubtitle.backgroundColor, currentSubtitle.textColor)
+            getTextColorClass(
+              currentSubtitle.backgroundColor,
+              currentSubtitle.textColor,
+            ),
           )}
         >
           {currentSubtitle.text}
@@ -96,7 +102,10 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
       ) : (
         <span
           className={cn(
-            getTextColorClass(currentSubtitle.backgroundColor, currentSubtitle.textColor)
+            getTextColorClass(
+              currentSubtitle.backgroundColor,
+              currentSubtitle.textColor,
+            ),
           )}
         >
           {currentSubtitle.text}

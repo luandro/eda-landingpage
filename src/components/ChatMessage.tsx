@@ -27,7 +27,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
       className={cn(
         "flex items-start gap-4",
         isAgent ? "flex-row-reverse" : "",
-        className
+        className,
       )}
       initial={{ opacity: 0, x: isAgent ? 20 : -20 }}
       animate={{ opacity: 1, x: 0 }}
@@ -36,7 +36,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
       <div
         className={cn(
           "text-white p-2 rounded-full",
-          isAgent ? "bg-eda-orange" : "bg-eda-green"
+          isAgent ? "bg-eda-orange" : "bg-eda-green",
         )}
         aria-hidden="true"
       >
@@ -67,7 +67,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         <div
           className={cn(
             "rounded-lg p-6 shadow-sm",
-            isAgent ? "bg-eda-orange/10" : "bg-white"
+            isAgent ? "bg-eda-orange/10" : "bg-white",
           )}
           role="article"
           aria-label={`${type} message`}

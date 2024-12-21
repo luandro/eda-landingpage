@@ -17,25 +17,25 @@ const subtitles = [
   {
     text: "Protegendo nossa casa comum",
     backgroundColor: "#4CAF50",
-    textColor: "white" as const
+    textColor: "white" as const,
   },
   {
     text: "Defendendo os direitos da natureza",
     backgroundColor: "#FF5722",
-    textColor: "white" as const
+    textColor: "white" as const,
   },
   {
     text: "Unindo vozes pela Terra",
     backgroundColor: "#2196F3",
     textColor: "white" as const,
-    href: "#community"
+    href: "#community",
   },
   {
     text: "Construindo um futuro sustentável",
     backgroundColor: "#4CAF50",
     textColor: "white" as const,
-    href: "#sustainability"
-  }
+    href: "#sustainability",
+  },
 ];
 
 const HeroSection: React.FC<HeroSectionProps> = ({
@@ -50,7 +50,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
       <div className="space-y-6 animate-fade-in transform translate-y-0 transition-transform duration-1000">
         <div className="text-4xl md:text-6xl font-bold text-eda-green">
-          <TypewriterText 
+          <TypewriterText
             text={`${currentText.split(".")[0]}. {rotating}${currentText.split(".")[1] || ""}`}
             subtitles={subtitles}
             showSubtitles={showRotatingSubtitles}
