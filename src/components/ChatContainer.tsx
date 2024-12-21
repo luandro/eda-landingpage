@@ -23,6 +23,7 @@ interface ChatContent {
 const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
   const chatRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = React.useState<Message[]>([]);
+  const [showScrollPrompt, setShowScrollPrompt] = React.useState(true);
 
   useEffect(() => {
     // Type assertion to ensure chatContent matches our interface
@@ -53,7 +54,11 @@ const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
           currentIndex++;
 
           if (chatRef.current) {
-            chatRef.current.scrollTop = chatRef.current.scrollHeight;
+            // Create smooth auto-scroll animation
+            chatRef.current.scrollTo({
+              top: chatRef.current.scrollHeight,
+              behavior: 'smooth'
+            });
           }
         } else {
           console.error("Invalid message format:", newMessage);
@@ -64,7 +69,15 @@ const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
     const interval = setInterval(addMessage, 2000);
     addMessage(); // Add first message immediately
 
-    return () => clearInterval(interval);
+    // Hide scroll prompt after a delay
+    const promptTimeout = setTimeout(() => {
+      setShowScrollPrompt(false);
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(promptTimeout);
+    };
   }, []);
 
   // Add null check before rendering messages
@@ -79,24 +92,45 @@ const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
   }
 
   return (
-    <div
-      ref={chatRef}
-      className={`bg-black/5 rounded-lg p-6 h-[calc(100vh-200px)] flex flex-col space-y-6 overflow-y-auto ${className}`}
-      role="region"
-      aria-label="Chat messages"
-    >
+    <div className="relative">
+      <div
+        ref={chatRef}
+        className={`bg-black/5 rounded-lg p-6 h-[calc(100vh-200px)] flex flex-col space-y-6 overflow-y-auto scroll-smooth ${className}`}
+        role="region"
+        aria-label="Chat messages"
+      >
+        <AnimatePresence>
+          {messages.map((message) => (
+            message && message.type && (
+              <ChatMessage
+                key={message.id}
+                type={message.type}
+                content={message.content}
+                timestamp={message.timestamp}
+                steps={message.type === "agent" ? message.steps : undefined}
+              />
+            )
+          ))}
+        </AnimatePresence>
+      </div>
+      
+      {/* Scroll Prompt */}
       <AnimatePresence>
-        {messages.map((message) => (
-          message && message.type && (
-            <ChatMessage
-              key={message.id}
-              type={message.type}
-              content={message.content}
-              timestamp={message.timestamp}
-              steps={message.type === "agent" ? message.steps : undefined}
+        {showScrollPrompt && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-eda-green text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2"
+          >
+            <motion.div
+              animate={{ y: [0, 5, 0] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+              className="w-4 h-4 border-t-2 border-r-2 border-white transform rotate-135"
             />
-          )
-        ))}
+            <span className="text-sm">Scroll to see more</span>
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );
