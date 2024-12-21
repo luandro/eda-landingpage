@@ -49,14 +49,23 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
       <div className="space-y-6 animate-fade-in transform translate-y-0 transition-transform duration-1000">
-        <div className="text-4xl md:text-6xl font-bold text-eda-green">
+        <div className="md:-mt-48 text-4xl md:text-6xl font-bold text-eda-green h-[15vh] md:h-[32vh] items-start">
           <TypewriterText
-            text={`${currentText.split(".")[0]}. {rotating}${currentText.split(".")[1] || ""}`}
+            text={`${currentText.split(".")[0]}... ${currentText.split(".")[1] || ""}`}
             subtitles={subtitles}
             showSubtitles={showRotatingSubtitles}
             rotationSpeed={4000}
           />
         </div>
+        <div className="text-4xl md:text-6xl font-bold text-eda-green h-[10vh]">
+          <TypewriterText
+            text={`${currentText.split(".")[0]}... ${currentText.split(".")[1] || ""}`}
+            subtitles={subtitles}
+            showSubtitles={showRotatingSubtitles}
+            rotationSpeed={4000}
+          />
+        </div>
+
       </div>
 
       <div className="flex justify-center items-center animate-scale-in">
@@ -66,14 +75,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({
       <div className="block animate-slide-in-right">
         <ExampleChat />
       </div>
-
-      <div
-        className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent to-white/20"
-        style={{
-          transform: `translateY(${(1 - activeSection) * 20}%)`,
-          transition: "transform 0.8s ease-in-out",
-        }}
-      />
     </div>
   );
 };

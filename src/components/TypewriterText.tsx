@@ -24,7 +24,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   const [showRotating, setShowRotating] = useState(false);
 
   // Find the placeholder position for subtitles
-  const subtitlePlaceholder = "{rotating}";
+  const subtitlePlaceholder = "...";
   const parts = text.split(subtitlePlaceholder);
 
   useEffect(() => {
@@ -49,15 +49,15 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   const currentParts = currentText.split(subtitlePlaceholder);
 
   return (
-    <div className="font-mono inline-flex flex-wrap items-center gap-x-1">
+    <div className={`font-mono tabular-nums`}>
       {currentParts.map((part, index) => (
         <React.Fragment key={index}>
-          {part}
+          {part}{''}
           {index < currentParts.length - 1 && showSubtitles && showRotating && (
             <RotatingSubtitles
               subtitles={subtitles}
               rotationSpeed={rotationSpeed}
-              className="!rounded-none !px-1 !py-0 !inline"
+              className="ml-1 !rounded-none !px-1 !py-0 !inline"
               typewriterEnabled={true}
               typewriterDelay={delay}
             />
