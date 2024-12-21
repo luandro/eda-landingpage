@@ -4,21 +4,30 @@
       "id": 1,
       "messages": [
         {
-          "id": "m1",
+          "id": "1",
           "type": "user",
-          "content": "Como posso ajudar a proteger o meio ambiente?",
-          "timestamp": "10:00"
+          "content": "Hi! I'm interested in learning more about your services.",
+          "timestamp": "12:00 PM"
         },
         {
-          "id": "m2",
+          "id": "2",
           "type": "agent",
-          "content": "Existem várias maneiras de proteger o meio ambiente! Você pode começar:\n\n• Reduzindo seu consumo de plástico\n• Economizando água e energia\n• Reciclando corretamente\n• Apoiando iniciativas locais de conservação",
-          "timestamp": "10:01",
-          "steps": [
-            "Analisando a pergunta...",
-            "Buscando soluções práticas...",
-            "Organizando informações..."
-          ]
+          "content": "Hello! I'd be happy to help you learn more about what we offer.",
+          "timestamp": "12:01 PM",
+          "steps": ["Analyzing your request...", "Preparing detailed information..."]
+        },
+        {
+          "id": "3",
+          "type": "user",
+          "content": "Great! What are your main services?",
+          "timestamp": "12:02 PM"
+        },
+        {
+          "id": "4",
+          "type": "agent",
+          "content": "We specialize in AI-powered solutions, including chatbots, data analysis, and automation tools.",
+          "timestamp": "12:03 PM",
+          "steps": ["Gathering service information...", "Customizing response..."]
         }
       ]
     }

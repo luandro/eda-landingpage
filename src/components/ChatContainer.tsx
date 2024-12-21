@@ -20,10 +20,8 @@ interface ChatContent {
   conversations: Conversation[];
 }
 
-const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
-  const chatRef = useRef<HTMLDivElement>(null);
+const ChatContainer = React.forwardRef<HTMLDivElement, { className?: string }>(({ className }, ref) => {
   const [messages, setMessages] = React.useState<Message[]>([]);
-  const [showScrollPrompt, setShowScrollPrompt] = React.useState(true);
 
   useEffect(() => {
     // Type assertion to ensure chatContent matches our interface
@@ -53,13 +51,7 @@ const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
           setMessages((prev) => [...prev, newMessage]);
           currentIndex++;
 
-          if (chatRef.current) {
-            // Create smooth auto-scroll animation
-            chatRef.current.scrollTo({
-              top: chatRef.current.scrollHeight,
-              behavior: "smooth",
-            });
-          }
+          // No need for auto-scroll since we have continuous animation
         } else {
           console.error("Invalid message format:", newMessage);
         }
@@ -69,35 +61,42 @@ const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
     const interval = setInterval(addMessage, 2000);
     addMessage(); // Add first message immediately
 
-    // Hide scroll prompt after a delay
-    const promptTimeout = setTimeout(() => {
-      setShowScrollPrompt(false);
-    }, 5000);
-
     return () => {
       clearInterval(interval);
-      clearTimeout(promptTimeout);
     };
   }, []);
 
   // Add null check before rendering messages
   if (!messages?.length) {
     return (
-      <div
-        className={`bg-black/5 rounded-lg p-6 h-[calc(100vh-200px)] flex items-center justify-center ${className}`}
-      >
-        <p className="text-gray-500">Loading messages...</p>
+      <div className="relative">
+        <div
+          className={`bg-black/5 rounded-lg p-6 h-[calc(100vh-200px)] flex items-center justify-center ${className}`}
+        >
+          <p className="text-gray-500">Loading messages...</p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="relative">
-      <div
-        ref={chatRef}
-        className={`bg-black/5 rounded-lg p-6 h-[calc(100vh-200px)] flex flex-col space-y-6 overflow-y-auto scroll-smooth ${className}`}
+      <motion.div
+        ref={ref}
+        className={`bg-black/5 rounded-lg p-6 h-[calc(100vh-200px)] flex flex-col space-y-6 overflow-hidden ${className}`}
         role="region"
         aria-label="Chat messages"
+        animate={{
+          y: [0, `-${messages.length * 150}px`, `-${messages.length * 150}px`, 0],
+        }}
+        transition={{
+          duration: messages.length * 2, // 2 seconds per message for scrolling
+          times: [0, 0.4, 0.5, 1], // Pause for 3 seconds at the end (0.4 to 0.5 represents the pause)
+          repeat: Infinity,
+          ease: 'linear',
+          repeatDelay: 3, // Add a 3-second pause at the end
+        }}
+        data-testid="chat-container"
       >
         <AnimatePresence>
           {messages.map(
@@ -114,28 +113,9 @@ const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
               ),
           )}
         </AnimatePresence>
-      </div>
-
-      {/* Scroll Prompt */}
-      <AnimatePresence>
-        {showScrollPrompt && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-eda-green text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2"
-          >
-            <motion.div
-              animate={{ y: [0, 5, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-              className="w-4 h-4 border-t-2 border-r-2 border-white transform rotate-135"
-            />
-            <span className="text-sm">Scroll to see more</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </motion.div>
     </div>
   );
-};
+});
 
 export default ChatContainer;
