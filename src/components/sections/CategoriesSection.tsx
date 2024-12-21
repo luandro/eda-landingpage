@@ -30,6 +30,7 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
       document.body.classList.remove('category-open');
     };
   }, [selectedCategory, onCategoryClose]);
+
   const swipeConfidenceThreshold = 10000;
   const swipePower = (offset: number, velocity: number) => {
     return Math.abs(offset) * velocity;
@@ -38,10 +39,11 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
   return (
     <div className="relative w-full h-full">
       <div
-        className={`grid grid-cols-1 md:grid-cols-2 gap-6 transition-all duration-500 ease-in-out ${selectedCategory !== null
+        className={`grid grid-cols-1 md:grid-cols-2 gap-6 transition-all duration-500 ease-in-out ${
+          selectedCategory !== null
             ? "opacity-0 -translate-x-full"
             : "opacity-100 translate-x-0"
-          }`}
+        }`}
         role="grid"
         aria-label="Categories"
       >
@@ -49,10 +51,11 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
           <motion.button
             key={category.id}
             onClick={() => onCategorySelect(category.id)}
-            className={`group p-8 bg-white/5 rounded-lg border-2 transition-all duration-300 text-left hover:shadow-lg ${selectedCategory === category.id
+            className={`group p-8 bg-white/5 rounded-lg border-2 transition-all duration-300 text-left hover:shadow-lg ${
+              selectedCategory === category.id
                 ? "border-eda-green bg-eda-green/5"
                 : "border-gray-200 hover:border-eda-green"
-              }`}
+            }`}
             aria-label={`Select ${category.title} category`}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -80,44 +83,33 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
         ))}
       </div>
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         {selectedCategory !== null && (
           <>
-            <motion.div
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 category-transition"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+            <div
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
               onClick={onCategoryClose}
             />
             <motion.div
-              className="fixed inset-0 bg-white z-50 touch-pan-x category-transition"
+              className="fixed inset-0 bg-white z-50"
               role="dialog"
               aria-modal="true"
               aria-label="Chat interface"
-              initial="category-enter"
-              animate="category-enter-active"
-              exit="category-exit-active"
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 30,
-              }}
-              drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.2}
-              onDragEnd={(e, { offset, velocity }) => {
-                const swipe = swipePower(offset.x, velocity.x);
-                if (swipe > swipeConfidenceThreshold || offset.x > 100) {
-                  onCategoryClose();
-                }
-              }}
               onKeyDown={(e) => {
                 if (e.key === "Escape" || e.key === "ArrowLeft") {
                   onCategoryClose();
                 }
               }}
               tabIndex={0}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.2}
+              onDragEnd={(e, { offset, velocity }) => {
+                const swipe = swipePower(offset.x, velocity.x);
+                if (swipe < -swipeConfidenceThreshold) {
+                  onCategoryClose();
+                }
+              }}
             >
               <div className="h-full max-h-screen overflow-hidden">
                 <motion.div

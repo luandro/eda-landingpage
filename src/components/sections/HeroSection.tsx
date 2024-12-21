@@ -17,23 +17,26 @@ const subtitlesCases = [
     text: "buscar e escrever financiamentos",
     backgroundColor: "#4CAF50",
     textColor: "white" as const,
+    href: "#/category/3",
+
   },
   {
     text: "aprender com cursos online",
     backgroundColor: "#FF5722",
     textColor: "white" as const,
+    href: "#/category/3",
   },
   {
     text: "dominar novas ferramentas",
     backgroundColor: "#2196F3",
     textColor: "white" as const,
-    href: "#tools",
+    href: "#/category/3",
   },
   {
     text: "desenvolver sua autonomia",
     backgroundColor: "#4CAF50",
     textColor: "white" as const,
-    href: "#autonomy",
+    href: "#/category/3",
   },
 ];
 
@@ -70,10 +73,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   activeSection,
 }) => {
   return (
-    <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+    <div className="relative grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
       <DividingLine />
       <div className="mb-12 text-2xl md:text-3xl lg:text-4xl space-y-6 animate-fade-in transform translate-y-0 transition-transform duration-1000">
-        <div className="h-[15vh] md:h-[34vh] font-bold text-eda-green items-start">
+        <div className="h-[15vh] md:h-[30vh] font-bold text-eda-green items-start">
           <TypewriterText
             text={'Olá sou a <span style="color: orange;">EDA</span>! Uma assistente por voz para lhe auxiliar a...'}
             subtitles={subtitlesCases}
@@ -92,7 +95,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
       </div>
 
-      <div className="flex justify-center items-center animate-scale-in -mb-12">
+      <div className="flex justify-center items-center animate-scale-in -mb-12 md:mb-0">
         <AudioPlayer isPlaying={isPlaying} onPlay={onPlay} onPause={onPause} />
       </div>
 

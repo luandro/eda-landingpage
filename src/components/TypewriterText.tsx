@@ -66,7 +66,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
             dangerouslySetInnerHTML={{
               __html: part
             }}
-            className="[&_a]:text-eda-green [&_a]:underline [&_a]:hover:text-eda-green/80 [&_a]:transition-colors"
+            className="[&_a]:text-white [&_a]:hover:text-white/80 [&_a]:transition-colors [&_a]:bg-blue-500 [&_a]:px-1 [&_a]:py-0.5 [&_a]:rounded"
           />
           {index < currentParts.length - 1 && showRotating && (
             <RotatingSubtitles
