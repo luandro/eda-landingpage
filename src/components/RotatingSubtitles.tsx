@@ -104,12 +104,14 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
   return (
     <span
       className={cn(
-        "font-mono inline-flex items-center transition-all duration-500",
+        "font-mono text-sm px-1 transition-all duration-500",
         className,
       )}
       style={{
         backgroundColor: currentSubtitle.backgroundColor || "#4CAF50",
         opacity: isVisible ? 1 : 0,
+        display: "inline",
+        verticalAlign: "baseline"
       }}
     >
       {currentSubtitle.href ? (
@@ -126,6 +128,7 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
               currentSubtitle.textColor,
             ),
           )}
+          style={{ display: "inline" }}
         >
           {currentText}
         </a>
@@ -137,6 +140,7 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
               currentSubtitle.textColor,
             ),
           )}
+          style={{ display: "inline" }}
         >
           {currentText}
         </span>
