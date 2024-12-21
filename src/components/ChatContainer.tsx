@@ -20,8 +20,35 @@ interface ChatContent {
   conversations: Conversation[];
 }
 
+const useAutoScroll = () => {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [scrollHeight, setScrollHeight] = React.useState(0);
+  const [isScrolling, setIsScrolling] = React.useState(true);
+
+  useEffect(() => {
+    if (!contentRef.current) return;
+
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setScrollHeight(entry.target.scrollHeight);
+      }
+    });
+
+    observer.observe(contentRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return {
+    contentRef,
+    scrollHeight,
+    isScrolling,
+    setIsScrolling,
+  };
+};
+
 const ChatContainer = React.forwardRef<HTMLDivElement, { className?: string }>(({ className }, ref) => {
   const [messages, setMessages] = React.useState<Message[]>([]);
+  const { contentRef, scrollHeight, isScrolling } = useAutoScroll();
 
   useEffect(() => {
     // Type assertion to ensure chatContent matches our interface
@@ -82,19 +109,26 @@ const ChatContainer = React.forwardRef<HTMLDivElement, { className?: string }>((
   return (
     <div className="relative">
       <motion.div
-        ref={ref}
+        ref={(node) => {
+          // Handle both refs
+          if (typeof ref === 'function') ref(node);
+          else if (ref) ref.current = node;
+          contentRef.current = node;
+        }}
         className={`bg-black/5 rounded-lg p-6 h-[calc(100vh-200px)] flex flex-col space-y-6 overflow-hidden ${className}`}
         role="region"
         aria-label="Chat messages"
-        animate={{
-          y: [0, `-${messages.length * 150}px`, `-${messages.length * 150}px`, 0],
+        animate={isScrolling ? {
+          y: [0, -scrollHeight, -scrollHeight, 0],
+        } : {
+          y: 0
         }}
         transition={{
-          duration: messages.length * 2, // 2 seconds per message for scrolling
-          times: [0, 0.4, 0.5, 1], // Pause for 3 seconds at the end (0.4 to 0.5 represents the pause)
+          duration: Math.max(scrollHeight / 50, 10), // Smoother scroll speed
+          times: [0, 0.4, 0.6, 1],
           repeat: Infinity,
-          ease: 'linear',
-          repeatDelay: 3, // Add a 3-second pause at the end
+          ease: "linear",
+          repeatDelay: 3,
         }}
         data-testid="chat-container"
       >
