@@ -10,7 +10,8 @@ export default defineConfig(({ mode }) => ({
     strictPort: true,
     hmr: {
       clientPort: 443,
-      protocol: 'wss'
+      protocol: 'wss',
+      host: '50e0f999-c703-4cf8-8fed-9641a16e22e2.lovableproject.com'
     }
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(
