@@ -1,36 +1,30 @@
 import { useState, useCallback } from "react";
 
+import { useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+
 export const useCategoryNavigation = (
   onSectionChange: (index: number) => void,
 ) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
+  useEffect(() => {
+    const categoryId = location.pathname.match(/\/category\/(\d+)/)?.[1];
+    setSelectedCategory(categoryId ? parseInt(categoryId) : null);
+  }, [location]);
+
   const handleCategorySelect = useCallback((categoryId: number) => {
+    navigate(`/category/${categoryId}`);
     setSelectedCategory(categoryId);
-    document.body.classList.add("category-open");
-  }, []);
+  }, [navigate]);
 
   const handleCategoryClose = useCallback(() => {
-    const cleanup = () => {
-      document.body.classList.remove("category-open");
-      setSelectedCategory(null);
-      onSectionChange(1);
-    };
-
-    // Add exit animation class
-    document.body.classList.add("category-exit");
-
-    // Wait for animation to complete
-    const element = document.querySelector(".category-transition");
-    if (element) {
-      element.addEventListener("animationend", () => {
-        document.body.classList.remove("category-exit");
-        cleanup();
-      }, { once: true });
-    } else {
-      cleanup();
-    }
-  }, [onSectionChange]);
+    navigate('/');
+    setSelectedCategory(null);
+    onSectionChange(1);
+  }, [navigate, onSectionChange]);
 
   return {
     selectedCategory,
