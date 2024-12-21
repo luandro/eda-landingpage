@@ -11,12 +11,23 @@ interface Message {
   steps?: string[];
 }
 
+interface Conversation {
+  id: number;
+  messages: Message[];
+}
+
+interface ChatContent {
+  conversations: Conversation[];
+}
+
 const ChatContainer: React.FC<{ className?: string }> = ({ className }) => {
   const chatRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = React.useState<Message[]>([]);
 
   useEffect(() => {
-    const conversation = chatContent.conversations[0];
+    // Type assertion to ensure chatContent matches our interface
+    const typedChatContent = chatContent as ChatContent;
+    const conversation = typedChatContent.conversations[0];
     let currentIndex = 0;
 
     const addMessage = () => {
