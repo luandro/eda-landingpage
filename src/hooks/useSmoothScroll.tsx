@@ -49,16 +49,25 @@ export const useSmoothScroll = (options: SmoothScrollOptions = {}) => {
 
       const targetSection = sectionsRef.current[index];
       if (targetSection) {
-        targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
         document.body.style.overflow = "hidden";
 
-        // Reset scroll state after animation
-        scrollTimeout.current = setTimeout(() => {
-          cleanupScroll();
-        }, animationDuration);
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                observer.disconnect();
+                cleanupScroll();
+              }
+            });
+          },
+          { threshold: 0.5 }
+        );
+
+        observer.observe(targetSection);
+        targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     },
-    [animationDuration, isValidSection, cleanupScroll],
+    [isValidSection, cleanupScroll],
   );
 
   useEffect(() => {

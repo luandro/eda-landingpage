@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ExampleChat from "../ExampleChat";
@@ -16,6 +16,20 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
   onCategorySelect,
   onCategoryClose,
 }) => {
+  useEffect(() => {
+    const handlePopState = () => {
+      if (selectedCategory !== null) {
+        onCategoryClose();
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      document.body.classList.remove('category-open');
+    };
+  }, [selectedCategory, onCategoryClose]);
   const swipeConfidenceThreshold = 10000;
   const swipePower = (offset: number, velocity: number) => {
     return Math.abs(offset) * velocity;
@@ -24,11 +38,10 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
   return (
     <div className="relative w-full h-full">
       <div
-        className={`grid grid-cols-1 md:grid-cols-2 gap-6 transition-all duration-500 ease-in-out ${
-          selectedCategory !== null
+        className={`grid grid-cols-1 md:grid-cols-2 gap-6 transition-all duration-500 ease-in-out ${selectedCategory !== null
             ? "opacity-0 -translate-x-full"
             : "opacity-100 translate-x-0"
-        }`}
+          }`}
         role="grid"
         aria-label="Categories"
       >
@@ -36,11 +49,10 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
           <motion.button
             key={category.id}
             onClick={() => onCategorySelect(category.id)}
-            className={`group p-8 bg-white/5 rounded-lg border-2 transition-all duration-300 text-left hover:shadow-lg ${
-              selectedCategory === category.id
+            className={`group p-8 bg-white/5 rounded-lg border-2 transition-all duration-300 text-left hover:shadow-lg ${selectedCategory === category.id
                 ? "border-eda-green bg-eda-green/5"
                 : "border-gray-200 hover:border-eda-green"
-            }`}
+              }`}
             aria-label={`Select ${category.title} category`}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
