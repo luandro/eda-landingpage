@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
-interface SubtitleItem {
+export interface SubtitleItem {
   text: string;
   backgroundColor?: string;
   textColor?: "white" | "dark";
@@ -69,27 +69,30 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
   const currentSubtitle = subtitles[currentIndex];
 
   return (
-    <div 
+    <span 
       className={cn(
-        "font-mono inline-flex items-center justify-center px-4 py-2 rounded-md transition-all duration-500",
+        "font-mono inline-flex items-center transition-all duration-500",
         className
       )}
       style={{ 
         backgroundColor: currentSubtitle.backgroundColor || "#4CAF50",
         opacity: isVisible ? 1 : 0,
-        transform: `translateY(${isVisible ? 0 : 10}px)`
       }}
     >
       {currentSubtitle.href ? (
-        <button
-          onClick={() => currentSubtitle.href && scrollToSection(currentSubtitle.href)}
+        <a
+          href={currentSubtitle.href}
+          onClick={(e) => {
+            e.preventDefault();
+            currentSubtitle.href && scrollToSection(currentSubtitle.href);
+          }}
           className={cn(
             "transition-colors hover:underline focus:outline-none",
             getTextColorClass(currentSubtitle.backgroundColor, currentSubtitle.textColor)
           )}
         >
           {currentSubtitle.text}
-        </button>
+        </a>
       ) : (
         <span
           className={cn(
@@ -99,7 +102,7 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
           {currentSubtitle.text}
         </span>
       )}
-    </div>
+    </span>
   );
 };
 
