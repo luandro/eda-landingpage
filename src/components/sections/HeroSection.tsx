@@ -17,23 +17,23 @@ const subtitles = [
   {
     text: "Protegendo nossa casa comum",
     backgroundColor: "#4CAF50",
-    textColor: "white"
+    textColor: "white" as const
   },
   {
     text: "Defendendo os direitos da natureza",
     backgroundColor: "#FF5722",
-    textColor: "white"
+    textColor: "white" as const
   },
   {
     text: "Unindo vozes pela Terra",
     backgroundColor: "#2196F3",
-    textColor: "white",
+    textColor: "white" as const,
     href: "#community"
   },
   {
     text: "Construindo um futuro sustentável",
     backgroundColor: "#4CAF50",
-    textColor: "white",
+    textColor: "white" as const,
     href: "#sustainability"
   }
 ];
