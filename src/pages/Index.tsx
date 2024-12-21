@@ -5,6 +5,7 @@ import TypewriterText from "../components/TypewriterText";
 import RotatingSubtitles from "../components/RotatingSubtitles";
 import AudioPlayer from "../components/AudioPlayer";
 import ExampleChat from "../components/ExampleChat";
+import DividingLine from "../components/DividingLine";
 import UseCases from "../components/UseCases";
 import Section from "../components/Section";
 import { NavigationDots } from "@/components/ui/navigation-dots";
@@ -68,12 +69,14 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen overflow-hidden">
+    <div className="min-h-screen overflow-hidden relative">
       <NavigationDots
         totalSections={3}
         activeSection={activeSection}
         onSectionChange={scrollToSection}
       />
+
+      <DividingLine />
 
       {/* Hero Section */}
       <Section

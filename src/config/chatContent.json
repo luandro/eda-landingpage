@@ -1,0 +1,26 @@
+{
+  "conversations": [
+    {
+      "id": 1,
+      "messages": [
+        {
+          "id": "m1",
+          "type": "user",
+          "content": "Como posso ajudar a proteger o meio ambiente?",
+          "timestamp": "10:00"
+        },
+        {
+          "id": "m2",
+          "type": "agent",
+          "content": "Existem várias maneiras de proteger o meio ambiente! Você pode começar:\n\n• Reduzindo seu consumo de plástico\n• Economizando água e energia\n• Reciclando corretamente\n• Apoiando iniciativas locais de conservação",
+          "timestamp": "10:01",
+          "steps": [
+            "Analisando a pergunta...",
+            "Buscando soluções práticas...",
+            "Organizando informações..."
+          ]
+        }
+      ]
+    }
+  ]
+}
