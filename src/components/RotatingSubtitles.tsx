@@ -12,15 +12,21 @@ interface RotatingSubtitlesProps {
   subtitles: SubtitleItem[];
   rotationSpeed?: number;
   className?: string;
+  typewriterEnabled?: boolean;
+  typewriterDelay?: number;
 }
 
 const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
   subtitles,
   rotationSpeed = 4000,
   className,
+  typewriterEnabled = false,
+  typewriterDelay = 100,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  const [currentText, setCurrentText] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
 
   // Function to handle smooth scroll
   const scrollToSection = (href: string) => {
@@ -33,6 +39,26 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
     }
   };
 
+  // Typewriter effect
+  useEffect(() => {
+    if (!typewriterEnabled) {
+      setCurrentText(subtitles[currentIndex].text);
+      return;
+    }
+
+    const text = subtitles[currentIndex].text;
+    if (isTyping) {
+      if (currentText.length < text.length) {
+        const timeout = setTimeout(() => {
+          setCurrentText(text.slice(0, currentText.length + 1));
+        }, typewriterDelay);
+        return () => clearTimeout(timeout);
+      } else {
+        setIsTyping(false);
+      }
+    }
+  }, [currentText, currentIndex, typewriterEnabled, isTyping, typewriterDelay, subtitles]);
+
   useEffect(() => {
     const transitionDuration = 500; // Duration of fade transition in ms
 
@@ -41,6 +67,10 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
 
       setTimeout(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % subtitles.length);
+        if (typewriterEnabled) {
+          setCurrentText("");
+          setIsTyping(true);
+        }
         setIsVisible(true);
       }, transitionDuration);
     }, rotationSpeed);
@@ -48,7 +78,7 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
     return () => {
       clearInterval(intervalId);
     };
-  }, [rotationSpeed, subtitles.length]);
+  }, [rotationSpeed, subtitles.length, typewriterEnabled]);
 
   // Calculate contrast color for text if not provided
   const getTextColorClass = (
@@ -97,7 +127,7 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
             ),
           )}
         >
-          {currentSubtitle.text}
+          {currentText}
         </a>
       ) : (
         <span
@@ -108,7 +138,7 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
             ),
           )}
         >
-          {currentSubtitle.text}
+          {currentText}
         </span>
       )}
     </span>

@@ -58,6 +58,8 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
               subtitles={subtitles}
               rotationSpeed={rotationSpeed}
               className="!rounded-none !px-1 !py-0 !inline"
+              typewriterEnabled={true}
+              typewriterDelay={delay}
             />
           )}
         </React.Fragment>
