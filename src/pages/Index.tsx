@@ -46,7 +46,9 @@ const Index = () => {
         onSectionChange={scrollToSection}
       />
 
-      <DividingLine />
+      <div className="hidden md:block">
+        <DividingLine />
+      </div>
 
       {/* Hero Section */}
       <Section
