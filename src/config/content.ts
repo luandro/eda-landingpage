@@ -34,6 +34,29 @@ export const categories = [
   },
 ];
 
+export const features = [
+  {
+    id: 1,
+    title: "Voice Assistant",
+    description: "Advanced AI-powered voice interactions",
+  },
+  {
+    id: 2,
+    title: "Smart Analytics",
+    description: "Data-driven insights and reporting",
+  },
+  {
+    id: 3,
+    title: "Eco Tracking",
+    description: "Monitor environmental impact",
+  },
+  {
+    id: 4,
+    title: "Community Hub",
+    description: "Connect with other eco-warriors",
+  },
+];
+
 export const contactInfo = {
   email: "contact@example.com",
   phone: "+55 (11) 1234-5678",

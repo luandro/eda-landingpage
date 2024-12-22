@@ -8,7 +8,10 @@ import { useCategoryNavigation } from "../hooks/useCategoryNavigation";
 import { subtitles } from "../config/content";
 import HeroSection from "../components/sections/HeroSection";
 import CategoriesSection from "../components/sections/CategoriesSection";
+import FeaturesSection from "../components/sections/FeaturesSection";
 import ContactSection from "../components/sections/ContactSection";
+
+const sectionHashes = ['#hero', '#categories', '#features', '#contact'];
 
 const Index = () => {
   const [currentText, setCurrentText] = useState("Olá, meu nome é Eda");
@@ -29,17 +32,28 @@ const Index = () => {
 
   const { selectedCategory, handleCategorySelect, handleCategoryClose } =
     useCategoryNavigation(scrollToSection);
-  // Cleanup on unmount
+
+  const [selectedFeature, setSelectedFeature] = useState<number | null>(null);
+
+  // Handle hash navigation
   useEffect(() => {
-    return () => {
-      document.body.classList.remove("category-open");
-    };
+    const hash = window.location.hash;
+    const index = sectionHashes.indexOf(hash);
+    if (index !== -1) {
+      scrollToSection(index);
+    }
   }, []);
+
+  // Update hash on section change
+  useEffect(() => {
+    const hash = sectionHashes[activeSection];
+    window.location.hash = hash || '';
+  }, [activeSection]);
 
   return (
     <div className="min-h-screen overflow-hidden relative">
       <NavigationDots
-        totalSections={3}
+        totalSections={4}
         activeSection={activeSection}
         onSectionChange={scrollToSection}
       />
@@ -82,12 +96,29 @@ const Index = () => {
         />
       </Section>
 
-      {/* Contact Section */}
+      {/* Features Section */}
       <Section
         index={2}
         activeSection={activeSection}
         setRef={(el: HTMLDivElement | null) => {
           if (el) sectionsRef.current[2] = el;
+        }}
+      >
+        <FeaturesSection
+          selectedFeature={selectedFeature}
+          onFeatureSelect={setSelectedFeature}
+          isPlaying={isPlaying}
+          onPlay={handlePlay}
+          onPause={handlePause}
+        />
+      </Section>
+
+      {/* Contact Section */}
+      <Section
+        index={3}
+        activeSection={activeSection}
+        setRef={(el: HTMLDivElement | null) => {
+          if (el) sectionsRef.current[3] = el;
         }}
         background="bg-gradient-to-b from-white to-gray-50"
       >
