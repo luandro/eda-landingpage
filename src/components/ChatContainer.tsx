@@ -28,8 +28,8 @@ const ChatContainer = React.forwardRef<HTMLDivElement, { className?: string }>(
     }, []);
 
     const { visibleMessages } = useMessageAnimation(allMessages, {
-      messageDisplayDuration: 5000,
-      scrollDuration: 1500,
+      messageDisplayDuration: 2000,
+      scrollDuration: 500,
       maxVisibleMessages: 3,
     });
 

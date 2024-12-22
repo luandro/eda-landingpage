@@ -8,8 +8,8 @@ interface AnimationConfig {
 }
 
 const defaultConfig: AnimationConfig = {
-  messageDisplayDuration: 5000, // Increased from 3000 for slower pacing
-  scrollDuration: 1500, // Increased from 1000 for smoother transitions
+  messageDisplayDuration: 5000,
+  scrollDuration: 1500,
   maxVisibleMessages: 3,
 };
 
@@ -20,23 +20,29 @@ export const useMessageAnimation = (
   const [visibleMessages, setVisibleMessages] = useState<Message[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(true);
+  const [isScrolling, setIsScrolling] = useState(false);
 
   const animationConfig = { ...defaultConfig, ...config };
+  const timeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     if (!messages.length) return;
 
-    console.log("Starting message animation cycle");
-    
     const addNextMessage = () => {
-      console.log(`Adding message ${currentIndex + 1}/${messages.length}`);
-      
+      setIsScrolling(true);
+
+      // Add new message with scroll animation
       setVisibleMessages((prev) => {
         const newMessages = [...prev, messages[currentIndex]].slice(
           -animationConfig.maxVisibleMessages
         );
         return newMessages;
       });
+
+      // Reset scroll state after animation
+      timeoutRef.current = setTimeout(() => {
+        setIsScrolling(false);
+      }, animationConfig.scrollDuration);
 
       setCurrentIndex((prevIndex) => (prevIndex + 1) % messages.length);
     };
@@ -45,18 +51,24 @@ export const useMessageAnimation = (
       addNextMessage,
       animationConfig.messageDisplayDuration
     );
-    
+
     // Add first message immediately
     if (visibleMessages.length === 0) {
       addNextMessage();
     }
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, [messages, currentIndex, animationConfig]);
 
   return {
     visibleMessages,
     isAnimating,
     setIsAnimating,
+    isScrolling,
   };
 };

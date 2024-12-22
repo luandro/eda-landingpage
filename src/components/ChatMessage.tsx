@@ -67,6 +67,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     transition: {
       ...defaultAnimation.transition,
       ...currentAnimation?.transition,
+      layout: true, // Enable smooth layout animations
     },
   };
 
@@ -86,23 +87,26 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
       initial={finalAnimation.initial}
       animate={finalAnimation.animate}
       transition={finalAnimation.transition}
+      layout // Enable layout animations for the container
     >
-      <div
+      <motion.div
         className={cn(
           "text-white p-2 rounded-full",
           isAgent ? "bg-eda-orange" : "bg-eda-green",
         )}
         aria-hidden="true"
+        layout // Enable layout animations for the icon
       >
         <MessageSquare size={20} />
-      </div>
-      <div className="flex-1 space-y-2">
+      </motion.div>
+      <motion.div className="flex-1 space-y-2" layout> {/* Enable layout animations for the content container */}
         {steps && (
           <motion.div
             className="space-y-2 mb-2"
             initial={finalStepsAnimation.initial}
             animate={finalStepsAnimation.animate}
             transition={finalStepsAnimation.transition}
+            layout // Enable layout animations for steps container
           >
             {steps.map((step, index) => (
               <motion.div
@@ -114,6 +118,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                   ...finalStepsAnimation.transition,
                   delay: index * (finalStepsAnimation.stepDelay || 0.5),
                 }}
+                layout // Enable layout animations for each step
               >
                 {step}
                 <span className="animate-blink">...</span>
@@ -121,20 +126,21 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             ))}
           </motion.div>
         )}
-        <div
+        <motion.div
           className={cn(
             "rounded-lg p-6 shadow-sm",
             isAgent ? "bg-eda-orange/10" : "bg-white",
           )}
           role="article"
           aria-label={`${type} message`}
+          layout // Enable layout animations for the message bubble
         >
           <p className="text-base leading-relaxed whitespace-pre-line">
             {content}
           </p>
           <span className="text-xs text-gray-500 mt-2 block">{timestamp}</span>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </motion.div>
   );
 };
