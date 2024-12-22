@@ -7,9 +7,10 @@ interface MessageBubbleProps {
   message: Message;
 }
 
-const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
+const MessageBubble = React.forwardRef<HTMLDivElement, MessageBubbleProps>(({ message }, ref) => {
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
@@ -28,6 +29,6 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
       />
     </motion.div>
   );
-};
+});
 
 export default MessageBubble;
