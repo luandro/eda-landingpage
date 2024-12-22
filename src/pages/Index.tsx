@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import Section from "../components/Section";
 import DividingLine from "../components/DividingLine";
 import { NavigationDots } from "../components/ui/navigation-dots";
@@ -30,7 +29,6 @@ const Index = () => {
 
   const { selectedCategory, handleCategorySelect, handleCategoryClose } =
     useCategoryNavigation(scrollToSection);
-
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -78,7 +76,9 @@ const Index = () => {
         <CategoriesSection
           selectedCategory={selectedCategory}
           onCategorySelect={handleCategorySelect}
-          onCategoryClose={handleCategoryClose}
+          isPlaying={isPlaying}
+          onPlay={handlePlay}
+          onPause={handlePause}
         />
       </Section>
 
