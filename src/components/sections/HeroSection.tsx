@@ -14,51 +14,51 @@ interface HeroSectionProps {
 
 const subtitlesCases = [
   {
-    text: "buscar e escrever financiamentos",
+    text: "a desenvolver projetos",
     backgroundColor: "#4CAF50",
     textColor: "white" as const,
     href: "#/category/3",
 
   },
   {
-    text: "aprender com cursos online",
+    text: "com cursos online",
     backgroundColor: "#FF5722",
     textColor: "white" as const,
     href: "#/category/3",
   },
   {
-    text: "dominar novas ferramentas",
+    text: "a dominar novas ferramentas",
     backgroundColor: "#2196F3",
     textColor: "white" as const,
     href: "#/category/3",
   },
   {
-    text: "desenvolver sua autonomia",
+    text: "a desenvolver sua autonomia",
     backgroundColor: "#4CAF50",
     textColor: "white" as const,
     href: "#/category/3",
   },
 ];
 
-const missionSubtitles = [
+const subtitlesFeatures = [
   {
-    text: "revolucionar a defesa do meio ambiente",
+    text: "por WhatsApp",
     backgroundColor: "#4CAF50",
     textColor: "white" as const,
   },
   {
-    text: "dar voz à natureza e seus defensores",
+    text: "de voz",
     backgroundColor: "#FF5722",
     textColor: "white" as const,
   },
   {
-    text: "fortalecer a luta socioambiental",
+    text: "de IA",
     backgroundColor: "#2196F3",
     textColor: "white" as const,
     href: "#community",
   },
   {
-    text: "democratizar o acesso à justiça ambiental",
+    text: "super acessível",
     backgroundColor: "#4CAF50",
     textColor: "white" as const,
     href: "#sustainability",
@@ -76,20 +76,20 @@ const HeroSection: React.FC<HeroSectionProps> = ({
     <div className="relative grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
       <DividingLine />
       <div className="mb-12 text-2xl md:text-3xl lg:text-4xl space-y-6 animate-fade-in transform translate-y-0 transition-transform duration-1000">
-        <div className="h-[17vh] sm:h-[15vh] md:h-[30vh] font-bold text-eda-green items-start">
+        <div className="h-[17vh] sm:h-[15vh] md:h-[15vh] font-bold text-eda-green items-start">
           <TypewriterText
-            text={'Olá sou a <span style="color: orange;">EDA</span>! Uma assistente por voz para lhe auxiliar a...'}
-            subtitles={subtitlesCases}
+            text={'Olá sou a <span style="color: orange;">EDA</span>! Uma assistente...'}
+            subtitles={subtitlesFeatures}
             rotationSpeed={4000}
             delay={50}
           />
         </div>
-        <div className="h-[17vh] sm:h-[15vh] md:h-[34vh] font-bold text-eda-green">
+        <div className="h-[17vh] sm:h-[15vh] md:h-[15vh] font-bold text-eda-green">
           <TypewriterText
-            text={'Fui desenvovida por uma [ aliança de organizações](#about) para...'}
-            subtitles={missionSubtitles}
-            rotationSpeed={6000}
-            initialDelay={8000}
+            text={'Fui desenvovida por uma [ aliança de organizações](#about) para te auxiliar...'}
+            subtitles={subtitlesCases}
+            rotationSpeed={8000}
+            initialDelay={6000}
             delay={50}
           />
         </div>
