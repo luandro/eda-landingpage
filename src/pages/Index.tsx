@@ -37,20 +37,29 @@ const Index = () => {
   const [selectedFeature, setSelectedFeature] = useState<number | null>(null);
   const location = useLocation();
 
-  // Handle hash navigation
+  // Handle hash navigation and restore section on page load/navigation
   useEffect(() => {
     const hash = location.hash.replace('#', '');
     const index = sectionHashes.indexOf(hash);
     if (index !== -1) {
-      scrollToSection(index);
+      // Small delay to ensure smooth transition
+      setTimeout(() => {
+        scrollToSection(index);
+      }, 100);
+    } else if (!location.hash && sessionStorage.getItem('lastSection')) {
+      // Restore last visited section
+      const lastSection = parseInt(sessionStorage.getItem('lastSection') || '0');
+      scrollToSection(lastSection);
     }
   }, [location.hash, scrollToSection]);
 
-  // Update URL without using navigate
+  // Save current section to session storage
   useEffect(() => {
+    sessionStorage.setItem('lastSection', activeSection.toString());
+    
+    // Update URL without using navigate
     const newHash = sectionHashes[activeSection];
     if (newHash && location.hash !== `#${newHash}`) {
-      // Use history.replaceState to update URL without triggering navigation
       window.history.replaceState(
         null,
         '',
