@@ -17,12 +17,14 @@ const Category = () => {
   const category = categories.find(c => c.id === Number(id));
 
   return (
-    <AnimatePresence>
-      <div
+    <AnimatePresence mode="wait">
+      <motion.div
+        key="overlay"
         className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
         onClick={() => navigate(-1)}
       />
       <motion.div
+        key="content"
         className="fixed inset-0 bg-white z-50"
         role="dialog"
         aria-modal="true"
