@@ -10,7 +10,7 @@ import HeroSection from "../components/sections/HeroSection";
 import CategoriesSection from "../components/sections/CategoriesSection";
 import FeaturesSection from "../components/sections/FeaturesSection";
 import ContactSection from "../components/sections/ContactSection";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const sectionHashes = ['hero', 'categories', 'features', 'contact'];
 
@@ -35,7 +35,6 @@ const Index = () => {
     useCategoryNavigation(scrollToSection);
 
   const [selectedFeature, setSelectedFeature] = useState<number | null>(null);
-  const navigate = useNavigate();
   const location = useLocation();
 
   // Handle hash navigation
@@ -47,13 +46,18 @@ const Index = () => {
     }
   }, [location.hash, scrollToSection]);
 
-  // Update hash on section change
+  // Update URL without using navigate
   useEffect(() => {
     const newHash = sectionHashes[activeSection];
     if (newHash && location.hash !== `#${newHash}`) {
-      navigate(`#${newHash}`, { replace: true });
+      // Use history.replaceState to update URL without triggering navigation
+      window.history.replaceState(
+        null,
+        '',
+        `${window.location.pathname}#${newHash}`
+      );
     }
-  }, [activeSection, navigate, location.hash]);
+  }, [activeSection, location.hash]);
 
   return (
     <div className="min-h-screen overflow-hidden relative">
