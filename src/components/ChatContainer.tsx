@@ -51,10 +51,9 @@ const ChatContainer = React.forwardRef<HTMLDivElement, { className?: string }>((
   const { contentRef, scrollHeight, isScrolling } = useAutoScroll();
 
   useEffect(() => {
-    // Type assertion to ensure chatContent matches our interface
+    console.log("Initializing chat container with auto-scroll animation");
     const typedChatContent = chatContent as ChatContent;
 
-    // Add validation to ensure we have conversations
     if (!typedChatContent.conversations?.length) {
       console.error("No conversations found in chat content");
       return;
@@ -62,7 +61,6 @@ const ChatContainer = React.forwardRef<HTMLDivElement, { className?: string }>((
 
     const conversation = typedChatContent.conversations[0];
 
-    // Validate conversation has messages
     if (!conversation?.messages?.length) {
       console.error("No messages found in conversation");
       return;
@@ -73,12 +71,10 @@ const ChatContainer = React.forwardRef<HTMLDivElement, { className?: string }>((
     const addMessage = () => {
       if (currentIndex < conversation.messages.length) {
         const newMessage = conversation.messages[currentIndex];
-        // Validate message before adding
         if (newMessage && typeof newMessage.type === "string") {
+          console.log(`Adding message ${currentIndex + 1}/${conversation.messages.length}`);
           setMessages((prev) => [...prev, newMessage]);
           currentIndex++;
-
-          // No need for auto-scroll since we have continuous animation
         } else {
           console.error("Invalid message format:", newMessage);
         }
@@ -86,14 +82,13 @@ const ChatContainer = React.forwardRef<HTMLDivElement, { className?: string }>((
     };
 
     const interval = setInterval(addMessage, 2000);
-    addMessage(); // Add first message immediately
+    addMessage();
 
     return () => {
       clearInterval(interval);
     };
   }, []);
 
-  // Add null check before rendering messages
   if (!messages?.length) {
     return (
       <div className="relative">
@@ -107,15 +102,14 @@ const ChatContainer = React.forwardRef<HTMLDivElement, { className?: string }>((
   }
 
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden">
       <motion.div
         ref={(node) => {
-          // Handle both refs
           if (typeof ref === 'function') ref(node);
           else if (ref) ref.current = node;
           contentRef.current = node;
         }}
-        className={`bg-black/5 rounded-lg p-6 h-[calc(100vh-200px)] flex flex-col space-y-6 overflow-hidden ${className}`}
+        className={`bg-black/5 rounded-lg p-6 h-[calc(100vh-200px)] flex flex-col space-y-6 ${className}`}
         role="region"
         aria-label="Chat messages"
         animate={isScrolling ? {
@@ -124,7 +118,7 @@ const ChatContainer = React.forwardRef<HTMLDivElement, { className?: string }>((
           y: 0
         }}
         transition={{
-          duration: Math.max(scrollHeight / 50, 10), // Smoother scroll speed
+          duration: Math.max(scrollHeight / 50, 10),
           times: [0, 0.4, 0.6, 1],
           repeat: Infinity,
           ease: "linear",
