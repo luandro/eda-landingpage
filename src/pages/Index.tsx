@@ -3,7 +3,6 @@ import Section from "../components/Section";
 import DividingLine from "../components/DividingLine";
 import { NavigationDots } from "../components/ui/navigation-dots";
 import { useSmoothScroll } from "../hooks/useSmoothScroll";
-import { useAudioPlayer } from "../hooks/useAudioPlayer";
 import { useCategoryNavigation } from "../hooks/useCategoryNavigation";
 import { subtitles } from "../config/content";
 import HeroSection from "../components/sections/HeroSection";
@@ -11,11 +10,11 @@ import CategoriesSection from "../components/sections/CategoriesSection";
 import FeaturesSection from "../components/sections/FeaturesSection";
 import ContactSection from "../components/sections/ContactSection";
 import { useLocation } from "react-router-dom";
+import { NarrativeProvider, useNarrative } from "../contexts/NarrativeContext";
 
 const sectionHashes = ['hero', 'categories', 'features', 'contact'];
 
-const Index = () => {
-  const [currentText, setCurrentText] = useState("Olá, meu nome é Eda");
+const IndexContent = () => {
   const { activeSection, sectionsRef, scrollToSection } = useSmoothScroll({
     threshold: 50,
     animationDuration: 800,
@@ -23,41 +22,34 @@ const Index = () => {
 
   const {
     isPlaying,
+    currentText,
+    currentSection,
+    togglePlayback,
     audioRef,
-    handlePlay,
-    handlePause,
-  } = useAudioPlayer({
-    subtitles,
-    onTextChange: setCurrentText,
-  });
+  } = useNarrative();
 
-  const { selectedCategory, handleCategorySelect, handleCategoryClose } =
-    useCategoryNavigation(scrollToSection);
-
+  const { selectedCategory, handleCategorySelect } = useCategoryNavigation(scrollToSection);
   const [selectedFeature, setSelectedFeature] = useState<number | null>(null);
   const location = useLocation();
 
-  // Handle hash navigation and restore section on page load/navigation
+  // Handle hash navigation and restore section
   useEffect(() => {
     const hash = location.hash.replace('#', '');
     const index = sectionHashes.indexOf(hash);
     if (index !== -1) {
-      // Small delay to ensure smooth transition
       setTimeout(() => {
         scrollToSection(index);
       }, 100);
     } else if (!location.hash && sessionStorage.getItem('lastSection')) {
-      // Restore last visited section
       const lastSection = parseInt(sessionStorage.getItem('lastSection') || '0');
       scrollToSection(lastSection);
     }
   }, [location.hash, scrollToSection]);
 
-  // Save current section to session storage
+  // Save current section
   useEffect(() => {
     sessionStorage.setItem('lastSection', activeSection.toString());
     
-    // Update URL without using navigate
     const newHash = sectionHashes[activeSection];
     if (newHash && location.hash !== `#${newHash}`) {
       window.history.replaceState(
@@ -67,6 +59,13 @@ const Index = () => {
       );
     }
   }, [activeSection, location.hash]);
+
+  // Sync section with narrative
+  useEffect(() => {
+    if (isPlaying) {
+      scrollToSection(currentSection);
+    }
+  }, [currentSection, isPlaying, scrollToSection]);
 
   return (
     <div className="min-h-screen overflow-hidden relative">
@@ -80,7 +79,6 @@ const Index = () => {
         <DividingLine />
       </div>
 
-      {/* Hero Section */}
       <Section
         index={0}
         activeSection={activeSection}
@@ -91,13 +89,12 @@ const Index = () => {
         <HeroSection
           currentText={currentText}
           isPlaying={isPlaying}
-          onPlay={handlePlay}
-          onPause={handlePause}
+          onPlay={togglePlayback}
+          onPause={togglePlayback}
           activeSection={activeSection}
         />
       </Section>
 
-      {/* Categories Section */}
       <Section
         index={1}
         activeSection={activeSection}
@@ -109,12 +106,11 @@ const Index = () => {
           selectedCategory={selectedCategory}
           onCategorySelect={handleCategorySelect}
           isPlaying={isPlaying}
-          onPlay={handlePlay}
-          onPause={handlePause}
+          onPlay={togglePlayback}
+          onPause={togglePlayback}
         />
       </Section>
 
-      {/* Features Section */}
       <Section
         index={2}
         activeSection={activeSection}
@@ -126,12 +122,11 @@ const Index = () => {
           selectedFeature={selectedFeature}
           onFeatureSelect={setSelectedFeature}
           isPlaying={isPlaying}
-          onPlay={handlePlay}
-          onPause={handlePause}
+          onPlay={togglePlayback}
+          onPause={togglePlayback}
         />
       </Section>
 
-      {/* Contact Section */}
       <Section
         index={3}
         activeSection={activeSection}
@@ -150,5 +145,15 @@ const Index = () => {
     </div>
   );
 };
+
+const Index = () => (
+  <NarrativeProvider
+    srtPath="/subtitles.srt"
+    audioPath="/audio.mp3"
+    scrollInterval={3000}
+  >
+    <IndexContent />
+  </NarrativeProvider>
+);
 
 export default Index;
