@@ -2,7 +2,9 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Play, Pause, RotateCw } from "lucide-react";
 import TypewriterText from "../TypewriterText";
-import { motion } from "framer-motion";
+import ExampleChat from "../ExampleChat";
+import DividingLine from "../DividingLine";
+import AudioPlayer from "../AudioPlayer";
 
 interface HeroSectionProps {
   currentText: string;
@@ -14,6 +16,58 @@ interface HeroSectionProps {
   onRestart?: () => void;
 }
 
+const subtitlesCases = [
+  {
+    text: "a desenvolver projetos",
+    backgroundColor: "#4CAF50",
+    textColor: "white" as const,
+    href: "#/category/3",
+  },
+  {
+    text: "com cursos online",
+    backgroundColor: "#FF5722",
+    textColor: "white" as const,
+    href: "#/category/3",
+  },
+  {
+    text: "a dominar novas ferramentas",
+    backgroundColor: "#2196F3",
+    textColor: "white" as const,
+    href: "#/category/3",
+  },
+  {
+    text: "a desenvolver sua autonomia",
+    backgroundColor: "#4CAF50",
+    textColor: "white" as const,
+    href: "#/category/3",
+  },
+];
+
+const subtitlesFeatures = [
+  {
+    text: "por WhatsApp",
+    backgroundColor: "#4CAF50",
+    textColor: "white" as const,
+  },
+  {
+    text: "de voz",
+    backgroundColor: "#FF5722",
+    textColor: "white" as const,
+  },
+  {
+    text: "de IA",
+    backgroundColor: "#2196F3",
+    textColor: "white" as const,
+    href: "#community",
+  },
+  {
+    text: "super acessível",
+    backgroundColor: "#4CAF50",
+    textColor: "white" as const,
+    href: "#sustainability",
+  },
+];
+
 const HeroSection: React.FC<HeroSectionProps> = ({
   currentText,
   isPlaying,
@@ -24,51 +78,41 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   onRestart,
 }) => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen text-center px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: activeSection === 0 ? 1 : 0, y: activeSection === 0 ? 0 : 20 }}
-        transition={{ duration: 0.5 }}
-        className="space-y-8"
-      >
-        <h1 className="text-4xl md:text-6xl font-bold">
-          Interactive Experience
-        </h1>
-        
-        <div className="max-w-2xl mx-auto">
+    <div className="relative grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
+      <DividingLine />
+      <div className="mb-12 text-2xl md:text-3xl lg:text-4xl space-y-6 animate-fade-in transform translate-y-0 transition-transform duration-1000">
+        <div className="h-[17vh] sm:h-[15vh] md:h-[15vh] font-bold text-eda-green items-start">
           <TypewriterText
             text={currentText}
-            subtitles={[
-              { text: "Welcome!" },
-              { text: "Let's begin..." },
-              { text: "Are you ready?" },
-            ]}
+            subtitles={subtitlesFeatures}
+            rotationSpeed={4000}
+            delay={50}
           />
         </div>
+        <div className="h-[17vh] sm:h-[15vh] md:h-[15vh] font-bold text-eda-green">
+          <TypewriterText
+            text={currentText}
+            subtitles={subtitlesCases}
+            rotationSpeed={8000}
+            initialDelay={6000}
+            delay={50}
+          />
+        </div>
+      </div>
 
-        <Button
-          onClick={isComplete ? onRestart : (isPlaying ? onPause : onPlay)}
-          size="lg"
-          className="animate-fade-in"
-        >
-          {isComplete ? (
-            <>
-              <RotateCw className="mr-2" />
-              Restart
-            </>
-          ) : isPlaying ? (
-            <>
-              <Pause className="mr-2" />
-              Pause
-            </>
-          ) : (
-            <>
-              <Play className="mr-2" />
-              Play
-            </>
-          )}
-        </Button>
-      </motion.div>
+      <div className="flex justify-center items-center animate-scale-in -mb-12 md:mb-0">
+        <AudioPlayer
+          isPlaying={isPlaying}
+          onPlay={onPlay}
+          onPause={onPause}
+          isComplete={isComplete}
+          onRestart={onRestart}
+        />
+      </div>
+
+      <div className="block animate-slide-in-right">
+        <ExampleChat />
+      </div>
     </div>
   );
 };

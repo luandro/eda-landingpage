@@ -34,7 +34,7 @@ const Section: React.FC<SectionProps> = ({
         ${className}
       `}
     >
-      <div className="container mx-auto px-4 py-12">{children}</div>
+      <div className="container mx-auto px-4 pb-12">{children}</div>
     </section>
   );
 };

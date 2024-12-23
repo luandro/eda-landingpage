@@ -120,7 +120,9 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
           href={currentSubtitle.href}
           onClick={(e) => {
             e.preventDefault();
-            currentSubtitle.href && scrollToSection(currentSubtitle.href);
+            if (currentSubtitle.href) {
+              scrollToSection(currentSubtitle.href);
+            }
           }}
           className={cn(
             "transition-colors hover:underline focus:outline-none",

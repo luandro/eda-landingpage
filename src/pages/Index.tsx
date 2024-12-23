@@ -4,7 +4,6 @@ import DividingLine from "../components/DividingLine";
 import { NavigationDots } from "../components/ui/navigation-dots";
 import { useSmoothScroll } from "../hooks/useSmoothScroll";
 import { useCategoryNavigation } from "../hooks/useCategoryNavigation";
-import { subtitles } from "../config/content";
 import HeroSection from "../components/sections/HeroSection";
 import CategoriesSection from "../components/sections/CategoriesSection";
 import FeaturesSection from "../components/sections/FeaturesSection";
@@ -49,7 +48,7 @@ const IndexContent = () => {
   // Save current section
   useEffect(() => {
     sessionStorage.setItem('lastSection', activeSection.toString());
-    
+
     const newHash = sectionHashes[activeSection];
     if (newHash && location.hash !== `#${newHash}`) {
       window.history.replaceState(
@@ -139,7 +138,7 @@ const IndexContent = () => {
       </Section>
 
       <audio ref={audioRef}>
-        <source src="/path-to-your-audio.mp3" type="audio/mpeg" />
+        <source src="/audio.mp3" type="audio/mpeg" />
         Your browser does not support the audio element.
       </audio>
     </div>

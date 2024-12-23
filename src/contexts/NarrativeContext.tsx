@@ -79,7 +79,7 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
     const handleTimeUpdate = () => {
       const currentTime = audio.currentTime * 1000;
       const subtitle = getCurrentSubtitle(subtitles, currentTime);
-      
+
       if (subtitle) {
         setCurrentText(subtitle.text);
         // Calculate progress as a percentage
@@ -101,7 +101,7 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
 
     audio.addEventListener('timeupdate', handleTimeUpdate);
     audio.addEventListener('ended', handleEnded);
-    
+
     return () => {
       audio.removeEventListener('timeupdate', handleTimeUpdate);
       audio.removeEventListener('ended', handleEnded);
@@ -154,7 +154,7 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
     setCurrentSection(0);
     setIsComplete(false);
     setProgress(0);
-    
+
     audio.play().catch(error => {
       console.error('Error playing audio:', error);
       toast({

@@ -64,7 +64,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
 
   return (
     <div className="font-mono tabular-nums relative">
-      <div 
+      <div
         className="absolute inset-0 bg-blue-500/10 transition-all duration-300 ease-linear rounded"
         style={{
           width: `${isComplete ? 100 : progress}%`,
