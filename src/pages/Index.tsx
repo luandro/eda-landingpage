@@ -107,6 +107,7 @@ const IndexContent = () => {
           isPlaying={isPlaying}
           onPlay={togglePlayback}
           onPause={togglePlayback}
+          currentText={currentText}
         />
       </Section>
 
@@ -123,6 +124,8 @@ const IndexContent = () => {
           isPlaying={isPlaying}
           onPlay={togglePlayback}
           onPause={togglePlayback}
+          currentText={currentText}
+          activeSection={activeSection}
         />
       </Section>
 

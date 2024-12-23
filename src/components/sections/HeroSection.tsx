@@ -89,15 +89,17 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             delay={50}
           />
         </div>
-        <div className="h-[17vh] sm:h-[15vh] md:h-[15vh] font-bold text-eda-green">
-          <TypewriterText
-            text={currentText}
-            subtitles={subtitlesCases}
-            rotationSpeed={8000}
-            initialDelay={6000}
-            delay={50}
-          />
-        </div>
+        {!isPlaying && (
+          <div className="teext-md h-[7vh] sm:h-[15vh] md:h-[15vh] text-eda-green">
+            <TypewriterText
+              text={"Aperte o Play para iniciar"}
+              rotationSpeed={8000}
+              initialDelay={3500}
+              delay={50}
+              animatedBar={false}
+            />
+          </div>
+        )}
       </div>
 
       <div className="flex justify-center items-center animate-scale-in -mb-12 md:mb-0">

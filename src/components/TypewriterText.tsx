@@ -4,12 +4,13 @@ import { SubtitleItem } from "./RotatingSubtitles";
 import { useNarrative } from "@/contexts/NarrativeContext";
 
 interface TypewriterTextProps {
-  text: string;
-  subtitles: SubtitleItem[];
+  text: string; // Will be used as defaultText when not playing
+  subtitles?: SubtitleItem[];
   rotationSpeed?: number;
   delay?: number;
   initialDelay?: number;
   onComplete?: () => void;
+  animatedBar?: boolean;
 }
 
 const TypewriterText: React.FC<TypewriterTextProps> = ({
@@ -19,17 +20,21 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   delay = 100,
   initialDelay = 0,
   onComplete,
+  animatedBar = true,
 }) => {
   const [currentText, setCurrentText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showRotating, setShowRotating] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
-  const { progress, isComplete } = useNarrative();
+  const { progress, isComplete, isPlaying, currentText: narrativeText } = useNarrative();
+
+  // Use narrative text when playing, otherwise use default text
+  const displayText = isPlaying ? narrativeText : text;
 
   // Split the text into parts (before and after the first period)
-  const processedText = text
+  const processedText = displayText
     .replace(/\[(.*?)\]\((.*?)\)/g, (_, text, url) => `<a href="${url}">${text}</a>`)
-    .split(".")[0] + "... " + (text.split(".")[1] || "");
+    .split(".")[0] + "... " + (isPlaying ? (narrativeText.split(".")[1] || "") : (text.split(".")[1] || ""));
 
   useEffect(() => {
     const startTimeout = setTimeout(() => {
@@ -79,7 +84,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
               }}
               className="[&_a]:text-white [&_a]:hover:text-white/80 [&_a]:transition-colors [&_a]:bg-blue-500 [&_a]:px-1 [&_a]:py-0.5 [&_a]:rounded"
             />
-            {index < currentParts.length - 1 && showRotating && (
+            {index < currentParts.length - 1 && showRotating && !isPlaying && subtitles?.length > 0 && (
               <RotatingSubtitles
                 subtitles={subtitles}
                 rotationSpeed={rotationSpeed}
@@ -90,7 +95,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
             )}
           </React.Fragment>
         ))}
-        <span className="animate-blink">|</span>
+        {animatedBar && <span className="animate-blink">|</span>}
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ interface CategoriesSectionProps {
   isPlaying: boolean;
   onPlay: () => void;
   onPause: () => void;
+  currentText: string;
 }
 
 const subtitlesCategories = [
@@ -41,6 +42,7 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
   isPlaying,
   onPlay,
   onPause,
+  currentText
 }) => {
   return (
     <div className="relative grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
@@ -48,7 +50,7 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
       <div className="mb-12 text-2xl md:text-3xl lg:text-4xl space-y-6 animate-fade-in transform translate-y-0 transition-transform duration-1000">
         <div className="h-[5vh] sm:h-[15vh] md:h-[15vh] font-bold text-eda-green items-start">
           <TypewriterText
-            text={'Explore nossas categorias de conteúdo...'}
+            text={currentText}
             subtitles={subtitlesCategories}
             rotationSpeed={4000}
             delay={50}

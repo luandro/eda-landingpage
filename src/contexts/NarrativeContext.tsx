@@ -2,6 +2,12 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { parseSRT, getCurrentSubtitle } from '../utils/srtParser';
 import { useToast } from "@/components/ui/use-toast";
 
+const defaultTexts = {
+  0: "Aprenda a usar ferramentas de IA...", // Hero section
+  1: "Aprenda a desenvolver projetos...", // Categories section
+  2: "Explore nossas funcionalidades...", // Features section
+};
+
 interface NarrativeContextType {
   isPlaying: boolean;
   currentText: string;
@@ -38,7 +44,7 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
   scrollInterval = 3000,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentText, setCurrentText] = useState('');
+  const [currentText, setCurrentText] = useState(defaultTexts[0]);
   const [currentSection, setCurrentSection] = useState(0);
   const [subtitles, setSubtitles] = useState<any[]>([]);
   const [isComplete, setIsComplete] = useState(false);
@@ -51,15 +57,12 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
     console.log('Loading SRT file from:', srtPath);
     fetch(srtPath)
       .then(response => {
-        console.log('SRT file response status:', response.status);
         if (!response.ok) throw new Error('Failed to load SRT file');
         return response.text();
       })
       .then(content => {
-        console.log('Raw SRT content:', content.substring(0, 200) + '...');
         const parsed = parseSRT(content);
         setSubtitles(parsed);
-        console.log('Successfully parsed subtitles:', parsed);
       })
       .catch(error => {
         console.error('Error loading SRT file:', error);
@@ -88,6 +91,11 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
       }
     };
 
+    const handlePause = () => {
+      // When audio is paused, show default text for current section
+      setCurrentText(defaultTexts[currentSection] || defaultTexts[0]);
+    };
+
     const handleEnded = () => {
       setIsPlaying(false);
       setIsComplete(true);
@@ -101,16 +109,24 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
 
     audio.addEventListener('timeupdate', handleTimeUpdate);
     audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('pause', handlePause);
 
     return () => {
       audio.removeEventListener('timeupdate', handleTimeUpdate);
       audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('pause', handlePause);
     };
   }, [subtitles]);
 
-  // Auto-scrolling effect
+  // Auto-scrolling effect and section text management
   useEffect(() => {
-    if (!isPlaying || isComplete) return;
+    if (isComplete) return;
+
+    if (!isPlaying) {
+      // When not playing, show default text for current section
+      setCurrentText(defaultTexts[currentSection] || defaultTexts[0]);
+      return;
+    }
 
     const interval = setInterval(() => {
       setCurrentSection(prev => {
@@ -125,6 +141,13 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
 
     return () => clearInterval(interval);
   }, [isPlaying, isComplete, subtitles.length, scrollInterval]);
+
+  // Update text when section changes
+  useEffect(() => {
+    if (!isPlaying) {
+      setCurrentText(defaultTexts[currentSection] || defaultTexts[0]);
+    }
+  }, [currentSection, isPlaying]);
 
   const togglePlayback = useCallback(() => {
     const audio = audioRef.current;
