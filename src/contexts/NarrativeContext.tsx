@@ -100,6 +100,37 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
     };
   }, [subtitles]);
 
+  // Auto-scrolling effect and section text management
+  useEffect(() => {
+    if (isComplete) return;
+
+    if (!isPlaying) {
+      // When not playing, show default text for current section
+      setCurrentText(subtitles[currentSection]?.text || subtitles[0]?.text || "");
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setCurrentSection(prev => {
+        const next = prev + 1;
+        if (next >= subtitles.length) {
+          clearInterval(interval);
+          return prev;
+        }
+        return next;
+      });
+    }, scrollInterval);
+
+    return () => clearInterval(interval);
+  }, [isPlaying, isComplete, subtitles, scrollInterval]);
+
+  // Update text when section changes
+  useEffect(() => {
+    if (!isPlaying) {
+      setCurrentText(subtitles[currentSection]?.text || subtitles[0]?.text || "");
+    }
+  }, [currentSection, isPlaying]);
+
   const togglePlayback = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;

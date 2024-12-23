@@ -26,8 +26,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
         onClick={onRestart || restart}
         variant="outline"
         size="icon"
-        className="w-24 h-24 rounded-full"
-      >
+        className="w-16 h-16 rounded-full bg-eda-orange hover:bg-eda-orange-light transition-colors duration-300 flex items-center justify-center text-white relative z-10"      >
         <RotateCw className="h-12 w-12" />
       </Button>
     );
@@ -38,8 +37,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
       onClick={isPlaying ? onPause : onPlay}
       variant="outline"
       size="icon"
-      className="w-24 h-24 rounded-full"
-    >
+      className="w-16 h-16 rounded-full bg-eda-orange hover:bg-eda-orange-light transition-colors duration-300 flex items-center justify-center text-white relative z-10">
       {isPlaying ? (
         <Pause className="h-12 w-12" />
       ) : (

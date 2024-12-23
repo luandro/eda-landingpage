@@ -137,7 +137,14 @@ const IndexContent = () => {
         }}
         background="bg-gradient-to-b from-white to-gray-50"
       >
-        <ContactSection />
+        <ContactSection
+          isPlaying={isPlaying}
+          onPlay={togglePlayback}
+          onPause={togglePlayback}
+          currentText={currentText}
+          activeSection={activeSection}
+        />
+
       </Section>
 
       <audio ref={audioRef}>

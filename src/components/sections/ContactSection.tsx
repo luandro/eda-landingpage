@@ -5,12 +5,20 @@ import AudioPlayer from "../AudioPlayer";
 import TypewriterText from "../TypewriterText";
 import DividingLine from "../DividingLine";
 
+interface ContactSectionProps {
+  isPlaying: boolean;
+  onPlay: () => void;
+  onPause: () => void;
+  isComplete?: boolean;
+  onRestart?: () => void;
+  currentText: string;
+}
+
 const logos = [
   {
     category: 'funders',
     name: 'HP',
     logo: 'https://banner2.cleanpng.com/20180413/lyw/avfbdsl42.webp',
-    description: 'Hewlett-Packard Company',
     website: 'https://www.hp.com',
     invert: false
   },
@@ -18,7 +26,6 @@ const logos = [
     category: 'developers',
     name: 'Awana Digital',
     logo: 'https://cdn.prod.website-files.com/65fdc7abae501de4e3e82a40/664e5bcc334210d16d6b9f70_AD-Temp-Logomark-HiRes.png',
-    description: 'Digital Innovation Agency',
     website: 'https://awanadigital.com',
     invert: false
   },
@@ -26,7 +33,6 @@ const logos = [
     category: 'developers',
     name: 'Terra Krya',
     logo: 'https://www.terrakrya.com/api/uploads/images/Estudo_Terracrya_03-1-1653617568395.png',
-    description: 'Sustainable Technology Solutions',
     website: 'https://www.terrakrya.com',
     invert: true
   }
@@ -50,8 +56,7 @@ const subtitlesContact = [
   },
 ];
 
-
-const ContactSection: React.FC = () => {
+const ContactSection: React.FC<ContactSectionProps> = ({ isPlaying, onPlay, onPause, isComplete, onRestart, currentText }) => {
   const contactItems = [
     {
       icon: Mail,
@@ -72,7 +77,7 @@ const ContactSection: React.FC = () => {
       <div className="space-y-8 animate-fade-in text-center">
         <div className="text-2xl md:text-3xl lg:text-4xl text-left h-[8vh] sm:h-[15vh] md:h-[15vh] ">
           <TypewriterText
-            text={'Entre em contato'}
+            text={currentText}
             subtitles={subtitlesContact}
             rotationSpeed={4000}
             delay={50}
@@ -96,7 +101,13 @@ const ContactSection: React.FC = () => {
       </div>
 
       <div className="flex justify-center items-center animate-scale-in">
-        <AudioPlayer />
+        <AudioPlayer
+            isPlaying={isPlaying}
+            onPlay={onPlay}
+            onPause={onPause}
+            isComplete={isComplete}
+            onRestart={onRestart}
+          />
       </div>
 
       <div className="space-y-8 animate-fade-in delay-200 text-center">
