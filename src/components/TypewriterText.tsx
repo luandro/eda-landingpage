@@ -34,7 +34,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   // Split the text into parts (before and after the first period)
   const processedText = displayText
     .replace(/\[(.*?)\]\((.*?)\)/g, (_, text, url) => `<a href="${url}">${text}</a>`)
-    .split(/(?<=\.)\s+/)[0] + "... " + (isPlaying ? displayText.split(/(?<=\.)\s+/).slice(1).join(" ") : text.split(/(?<=\.)\s+/).slice(1).join(" "));
+    .split(".")[0] + "... " + (isPlaying ? (narrativeText.split(".")[1] || "") : (text.split(".")[1] || ""));
 
   useEffect(() => {
     const startTimeout = setTimeout(() => {
@@ -81,7 +81,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
           width: `${isComplete ? 100 : progress}%`,
         }}
       />
-      <div className="relative z-10 whitespace-pre-line">
+      <div className="relative z-10">
         {currentParts.map((part, index) => (
           <React.Fragment key={index}>
             <span
