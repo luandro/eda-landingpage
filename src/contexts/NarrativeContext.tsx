@@ -1,24 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useCallback } from 'react';
 import { parseSRT, getCurrentSubtitle } from '../utils/srtParser';
-import { useToast } from "@/components/ui/use-toast";
-
-const defaultTexts = {
-  0: "Aprenda a usar ferramentas de IA...", // Hero section
-  1: "Aprenda a desenvolver projetos...", // Categories section
-  2: "Explore nossas funcionalidades...", // Features section
-};
-
-interface NarrativeContextType {
-  isPlaying: boolean;
-  currentText: string;
-  currentSection: number;
-  isComplete: boolean;
-  progress: number;
-  togglePlayback: () => void;
-  restart: () => void;
-  setCurrentSection: (section: number) => void;
-  audioRef: React.RefObject<HTMLAudioElement>;
-}
+import { NarrativeContextType } from './types';
+import { useNarrativeState } from './useNarrativeState';
 
 const NarrativeContext = createContext<NarrativeContextType | undefined>(undefined);
 
@@ -43,14 +26,22 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
   audioPath = '/audio.mp3',
   scrollInterval = 3000,
 }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentText, setCurrentText] = useState(defaultTexts[0]);
-  const [currentSection, setCurrentSection] = useState(0);
-  const [subtitles, setSubtitles] = useState<any[]>([]);
-  const [isComplete, setIsComplete] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const audioRef = React.useRef<HTMLAudioElement>(null);
-  const { toast } = useToast();
+  const {
+    isPlaying,
+    setIsPlaying,
+    currentText,
+    setCurrentText,
+    currentSection,
+    setCurrentSection,
+    subtitles,
+    setSubtitles,
+    isComplete,
+    setIsComplete,
+    progress,
+    setProgress,
+    audioRef,
+    toast
+  } = useNarrativeState(srtPath, audioPath);
 
   // Load SRT file
   useEffect(() => {
@@ -85,21 +76,14 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
 
       if (subtitle) {
         setCurrentText(subtitle.text);
-        // Calculate progress as a percentage
         const duration = audio.duration * 1000;
         setProgress((currentTime / duration) * 100);
       }
     };
 
-    const handlePause = () => {
-      // When audio is paused, show default text for current section
-      setCurrentText(defaultTexts[currentSection] || defaultTexts[0]);
-    };
-
     const handleEnded = () => {
       setIsPlaying(false);
       setIsComplete(true);
-      // Keep the last section visible
       const lastSubtitle = subtitles[subtitles.length - 1];
       if (lastSubtitle) {
         setCurrentText(lastSubtitle.text);
@@ -109,45 +93,12 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
 
     audio.addEventListener('timeupdate', handleTimeUpdate);
     audio.addEventListener('ended', handleEnded);
-    audio.addEventListener('pause', handlePause);
 
     return () => {
       audio.removeEventListener('timeupdate', handleTimeUpdate);
       audio.removeEventListener('ended', handleEnded);
-      audio.removeEventListener('pause', handlePause);
     };
   }, [subtitles]);
-
-  // Auto-scrolling effect and section text management
-  useEffect(() => {
-    if (isComplete) return;
-
-    if (!isPlaying) {
-      // When not playing, show default text for current section
-      setCurrentText(defaultTexts[currentSection] || defaultTexts[0]);
-      return;
-    }
-
-    const interval = setInterval(() => {
-      setCurrentSection(prev => {
-        const next = prev + 1;
-        if (next >= subtitles.length) {
-          clearInterval(interval);
-          return prev;
-        }
-        return next;
-      });
-    }, scrollInterval);
-
-    return () => clearInterval(interval);
-  }, [isPlaying, isComplete, subtitles.length, scrollInterval]);
-
-  // Update text when section changes
-  useEffect(() => {
-    if (!isPlaying) {
-      setCurrentText(defaultTexts[currentSection] || defaultTexts[0]);
-    }
-  }, [currentSection, isPlaying]);
 
   const togglePlayback = useCallback(() => {
     const audio = audioRef.current;

@@ -4,7 +4,7 @@ import { SubtitleItem } from "./RotatingSubtitles";
 import { useNarrative } from "@/contexts/NarrativeContext";
 
 interface TypewriterTextProps {
-  text: string; // Will be used as defaultText when not playing
+  text: string;
   subtitles?: SubtitleItem[];
   rotationSpeed?: number;
   delay?: number;
@@ -63,6 +63,12 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
       onComplete();
     }
   }, [currentIndex, delay, processedText, onComplete, hasStarted]);
+
+  // Reset text when switching between narrative and default text
+  useEffect(() => {
+    setCurrentText("");
+    setCurrentIndex(0);
+  }, [isPlaying]);
 
   // Split the current text at the "..." position
   const currentParts = currentText.split("...");

@@ -1,52 +1,51 @@
-import React, { useState } from "react";
+import React from "react";
+import { Button } from "@/components/ui/button";
 import { Play, Pause, RotateCw } from "lucide-react";
+import { useNarrative } from "@/contexts/NarrativeContext";
 
 interface AudioPlayerProps {
-  onPlay?: () => void;
-  onPause?: () => void;
-  isPlaying?: boolean;
+  isPlaying: boolean;
+  onPlay: () => void;
+  onPause: () => void;
   isComplete?: boolean;
   onRestart?: () => void;
 }
 
 const AudioPlayer: React.FC<AudioPlayerProps> = ({
+  isPlaying,
   onPlay,
   onPause,
-  isPlaying: externalIsPlaying,
   isComplete,
   onRestart,
 }) => {
-  const [internalIsPlaying, setInternalIsPlaying] = useState(false);
-  const isPlaying = externalIsPlaying !== undefined ? externalIsPlaying : internalIsPlaying;
+  const { restart } = useNarrative();
 
-  const handlePlayPause = () => {
-    if (isPlaying) {
-      onPause?.();
-      setInternalIsPlaying(false);
-    } else {
-      onPlay?.();
-      setInternalIsPlaying(true);
-    }
-  };
+  if (isComplete) {
+    return (
+      <Button
+        onClick={onRestart || restart}
+        variant="outline"
+        size="icon"
+        className="w-24 h-24 rounded-full"
+      >
+        <RotateCw className="h-12 w-12" />
+      </Button>
+    );
+  }
 
   return (
-    <div className="relative">
-      <button
-        onClick={isComplete ? onRestart : handlePlayPause}
-        className="w-16 h-16 rounded-full bg-eda-orange hover:bg-eda-orange-light transition-colors duration-300 flex items-center justify-center text-white relative z-10"
-      >
-        {isComplete ? (
-          <>
-            <RotateCw className="mr-2" />
-            Restart
-          </>
-        ) : isPlaying ? (
-          <Pause className="w-8 h-8" />
-        ) : (
-          <Play className="w-8 h-8 ml-1" />
-        )}
-      </button>
-    </div>
+    <Button
+      onClick={isPlaying ? onPause : onPlay}
+      variant="outline"
+      size="icon"
+      className="w-24 h-24 rounded-full"
+    >
+      {isPlaying ? (
+        <Pause className="h-12 w-12" />
+      ) : (
+        <Play className="h-12 w-12" />
+      )}
+    </Button>
   );
 };
 
