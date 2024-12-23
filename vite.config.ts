@@ -8,11 +8,7 @@ export default defineConfig(({ mode }) => ({
     host: "0.0.0.0",
     port: 8080,
     strictPort: true,
-    hmr: {
-      clientPort: 443,
-      protocol: 'wss',
-      host: '50e0f999-c703-4cf8-8fed-9641a16e22e2.lovableproject.com'
-    }
+    hmr: true  // Simplified HMR config to use default settings
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(
     Boolean,
