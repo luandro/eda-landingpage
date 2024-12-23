@@ -4,13 +4,9 @@ import { contactInfo, organizations } from "@/config/content";
 import AudioPlayer from "../AudioPlayer";
 import TypewriterText from "../TypewriterText";
 import DividingLine from "../DividingLine";
+import { useNarrative } from "@/contexts/NarrativeContext";
 
 interface ContactSectionProps {
-  isPlaying: boolean;
-  onPlay: () => void;
-  onPause: () => void;
-  isComplete?: boolean;
-  onRestart?: () => void;
   currentText: string;
 }
 
@@ -56,7 +52,9 @@ const subtitlesContact = [
   },
 ];
 
-const ContactSection: React.FC<ContactSectionProps> = ({ isPlaying, onPlay, onPause, isComplete, onRestart, currentText }) => {
+const ContactSection: React.FC<ContactSectionProps> = ({ currentText }) => {
+  const { isPlaying, togglePlayback, isComplete, restart } = useNarrative();
+  
   const contactItems = [
     {
       icon: Mail,
@@ -102,12 +100,12 @@ const ContactSection: React.FC<ContactSectionProps> = ({ isPlaying, onPlay, onPa
 
       <div className="flex justify-center items-center animate-scale-in">
         <AudioPlayer
-            isPlaying={isPlaying}
-            onPlay={onPlay}
-            onPause={onPause}
-            isComplete={isComplete}
-            onRestart={onRestart}
-          />
+          isPlaying={isPlaying}
+          onPlay={togglePlayback}
+          onPause={togglePlayback}
+          isComplete={isComplete}
+          onRestart={restart}
+        />
       </div>
 
       <div className="space-y-8 animate-fade-in delay-200 text-center">
