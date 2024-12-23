@@ -48,15 +48,18 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
 
   // Load SRT file
   useEffect(() => {
+    console.log('Loading SRT file from:', srtPath);
     fetch(srtPath)
       .then(response => {
+        console.log('SRT file response status:', response.status);
         if (!response.ok) throw new Error('Failed to load SRT file');
         return response.text();
       })
       .then(content => {
+        console.log('Raw SRT content:', content.substring(0, 200) + '...');
         const parsed = parseSRT(content);
         setSubtitles(parsed);
-        console.log('Loaded subtitles:', parsed);
+        console.log('Successfully parsed subtitles:', parsed);
       })
       .catch(error => {
         console.error('Error loading SRT file:', error);
