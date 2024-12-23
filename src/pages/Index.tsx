@@ -21,6 +21,8 @@ const IndexContent = () => {
 
   const {
     currentText,
+    isPlaying,
+    togglePlayback
   } = useNarrative();
 
   const { selectedCategory, handleCategorySelect } = useCategoryNavigation(scrollToSection);
@@ -76,6 +78,9 @@ const IndexContent = () => {
       >
         <HeroSection
           currentText={currentText}
+          isPlaying={isPlaying}
+          onPlay={togglePlayback}
+          onPause={togglePlayback}
           activeSection={activeSection}
         />
       </Section>
@@ -90,6 +95,9 @@ const IndexContent = () => {
         <CategoriesSection
           selectedCategory={selectedCategory}
           onCategorySelect={handleCategorySelect}
+          isPlaying={isPlaying}
+          onPlay={togglePlayback}
+          onPause={togglePlayback}
           currentText={currentText}
         />
       </Section>
@@ -104,6 +112,9 @@ const IndexContent = () => {
         <FeaturesSection
           selectedFeature={selectedFeature}
           onFeatureSelect={setSelectedFeature}
+          isPlaying={isPlaying}
+          onPlay={togglePlayback}
+          onPause={togglePlayback}
           currentText={currentText}
           activeSection={activeSection}
         />
@@ -121,11 +132,6 @@ const IndexContent = () => {
           currentText={currentText}
         />
       </Section>
-
-      <audio ref={audioRef}>
-        <source src="/audio.mp3" type="audio/mpeg" />
-        Your browser does not support the audio element.
-      </audio>
     </div>
   );
 };
