@@ -42,9 +42,7 @@ const Categories: React.FC<CategoriesProps> = ({
             <h3 className="text-lg font-medium text-gray-900">
               {category.title}
             </h3>
-            <p className="text-sm text-gray-500">
-              {category.description}
-            </p>
+            <p className="text-sm text-gray-500">{category.description}</p>
           </div>
           <div className="text-gray-400">
             <ArrowLeft className="h-5 w-5 rotate-180" />

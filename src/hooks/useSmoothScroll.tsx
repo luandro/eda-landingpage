@@ -60,7 +60,7 @@ export const useSmoothScroll = (options: SmoothScrollOptions = {}) => {
               }
             });
           },
-          { threshold: 0.5 }
+          { threshold: 0.5 },
         );
 
         observer.observe(targetSection);

@@ -14,7 +14,7 @@ const Category = () => {
     return Math.abs(offset) * velocity;
   };
 
-  const category = categories.find(c => c.id === Number(id));
+  const category = categories.find((c) => c.id === Number(id));
 
   return (
     <AnimatePresence mode="wait">

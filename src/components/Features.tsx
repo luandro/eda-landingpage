@@ -42,9 +42,7 @@ const Features: React.FC<FeaturesProps> = ({
             <h3 className="text-lg font-medium text-gray-900">
               {feature.title}
             </h3>
-            <p className="text-sm text-gray-500">
-              {feature.description}
-            </p>
+            <p className="text-sm text-gray-500">{feature.description}</p>
           </div>
           <div className="text-gray-400">
             <ArrowLeft className="h-5 w-5 rotate-180" />

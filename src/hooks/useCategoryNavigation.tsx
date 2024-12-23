@@ -20,13 +20,16 @@ export const useCategoryNavigation = (
     }
   }, [location]);
 
-  const handleCategorySelect = useCallback((categoryId: number) => {
-    navigate(`/category/${categoryId}`);
-    setSelectedCategory(categoryId);
-  }, [navigate]);
+  const handleCategorySelect = useCallback(
+    (categoryId: number) => {
+      navigate(`/category/${categoryId}`);
+      setSelectedCategory(categoryId);
+    },
+    [navigate],
+  );
 
   const handleCategoryClose = useCallback(() => {
-    navigate('/');
+    navigate("/");
     setSelectedCategory(null);
     onSectionChange(1);
   }, [navigate, onSectionChange]);

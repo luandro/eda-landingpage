@@ -42,7 +42,7 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
   isPlaying,
   onPlay,
   onPause,
-  currentText
+  currentText,
 }) => {
   return (
     <div className="relative grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
@@ -63,7 +63,10 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
       </div>
 
       <div className="block animate-slide-in-right h-[60vh]">
-        <Categories selectedCategory={selectedCategory} onCategorySelect={onCategorySelect} />
+        <Categories
+          selectedCategory={selectedCategory}
+          onCategorySelect={onCategorySelect}
+        />
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
 export const useNarrativeState = (srtPath: string, audioPath: string) => {
@@ -25,6 +25,6 @@ export const useNarrativeState = (srtPath: string, audioPath: string) => {
     progress,
     setProgress,
     audioRef,
-    toast
+    toast,
   };
 };

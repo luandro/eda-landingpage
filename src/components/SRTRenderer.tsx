@@ -13,7 +13,9 @@ const SRTRenderer: React.FC<SRTRendererProps> = ({
   currentTime,
   className,
 }) => {
-  const [currentSubtitle, setCurrentSubtitle] = useState<SubtitleEntry | null>(null);
+  const [currentSubtitle, setCurrentSubtitle] = useState<SubtitleEntry | null>(
+    null,
+  );
 
   useEffect(() => {
     const subtitle = getCurrentSubtitle(subtitles, currentTime);

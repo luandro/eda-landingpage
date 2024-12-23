@@ -72,16 +72,13 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
 
   return (
     <span
-      className={cn(
-        "transition-all duration-500",
-        className,
-      )}
+      className={cn("transition-all duration-500", className)}
       style={{
         backgroundColor: currentSubtitle.backgroundColor || "#4CAF50",
         opacity: isVisible ? 1 : 0,
         display: "inline-block",
         verticalAlign: "baseline",
-        lineHeight: "inherit"
+        lineHeight: "inherit",
       }}
     >
       {currentSubtitle.href ? (
