@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import RotatingSubtitles from "./RotatingSubtitles";
 import { SubtitleItem } from "./RotatingSubtitles";
+import TypewriterEffect from "./TypewriterEffect";
 import { useNarrative } from "@/contexts/NarrativeContext";
 
 interface TypewriterTextProps {
@@ -22,16 +23,11 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   onComplete,
   animatedBar = true,
 }) => {
-  const [currentText, setCurrentText] = useState("");
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [showRotating, setShowRotating] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const { progress, isComplete, isPlaying, currentText: narrativeText } = useNarrative();
 
-  // Use narrative text when playing, otherwise use default text
   const displayText = isPlaying ? narrativeText : text;
-
-  // Split the text into parts (before and after the first period)
   const processedText = displayText
     .replace(/\[(.*?)\]\((.*?)\)/g, (_, text, url) => `<a href="${url}">${text}</a>`)
     .split(".")[0] + "... " + (isPlaying ? (narrativeText.split(".")[1] || "") : (text.split(".")[1] || ""));
@@ -44,34 +40,14 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
     return () => clearTimeout(startTimeout);
   }, [initialDelay]);
 
-  useEffect(() => {
-    if (!hasStarted) return;
+  if (!hasStarted) return null;
 
-    if (currentIndex < processedText.length) {
-      const timeout = setTimeout(() => {
-        setCurrentText((prevText) => prevText + processedText[currentIndex]);
-        setCurrentIndex((prevIndex) => prevIndex + 1);
+  const handleComplete = () => {
+    setShowRotating(true);
+    onComplete?.();
+  };
 
-        // Show subtitles when we reach the "..."
-        if (processedText.substring(0, currentIndex + 1).includes("...")) {
-          setShowRotating(true);
-        }
-      }, delay);
-
-      return () => clearTimeout(timeout);
-    } else if (onComplete) {
-      onComplete();
-    }
-  }, [currentIndex, delay, processedText, onComplete, hasStarted]);
-
-  // Reset text when switching between narrative and default text
-  useEffect(() => {
-    setCurrentText("");
-    setCurrentIndex(0);
-  }, [isPlaying]);
-
-  // Split the current text at the "..." position
-  const currentParts = currentText.split("...");
+  const currentParts = processedText.split("...");
 
   return (
     <div className="font-mono tabular-nums relative">
@@ -84,10 +60,11 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
       <div className="relative z-10">
         {currentParts.map((part, index) => (
           <React.Fragment key={index}>
-            <span
-              dangerouslySetInnerHTML={{
-                __html: part,
-              }}
+            <TypewriterEffect
+              text={part}
+              delay={delay}
+              onComplete={handleComplete}
+              showCursor={false}
               className="[&_a]:text-white [&_a]:hover:text-white/80 [&_a]:transition-colors [&_a]:bg-blue-500 [&_a]:px-1 [&_a]:py-0.5 [&_a]:rounded"
             />
             {index < currentParts.length - 1 && showRotating && !isPlaying && subtitles?.length > 0 && (
