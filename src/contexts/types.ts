@@ -9,6 +9,7 @@ export interface NarrativeContextType {
   isPlaying: boolean;
   currentText: string;
   currentSection: number;
+  currentTime: number;
   isComplete: boolean;
   progress: number;
   togglePlayback: () => void;

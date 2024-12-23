@@ -78,13 +78,14 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
     if (!audio) return;
 
     const handleTimeUpdate = () => {
-      const currentTime = audio.currentTime * 1000;
-      const subtitle = getCurrentSubtitle(subtitles, currentTime);
+      const time = audio.currentTime * 1000;
+      setCurrentTime(time);
+      const subtitle = getCurrentSubtitle(subtitles, time);
 
       if (subtitle) {
         setCurrentText(subtitle.text);
         const duration = audio.duration * 1000;
-        setProgress((currentTime / duration) * 100);
+        setProgress((time / duration) * 100);
       }
     };
 
@@ -188,6 +189,7 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
         isPlaying,
         currentText,
         currentSection,
+        currentTime,
         isComplete,
         progress,
         togglePlayback,

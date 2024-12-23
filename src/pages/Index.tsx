@@ -19,7 +19,8 @@ const IndexContent = () => {
     animationDuration: 800,
   });
 
-  const { currentText, isPlaying, togglePlayback } = useNarrative();
+  const { currentText, currentTime, isPlaying, togglePlayback } =
+    useNarrative();
 
   const { selectedCategory, handleCategorySelect } =
     useCategoryNavigation(scrollToSection);
@@ -77,10 +78,10 @@ const IndexContent = () => {
       >
         <HeroSection
           currentText={currentText}
+          currentTime={currentTime}
           isPlaying={isPlaying}
           onPlay={togglePlayback}
           onPause={togglePlayback}
-          activeSection={activeSection}
         />
       </Section>
 
