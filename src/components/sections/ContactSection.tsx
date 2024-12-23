@@ -12,26 +12,26 @@ interface ContactSectionProps {
 
 const logos = [
   {
-    category: 'funders',
-    name: 'HP',
-    logo: 'https://banner2.cleanpng.com/20180413/lyw/avfbdsl42.webp',
-    website: 'https://www.hp.com',
-    invert: false
+    category: "funders",
+    name: "HP",
+    logo: "https://banner2.cleanpng.com/20180413/lyw/avfbdsl42.webp",
+    website: "https://www.hp.com",
+    invert: false,
   },
   {
-    category: 'developers',
-    name: 'Awana Digital',
-    logo: 'https://cdn.prod.website-files.com/65fdc7abae501de4e3e82a40/664e5bcc334210d16d6b9f70_AD-Temp-Logomark-HiRes.png',
-    website: 'https://awanadigital.com',
-    invert: false
+    category: "developers",
+    name: "Awana Digital",
+    logo: "https://cdn.prod.website-files.com/65fdc7abae501de4e3e82a40/664e5bcc334210d16d6b9f70_AD-Temp-Logomark-HiRes.png",
+    website: "https://awanadigital.com",
+    invert: false,
   },
   {
-    category: 'developers',
-    name: 'Terra Krya',
-    logo: 'https://www.terrakrya.com/api/uploads/images/Estudo_Terracrya_03-1-1653617568395.png',
-    website: 'https://www.terrakrya.com',
-    invert: true
-  }
+    category: "developers",
+    name: "Terra Krya",
+    logo: "https://www.terrakrya.com/api/uploads/images/Estudo_Terracrya_03-1-1653617568395.png",
+    website: "https://www.terrakrya.com",
+    invert: true,
+  },
 ];
 
 const subtitlesContact = [
@@ -54,7 +54,7 @@ const subtitlesContact = [
 
 const ContactSection: React.FC<ContactSectionProps> = ({ currentText }) => {
   const { isPlaying, togglePlayback, isComplete, restart } = useNarrative();
-  
+
   const contactItems = [
     {
       icon: Mail,
@@ -88,8 +88,11 @@ const ContactSection: React.FC<ContactSectionProps> = ({ currentText }) => {
               href={item.href}
               target={item.external ? "_blank" : undefined}
               rel={item.external ? "noopener noreferrer" : undefined}
-              className={`flex justify-center items-center text-white font-bold py-2 px-4 rounded transition-colors ${index % 2 === 0 ? "bg-green-500 hover:bg-green-600" : "bg-blue-500 hover:bg-blue-600"
-                }`}
+              className={`flex justify-center items-center text-white font-bold py-2 px-4 rounded transition-colors ${
+                index % 2 === 0
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
             >
               <item.icon className="h-5 w-5 mr-2" />
               <span>{item.text}</span>
@@ -109,12 +112,10 @@ const ContactSection: React.FC<ContactSectionProps> = ({ currentText }) => {
       </div>
 
       <div className="space-y-8 animate-fade-in delay-200 text-center">
-        <h2 className="text-medium text-eda-green mb-6">
-          Desenvolvido por
-        </h2>
+        <h2 className="text-medium text-eda-green mb-6">Desenvolvido por</h2>
         <div className="grid grid-cols-1 gap-8">
           {logos
-            .filter(logo => logo.category === 'developers')
+            .filter((logo) => logo.category === "developers")
             .map((developer) => (
               <div key={developer.name} className="flex flex-col items-center">
                 <a
@@ -126,7 +127,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ currentText }) => {
                   <img
                     src={developer.logo}
                     alt={developer.name}
-                    className={`h-12 object-contain mb-4 ${developer.invert ? 'invert' : ''}`}
+                    className={`h-12 object-contain mb-4 ${developer.invert ? "invert" : ""}`}
                   />
                 </a>
                 {/* <span className="text-sm text-gray-600">{developer.description}</span> */}
@@ -138,7 +139,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ currentText }) => {
         </h2>
         <div className="flex justify-center">
           {logos
-            .filter(logo => logo.category === 'funders')
+            .filter((logo) => logo.category === "funders")
             .map((funder) => (
               <a
                 key={funder.name}
@@ -150,16 +151,14 @@ const ContactSection: React.FC<ContactSectionProps> = ({ currentText }) => {
                 <img
                   src={funder.logo}
                   alt={funder.name}
-                  className={`h-16 object-contain ${funder.invert ? 'invert' : ''}`}
+                  className={`h-16 object-contain ${funder.invert ? "invert" : ""}`}
                 />
               </a>
             ))}
         </div>
       </div>
 
-      <div className="col-span-full mt-12">
-
-      </div>
+      <div className="col-span-full mt-12"></div>
       <div className="relative">
         <div className="fixed h-[50px] w-[50px] md:h-[75px] md:w-[75px] bottom-20 right-8 flex justify-center items-center bg-white shadow-lg rounded-full">
           <a
@@ -169,21 +168,36 @@ const ContactSection: React.FC<ContactSectionProps> = ({ currentText }) => {
             className="flex justify-center items-center h-full w-full bg-eda-green hover:bg-eda-green/90 text-white rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
           >
             <span className="sr-only">Chat</span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 md:h-8 md:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M21 16.5A5.5 5.5 0 0115.5 22H6l-4 4V6.5A5.5 5.5 0 017.5 1h8A5.5 5.5 0 0121 6.5v10z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 md:h-8 md:w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 10h.01M12 10h.01M16 10h.01M21 16.5A5.5 5.5 0 0115.5 22H6l-4 4V6.5A5.5 5.5 0 017.5 1h8A5.5 5.5 0 0121 6.5v10z"
+              />
             </svg>
           </a>
           <div className="absolute -top-12 -left-4 md:-left-2 flex flex-col items-center animate-bounce w-[90px]">
             <div className="bg-eda-green text-white px-4 py-2 rounded-lg shadow-lg text-xs">
               <span>Try me out</span>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" className="-mt-8 h-16 w-16 text-green-700" fill="currentColor" viewBox="0 0 24 24">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="-mt-8 h-16 w-16 text-green-700"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path d="M12 16l-6-6h12l-6 6z" />
             </svg>
           </div>
         </div>
       </div>
-
     </div>
   );
 };

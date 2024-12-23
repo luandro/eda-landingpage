@@ -1,5 +1,11 @@
 import React from "react";
-import { render, act, screen, fireEvent, waitFor } from "@testing-library/react";
+import {
+  render,
+  act,
+  screen,
+  fireEvent,
+  waitFor,
+} from "@testing-library/react";
 import RotatingSubtitles from "../RotatingSubtitles";
 
 jest.useFakeTimers();
@@ -65,8 +71,8 @@ describe("RotatingSubtitles", () => {
 
     const element = screen.getByText((content) => content.includes("Test 2"));
     expect(element).toBeInTheDocument();
-    const link = element.closest('a');
-    expect(link).toHaveAttribute('href', '#test');
+    const link = element.closest("a");
+    expect(link).toHaveAttribute("href", "#test");
     fireEvent.click(link!);
 
     expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalled();

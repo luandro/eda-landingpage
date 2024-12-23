@@ -50,7 +50,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   const isAgent = type === "agent";
 
   // Determine which animations to use
-  const animations = Array.isArray(animation) ? animation : [animation || defaultAnimation];
+  const animations = Array.isArray(animation)
+    ? animation
+    : [animation || defaultAnimation];
   const currentAnimation = animations[0];
 
   // Merge default animation with provided animation
@@ -92,7 +94,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
       <motion.div
         className={cn(
           "text-white p-3 rounded-2xl shadow-lg transform hover:scale-105 transition-transform",
-          isAgent ? "bg-gradient-to-br from-eda-orange to-eda-orange/80" : "bg-gradient-to-br from-eda-green to-eda-green/80",
+          isAgent
+            ? "bg-gradient-to-br from-eda-orange to-eda-orange/80"
+            : "bg-gradient-to-br from-eda-green to-eda-green/80",
         )}
         aria-hidden="true"
         layout

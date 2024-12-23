@@ -15,7 +15,7 @@ const defaultConfig: AnimationConfig = {
 
 export const useMessageAnimation = (
   messages: Message[],
-  config: Partial<AnimationConfig> = {}
+  config: Partial<AnimationConfig> = {},
 ) => {
   const [visibleMessages, setVisibleMessages] = useState<Message[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -34,7 +34,7 @@ export const useMessageAnimation = (
       // Add new message with scroll animation
       setVisibleMessages((prev) => {
         const newMessages = [...prev, messages[currentIndex]].slice(
-          -animationConfig.maxVisibleMessages
+          -animationConfig.maxVisibleMessages,
         );
         return newMessages;
       });
@@ -49,7 +49,7 @@ export const useMessageAnimation = (
 
     const interval = setInterval(
       addNextMessage,
-      animationConfig.messageDisplayDuration
+      animationConfig.messageDisplayDuration,
     );
 
     // Add first message immediately

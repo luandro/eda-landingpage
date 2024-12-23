@@ -14,7 +14,10 @@
           "type": "agent",
           "content": "Hello! I'd be happy to help you learn more about what we offer.",
           "timestamp": "12:01 PM",
-          "steps": ["Analyzing your request...", "Preparing detailed information..."]
+          "steps": [
+            "Analyzing your request...",
+            "Preparing detailed information..."
+          ]
         },
         {
           "id": "3",
@@ -27,7 +30,10 @@
           "type": "agent",
           "content": "We specialize in AI-powered solutions, including chatbots, data analysis, and automation tools.",
           "timestamp": "12:03 PM",
-          "steps": ["Gathering service information...", "Customizing response..."]
+          "steps": [
+            "Gathering service information...",
+            "Customizing response..."
+          ]
         }
       ]
     }

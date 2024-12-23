@@ -18,21 +18,33 @@ describe("AudioPlayer", () => {
 
   it("renders play button when not playing", () => {
     render(
-      <AudioPlayer onPlay={mockOnPlay} onPause={mockOnPause} isPlaying={false} />
+      <AudioPlayer
+        onPlay={mockOnPlay}
+        onPause={mockOnPause}
+        isPlaying={false}
+      />,
     );
     expect(screen.getByRole("button")).toBeInTheDocument();
   });
 
   it("renders pause button when playing", () => {
     render(
-      <AudioPlayer onPlay={mockOnPlay} onPause={mockOnPause} isPlaying={true} />
+      <AudioPlayer
+        onPlay={mockOnPlay}
+        onPause={mockOnPause}
+        isPlaying={true}
+      />,
     );
     expect(screen.getByRole("button")).toBeInTheDocument();
   });
 
   it("calls onPlay when play button is clicked", () => {
     render(
-      <AudioPlayer onPlay={mockOnPlay} onPause={mockOnPause} isPlaying={false} />
+      <AudioPlayer
+        onPlay={mockOnPlay}
+        onPause={mockOnPause}
+        isPlaying={false}
+      />,
     );
     fireEvent.click(screen.getByRole("button"));
     expect(mockOnPlay).toHaveBeenCalledTimes(1);
@@ -41,7 +53,11 @@ describe("AudioPlayer", () => {
 
   it("calls onPause when pause button is clicked", () => {
     render(
-      <AudioPlayer onPlay={mockOnPlay} onPause={mockOnPause} isPlaying={true} />
+      <AudioPlayer
+        onPlay={mockOnPlay}
+        onPause={mockOnPause}
+        isPlaying={true}
+      />,
     );
     fireEvent.click(screen.getByRole("button"));
     expect(mockOnPause).toHaveBeenCalledTimes(1);
@@ -50,7 +66,11 @@ describe("AudioPlayer", () => {
 
   it("renders the dividing line", () => {
     render(
-      <AudioPlayer onPlay={mockOnPlay} onPause={mockOnPause} isPlaying={false} />
+      <AudioPlayer
+        onPlay={mockOnPlay}
+        onPause={mockOnPause}
+        isPlaying={false}
+      />,
     );
     expect(screen.getByTestId("dividing-line")).toBeInTheDocument();
   });

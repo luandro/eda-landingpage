@@ -11,7 +11,7 @@ import ContactSection from "../components/sections/ContactSection";
 import { useLocation } from "react-router-dom";
 import { NarrativeProvider, useNarrative } from "../contexts/NarrativeContext";
 
-const sectionHashes = ['hero', 'categories', 'features', 'contact'];
+const sectionHashes = ["hero", "categories", "features", "contact"];
 
 const IndexContent = () => {
   const { activeSection, sectionsRef, scrollToSection } = useSmoothScroll({
@@ -19,40 +19,39 @@ const IndexContent = () => {
     animationDuration: 800,
   });
 
-  const {
-    currentText,
-    isPlaying,
-    togglePlayback
-  } = useNarrative();
+  const { currentText, isPlaying, togglePlayback } = useNarrative();
 
-  const { selectedCategory, handleCategorySelect } = useCategoryNavigation(scrollToSection);
+  const { selectedCategory, handleCategorySelect } =
+    useCategoryNavigation(scrollToSection);
   const [selectedFeature, setSelectedFeature] = useState<number | null>(null);
   const location = useLocation();
 
   // Handle hash navigation and restore section
   useEffect(() => {
-    const hash = location.hash.replace('#', '');
+    const hash = location.hash.replace("#", "");
     const index = sectionHashes.indexOf(hash);
     if (index !== -1) {
       setTimeout(() => {
         scrollToSection(index);
       }, 100);
-    } else if (!location.hash && sessionStorage.getItem('lastSection')) {
-      const lastSection = parseInt(sessionStorage.getItem('lastSection') || '0');
+    } else if (!location.hash && sessionStorage.getItem("lastSection")) {
+      const lastSection = parseInt(
+        sessionStorage.getItem("lastSection") || "0",
+      );
       scrollToSection(lastSection);
     }
   }, [location.hash, scrollToSection]);
 
   // Save current section
   useEffect(() => {
-    sessionStorage.setItem('lastSection', activeSection.toString());
+    sessionStorage.setItem("lastSection", activeSection.toString());
 
     const newHash = sectionHashes[activeSection];
     if (newHash && location.hash !== `#${newHash}`) {
       window.history.replaceState(
         null,
-        '',
-        `${window.location.pathname}#${newHash}`
+        "",
+        `${window.location.pathname}#${newHash}`,
       );
     }
   }, [activeSection, location.hash]);
@@ -128,9 +127,7 @@ const IndexContent = () => {
         }}
         background="bg-gradient-to-b from-white to-gray-50"
       >
-        <ContactSection
-          currentText={currentText}
-        />
+        <ContactSection currentText={currentText} />
       </Section>
     </div>
   );

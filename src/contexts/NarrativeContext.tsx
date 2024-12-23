@@ -1,14 +1,21 @@
-import React, { createContext, useContext, useEffect, useCallback } from 'react';
-import { parseSRT, getCurrentSubtitle } from '../utils/srtParser';
-import { NarrativeContextType } from './types';
-import { useNarrativeState } from './useNarrativeState';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useCallback,
+} from "react";
+import { parseSRT, getCurrentSubtitle } from "../utils/srtParser";
+import { NarrativeContextType } from "./types";
+import { useNarrativeState } from "./useNarrativeState";
 
-const NarrativeContext = createContext<NarrativeContextType | undefined>(undefined);
+const NarrativeContext = createContext<NarrativeContextType | undefined>(
+  undefined,
+);
 
 export const useNarrative = () => {
   const context = useContext(NarrativeContext);
   if (!context) {
-    throw new Error('useNarrative must be used within a NarrativeProvider');
+    throw new Error("useNarrative must be used within a NarrativeProvider");
   }
   return context;
 };
@@ -22,8 +29,8 @@ interface NarrativeProviderProps {
 
 export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
   children,
-  srtPath = '/subtitles.srt',
-  audioPath = '/audio.mp3',
+  srtPath = "/subtitles.srt",
+  audioPath = "/audio.mp3",
   scrollInterval = 3000,
 }) => {
   const {
@@ -40,23 +47,23 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
     progress,
     setProgress,
     audioRef,
-    toast
+    toast,
   } = useNarrativeState(srtPath, audioPath);
 
   // Load SRT file
   useEffect(() => {
-    console.log('Loading SRT file from:', srtPath);
+    console.log("Loading SRT file from:", srtPath);
     fetch(srtPath)
-      .then(response => {
-        if (!response.ok) throw new Error('Failed to load SRT file');
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to load SRT file");
         return response.text();
       })
-      .then(content => {
+      .then((content) => {
         const parsed = parseSRT(content);
         setSubtitles(parsed);
       })
-      .catch(error => {
-        console.error('Error loading SRT file:', error);
+      .catch((error) => {
+        console.error("Error loading SRT file:", error);
         toast({
           title: "Error",
           description: "Failed to load subtitles",
@@ -91,12 +98,12 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
       }
     };
 
-    audio.addEventListener('timeupdate', handleTimeUpdate);
-    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("ended", handleEnded);
 
     return () => {
-      audio.removeEventListener('timeupdate', handleTimeUpdate);
-      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("ended", handleEnded);
     };
   }, [subtitles]);
 
@@ -106,12 +113,14 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
 
     if (!isPlaying) {
       // When not playing, show default text for current section
-      setCurrentText(subtitles[currentSection]?.text || subtitles[0]?.text || "");
+      setCurrentText(
+        subtitles[currentSection]?.text || subtitles[0]?.text || "",
+      );
       return;
     }
 
     const interval = setInterval(() => {
-      setCurrentSection(prev => {
+      setCurrentSection((prev) => {
         const next = prev + 1;
         if (next >= subtitles.length) {
           clearInterval(interval);
@@ -127,7 +136,9 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
   // Update text when section changes
   useEffect(() => {
     if (!isPlaying) {
-      setCurrentText(subtitles[currentSection]?.text || subtitles[0]?.text || "");
+      setCurrentText(
+        subtitles[currentSection]?.text || subtitles[0]?.text || "",
+      );
     }
   }, [currentSection, isPlaying]);
 
@@ -139,8 +150,8 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
       audio.pause();
       setIsPlaying(false);
     } else {
-      audio.play().catch(error => {
-        console.error('Error playing audio:', error);
+      audio.play().catch((error) => {
+        console.error("Error playing audio:", error);
         toast({
           title: "Error",
           description: "Failed to play audio",
@@ -160,8 +171,8 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
     setIsComplete(false);
     setProgress(0);
 
-    audio.play().catch(error => {
-      console.error('Error playing audio:', error);
+    audio.play().catch((error) => {
+      console.error("Error playing audio:", error);
       toast({
         title: "Error",
         description: "Failed to restart audio",

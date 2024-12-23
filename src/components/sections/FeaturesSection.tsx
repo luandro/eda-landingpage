@@ -61,7 +61,10 @@ const FeaturesSection: React.FC<FeaturesSectionProps> = ({
       </div>
 
       <div className="block animate-slide-in-right h-[60vh]">
-        <Features selectedFeature={selectedFeature} onFeatureSelect={onFeatureSelect} />
+        <Features
+          selectedFeature={selectedFeature}
+          onFeatureSelect={onFeatureSelect}
+        />
       </div>
     </div>
   );

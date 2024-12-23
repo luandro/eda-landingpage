@@ -43,7 +43,9 @@ const ChatContainer = React.forwardRef<HTMLDivElement, { className?: string }>(
           >
             <div className="flex flex-col items-center space-y-4">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600"></div>
-              <p className="text-gray-500 dark:text-gray-400 font-medium">Loading conversation...</p>
+              <p className="text-gray-500 dark:text-gray-400 font-medium">
+                Loading conversation...
+              </p>
             </div>
           </div>
         </div>
@@ -68,7 +70,7 @@ const ChatContainer = React.forwardRef<HTMLDivElement, { className?: string }>(
         </div>
       </div>
     );
-  }
+  },
 );
 
 export default ChatContainer;
