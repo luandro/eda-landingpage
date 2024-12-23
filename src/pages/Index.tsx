@@ -20,11 +20,7 @@ const IndexContent = () => {
   });
 
   const {
-    isPlaying,
     currentText,
-    currentSection,
-    togglePlayback,
-    audioRef,
   } = useNarrative();
 
   const { selectedCategory, handleCategorySelect } = useCategoryNavigation(scrollToSection);
@@ -59,13 +55,6 @@ const IndexContent = () => {
     }
   }, [activeSection, location.hash]);
 
-  // Sync section with narrative
-  useEffect(() => {
-    if (isPlaying) {
-      scrollToSection(currentSection);
-    }
-  }, [currentSection, isPlaying, scrollToSection]);
-
   return (
     <div className="min-h-screen overflow-hidden relative">
       <NavigationDots
@@ -87,9 +76,6 @@ const IndexContent = () => {
       >
         <HeroSection
           currentText={currentText}
-          isPlaying={isPlaying}
-          onPlay={togglePlayback}
-          onPause={togglePlayback}
           activeSection={activeSection}
         />
       </Section>
@@ -104,9 +90,6 @@ const IndexContent = () => {
         <CategoriesSection
           selectedCategory={selectedCategory}
           onCategorySelect={handleCategorySelect}
-          isPlaying={isPlaying}
-          onPlay={togglePlayback}
-          onPause={togglePlayback}
           currentText={currentText}
         />
       </Section>
@@ -121,9 +104,6 @@ const IndexContent = () => {
         <FeaturesSection
           selectedFeature={selectedFeature}
           onFeatureSelect={setSelectedFeature}
-          isPlaying={isPlaying}
-          onPlay={togglePlayback}
-          onPause={togglePlayback}
           currentText={currentText}
           activeSection={activeSection}
         />
@@ -138,13 +118,8 @@ const IndexContent = () => {
         background="bg-gradient-to-b from-white to-gray-50"
       >
         <ContactSection
-          isPlaying={isPlaying}
-          onPlay={togglePlayback}
-          onPause={togglePlayback}
           currentText={currentText}
-          activeSection={activeSection}
         />
-
       </Section>
 
       <audio ref={audioRef}>
