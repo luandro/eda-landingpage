@@ -10,18 +10,25 @@ export const createAudioHandlers = (
   setCurrentSection: (section: number) => void,
   subtitles: SubtitleEntry[],
 ) => {
+  // Handles audio time updates to sync subtitles and progress bar
   const handleTimeUpdate = () => {
+    // Get reference to audio element
     const audio = audioRef.current;
     if (!audio) return;
 
+    // Convert current audio time to milliseconds for subtitle matching
     const currentTime = audio.currentTime * 1000;
     console.log('Current time (ms):', currentTime);
 
+    // Find the subtitle that should be displayed at current time
     const subtitle = getCurrentSubtitle(subtitles, currentTime);
     console.log('Found subtitle:', subtitle);
 
     if (subtitle) {
+      // Update the displayed subtitle text
       setCurrentText(subtitle.text);
+
+      // Calculate and update progress percentage
       const duration = audio.duration * 1000;
       const progress = (currentTime / duration) * 100;
       console.log('Setting progress:', progress);
