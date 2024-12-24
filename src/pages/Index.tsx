@@ -10,36 +10,46 @@ import FeaturesSection from "../components/sections/FeaturesSection";
 import ContactSection from "../components/sections/ContactSection";
 import { useLocation } from "react-router-dom";
 import { NarrativeProvider, useNarrative } from "../contexts/NarrativeContext";
+import { AutoScroll } from "../lib/narrativeUtils/autoScroll";
 
 const sectionHashes = ["hero", "categories", "features", "contact"];
 
 const IndexContent = () => {
-  console.log('Initializing IndexContent');
+  const [autoScroller, setAutoScroller] = useState<AutoScroll | null>(null);
 
   const { activeSection, sectionsRef, scrollToSection } = useSmoothScroll({
     threshold: 50,
     animationDuration: 800,
   });
-  console.log('useSmoothScroll:', { activeSection, sectionsRef });
-
   const { currentText, isPlaying, togglePlayback } = useNarrative();
-  console.log('useNarrative:', { currentText, isPlaying });
 
+  useEffect(() => {
+    const scroller = new AutoScroll({
+      scrollInterval: 3000,
+      onScroll: (sectionIndex) => {
+        if (sectionIndex < sectionHashes.length) {
+          scrollToSection(sectionIndex);
+        }
+      }
+    });
+    setAutoScroller(scroller);
+
+    if (isPlaying) {
+      scroller.start();
+    } else {
+      scroller.stop();
+    }
+
+    return () => {
+      scroller.stop();
+    };
+  }, [scrollToSection, isPlaying]);
   const { selectedCategory, handleCategorySelect } =
     useCategoryNavigation(scrollToSection);
-  console.log('useCategoryNavigation:', { selectedCategory });
-
   const [selectedFeature, setSelectedFeature] = useState<number | null>(null);
   const location = useLocation();
-  console.log('Location:', location);
-
   // Handle hash navigation and restore section
   useEffect(() => {
-    console.log('Hash navigation effect:', {
-      hash: location.hash,
-      lastSection: sessionStorage.getItem("lastSection")
-    });
-
     const hash = location.hash.replace("#", "");
     const index = sectionHashes.indexOf(hash);
     console.log('Hash navigation:', { hash, index });
@@ -53,7 +63,6 @@ const IndexContent = () => {
       const lastSection = parseInt(
         sessionStorage.getItem("lastSection") || "0",
       );
-      console.log('Restoring last section:', lastSection);
       scrollToSection(lastSection);
     }
   }, [location.hash, scrollToSection]);

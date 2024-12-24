@@ -32,20 +32,24 @@ export const createPlaybackControls = (
     const audio = audioRef.current;
     if (!audio) return;
 
+    setIsPlaying(false); // Pause first to ensure state consistency
     audio.currentTime = 0;
     setCurrentSection(0);
     setIsComplete(false);
     setProgress(0);
 
-    audio.play().catch((error) => {
-      console.error("Error playing audio:", error);
-      toast({
-        title: "Error",
-        description: "Failed to restart audio",
-        variant: "destructive",
+    // Small delay to ensure state updates have propagated
+    setTimeout(() => {
+      audio.play().catch((error) => {
+        console.error("Error playing audio:", error);
+        toast({
+          title: "Error",
+          description: "Failed to restart audio",
+          variant: "destructive",
+        });
       });
-    });
-    setIsPlaying(true);
+      setIsPlaying(true);
+    }, 50);
   };
 
   return { togglePlayback, restart };

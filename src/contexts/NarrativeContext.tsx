@@ -95,6 +95,22 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
 
   // Auto-scrolling effect
   useEffect(() => {
+    if (isPlaying) {
+      const audio = audioRef.current;
+      if (!audio) return;
+
+      // Immediate section sync based on current time
+      const currentTime = audio.currentTime;
+      const newSection = subtitles.findIndex((subtitle, index) => {
+        const nextSubtitle = subtitles[index + 1];
+        return currentTime >= subtitle.startTime && (!nextSubtitle || currentTime < nextSubtitle.startTime);
+      });
+
+      if (newSection !== -1 && newSection !== currentSection) {
+        setCurrentSection(newSection);
+      }
+    }
+
     return setupAutoScroll(
       isPlaying,
       isComplete,
