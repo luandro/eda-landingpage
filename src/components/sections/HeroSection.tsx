@@ -84,7 +84,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="h-[17vh] sm:h-[15vh] md:h-[15vh] font-bold text-eda-green items-start">
           <TypewriterText
             text={currentText}
-            subtitles={subtitlesFeatures}
+            defaultMarkdown={currentText}
+            rotatingText={subtitlesFeatures}
             rotationSpeed={4000}
             delay={50}
           />
@@ -92,7 +93,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         {!isPlaying && (
           <div className="teext-md h-[7vh] sm:h-[15vh] md:h-[15vh] text-eda-green">
             <TypewriterText
-              text={"Aperte o Play para iniciar"}
+              text={"Play ▶️ ou role ⬇️"}
               rotationSpeed={8000}
               initialDelay={3500}
               delay={50}

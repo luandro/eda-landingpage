@@ -8,6 +8,10 @@ import { useNarrative } from "@/contexts/NarrativeContext";
 
 interface ContactSectionProps {
   currentText: string;
+  isPlaying: boolean;
+  onPlay: () => void;
+  onPause: () => void;
+  activeSection: number;
 }
 
 const logos = [
@@ -52,8 +56,14 @@ const subtitlesContact = [
   },
 ];
 
-const ContactSection: React.FC<ContactSectionProps> = ({ currentText }) => {
-  const { isPlaying, togglePlayback, isComplete, restart } = useNarrative();
+const ContactSection: React.FC<ContactSectionProps> = ({
+  currentText,
+  isPlaying,
+  onPlay,
+  onPause,
+  activeSection
+}) => {
+  const { isComplete, restart } = useNarrative();
 
   const contactItems = [
     {
@@ -76,7 +86,8 @@ const ContactSection: React.FC<ContactSectionProps> = ({ currentText }) => {
         <div className="text-2xl md:text-3xl lg:text-4xl text-left h-[8vh] sm:h-[15vh] md:h-[15vh] ">
           <TypewriterText
             text={currentText}
-            subtitles={subtitlesContact}
+            defaultMarkdown={currentText}
+            rotatingText={subtitlesContact}
             rotationSpeed={4000}
             delay={50}
           />
@@ -104,8 +115,8 @@ const ContactSection: React.FC<ContactSectionProps> = ({ currentText }) => {
       <div className="flex justify-center items-center animate-scale-in">
         <AudioPlayer
           isPlaying={isPlaying}
-          onPlay={togglePlayback}
-          onPause={togglePlayback}
+          onPlay={onPlay}
+          onPause={onPause}
           isComplete={isComplete}
           onRestart={restart}
         />

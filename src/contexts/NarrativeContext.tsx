@@ -2,11 +2,25 @@ import React, {
   createContext,
   useContext,
   useEffect,
-  useCallback,
 } from "react";
-import { parseSRT, getCurrentSubtitle } from "../utils/srtParser";
+import {
+  createAudioHandlers,
+  loadSRTFile,
+  createPlaybackControls,
+  setupAutoScroll
+} from "../lib/narrativeUtils";
 import { NarrativeContextType } from "./types";
 import { useNarrativeState } from "./useNarrativeState";
+
+/**
+ * NarrativeContext orchestrates audio playback and subtitle synchronization by utilizing
+ * several specialized utility modules:
+ *
+ * 1. audioHandler - Manages audio playback events and time synchronization
+ * 2. srtLoader - Handles loading and parsing of SRT subtitle files
+ * 3. playbackControls - Provides play/pause and restart functionality
+ * 4. autoScroll - Manages automatic scrolling through subtitle sections
+ */
 
 const NarrativeContext = createContext<NarrativeContextType | undefined>(
   undefined,
@@ -52,51 +66,23 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
 
   // Load SRT file
   useEffect(() => {
-    console.log("Loading SRT file from:", srtPath);
-    fetch(srtPath)
-      .then((response) => {
-        if (!response.ok) throw new Error("Failed to load SRT file");
-        return response.text();
-      })
-      .then((content) => {
-        const parsed = parseSRT(content);
-        setSubtitles(parsed);
-      })
-      .catch((error) => {
-        console.error("Error loading SRT file:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load subtitles",
-          variant: "destructive",
-        });
-      });
+    loadSRTFile(srtPath, setSubtitles, toast);
   }, [srtPath, toast]);
 
-  // Handle audio time updates
+  // Handle audio time updates and ended events
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const handleTimeUpdate = () => {
-      const currentTime = audio.currentTime * 1000;
-      const subtitle = getCurrentSubtitle(subtitles, currentTime);
-
-      if (subtitle) {
-        setCurrentText(subtitle.text);
-        const duration = audio.duration * 1000;
-        setProgress((currentTime / duration) * 100);
-      }
-    };
-
-    const handleEnded = () => {
-      setIsPlaying(false);
-      setIsComplete(true);
-      const lastSubtitle = subtitles[subtitles.length - 1];
-      if (lastSubtitle) {
-        setCurrentText(lastSubtitle.text);
-        setCurrentSection(subtitles.length - 1);
-      }
-    };
+    const { handleTimeUpdate, handleEnded } = createAudioHandlers(
+      audioRef,
+      setIsPlaying,
+      setIsComplete,
+      setCurrentText,
+      setProgress,
+      setCurrentSection,
+      subtitles
+    );
 
     audio.addEventListener("timeupdate", handleTimeUpdate);
     audio.addEventListener("ended", handleEnded);
@@ -107,31 +93,18 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
     };
   }, [subtitles]);
 
-  // Auto-scrolling effect and section text management
+  // Auto-scrolling effect
   useEffect(() => {
-    if (isComplete) return;
-
-    if (!isPlaying) {
-      // When not playing, show default text for current section
-      setCurrentText(
-        subtitles[currentSection]?.text || subtitles[0]?.text || "",
-      );
-      return;
-    }
-
-    const interval = setInterval(() => {
-      setCurrentSection((prev) => {
-        const next = prev + 1;
-        if (next >= subtitles.length) {
-          clearInterval(interval);
-          return prev;
-        }
-        return next;
-      });
-    }, scrollInterval);
-
-    return () => clearInterval(interval);
-  }, [isPlaying, isComplete, subtitles, scrollInterval]);
+    return setupAutoScroll(
+      isPlaying,
+      isComplete,
+      currentSection,
+      subtitles,
+      setCurrentSection,
+      setCurrentText,
+      scrollInterval
+    );
+  }, [isPlaying, isComplete, currentSection, subtitles, scrollInterval]);
 
   // Update text when section changes
   useEffect(() => {
@@ -142,45 +115,15 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
     }
   }, [currentSection, isPlaying]);
 
-  const togglePlayback = useCallback(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (isPlaying) {
-      audio.pause();
-      setIsPlaying(false);
-    } else {
-      audio.play().catch((error) => {
-        console.error("Error playing audio:", error);
-        toast({
-          title: "Error",
-          description: "Failed to play audio",
-          variant: "destructive",
-        });
-      });
-      setIsPlaying(true);
-    }
-  }, [isPlaying, toast]);
-
-  const restart = useCallback(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    audio.currentTime = 0;
-    setCurrentSection(0);
-    setIsComplete(false);
-    setProgress(0);
-
-    audio.play().catch((error) => {
-      console.error("Error playing audio:", error);
-      toast({
-        title: "Error",
-        description: "Failed to restart audio",
-        variant: "destructive",
-      });
-    });
-    setIsPlaying(true);
-  }, [toast]);
+  // Create playback controls
+  const { togglePlayback, restart } = createPlaybackControls(
+    audioRef,
+    setIsPlaying,
+    setCurrentSection,
+    setIsComplete,
+    setProgress,
+    toast
+  );
 
   return (
     <NarrativeContext.Provider

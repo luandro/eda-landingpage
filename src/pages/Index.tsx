@@ -14,23 +14,38 @@ import { NarrativeProvider, useNarrative } from "../contexts/NarrativeContext";
 const sectionHashes = ["hero", "categories", "features", "contact"];
 
 const IndexContent = () => {
+  console.log('Initializing IndexContent');
+
   const { activeSection, sectionsRef, scrollToSection } = useSmoothScroll({
     threshold: 50,
     animationDuration: 800,
   });
+  console.log('useSmoothScroll:', { activeSection, sectionsRef });
 
   const { currentText, isPlaying, togglePlayback } = useNarrative();
+  console.log('useNarrative:', { currentText, isPlaying });
 
   const { selectedCategory, handleCategorySelect } =
     useCategoryNavigation(scrollToSection);
+  console.log('useCategoryNavigation:', { selectedCategory });
+
   const [selectedFeature, setSelectedFeature] = useState<number | null>(null);
   const location = useLocation();
+  console.log('Location:', location);
 
   // Handle hash navigation and restore section
   useEffect(() => {
+    console.log('Hash navigation effect:', {
+      hash: location.hash,
+      lastSection: sessionStorage.getItem("lastSection")
+    });
+
     const hash = location.hash.replace("#", "");
     const index = sectionHashes.indexOf(hash);
+    console.log('Hash navigation:', { hash, index });
+
     if (index !== -1) {
+      console.log('Scrolling to hash section:', index);
       setTimeout(() => {
         scrollToSection(index);
       }, 100);
@@ -38,16 +53,20 @@ const IndexContent = () => {
       const lastSection = parseInt(
         sessionStorage.getItem("lastSection") || "0",
       );
+      console.log('Restoring last section:', lastSection);
       scrollToSection(lastSection);
     }
   }, [location.hash, scrollToSection]);
 
   // Save current section
   useEffect(() => {
+    console.log('Saving section:', { activeSection });
     sessionStorage.setItem("lastSection", activeSection.toString());
 
     const newHash = sectionHashes[activeSection];
+
     if (newHash && location.hash !== `#${newHash}`) {
+      console.log('Updating URL hash:', { newHash, currentHash: location.hash });
       window.history.replaceState(
         null,
         "",
@@ -76,7 +95,7 @@ const IndexContent = () => {
         }}
       >
         <HeroSection
-          currentText={currentText}
+          currentText={currentText || "Olá eu sou a [ÊDA](https://awana.digital)!..."}
           isPlaying={isPlaying}
           onPlay={togglePlayback}
           onPause={togglePlayback}
@@ -92,12 +111,12 @@ const IndexContent = () => {
         }}
       >
         <CategoriesSection
+          currentText={currentText || 'Testando um, dois três'}
           selectedCategory={selectedCategory}
           onCategorySelect={handleCategorySelect}
           isPlaying={isPlaying}
           onPlay={togglePlayback}
           onPause={togglePlayback}
-          currentText={currentText}
         />
       </Section>
 
@@ -109,12 +128,12 @@ const IndexContent = () => {
         }}
       >
         <FeaturesSection
+          currentText={currentText || 'Testando um, dois três...'}
           selectedFeature={selectedFeature}
           onFeatureSelect={setSelectedFeature}
           isPlaying={isPlaying}
           onPlay={togglePlayback}
           onPause={togglePlayback}
-          currentText={currentText}
           activeSection={activeSection}
         />
       </Section>
@@ -127,7 +146,13 @@ const IndexContent = () => {
         }}
         background="bg-gradient-to-b from-white to-gray-50"
       >
-        <ContactSection currentText={currentText} />
+        <ContactSection
+          currentText={currentText || 'Testando um, dois três. Meu nome é Goku'}
+          isPlaying={isPlaying}
+          onPlay={togglePlayback}
+          onPause={togglePlayback}
+          activeSection={activeSection}
+        />
       </Section>
     </div>
   );

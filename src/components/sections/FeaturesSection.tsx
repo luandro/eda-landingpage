@@ -49,7 +49,8 @@ const FeaturesSection: React.FC<FeaturesSectionProps> = ({
         <div className="h-[5vh] sm:h-[15vh] md:h-[15vh] font-bold text-eda-orange items-start">
           <TypewriterText
             text={currentText}
-            subtitles={subtitlesFeatures}
+            defaultMarkdown={currentText}
+            rotatingText={subtitlesFeatures}
             rotationSpeed={4000}
             delay={50}
           />

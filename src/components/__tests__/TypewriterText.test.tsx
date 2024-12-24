@@ -16,14 +16,19 @@ describe("TypewriterText", () => {
   beforeEach(() => {
     (useNarrative as jest.Mock).mockReset();
   });
-  const mockSubtitles = [
+  const mockRotatingText = [
     { text: "Test 1", backgroundColor: "#000", textColor: "white" as const },
     { text: "Test 2", backgroundColor: "#fff", textColor: "dark" as const },
   ];
 
   it("renders text character by character", async () => {
     render(
-      <TypewriterText text="Hello" delay={100} subtitles={mockSubtitles} />,
+      <TypewriterText
+        text="Hello"
+        defaultMarkdown="Hello"
+        delay={100}
+        rotatingText={mockRotatingText}
+      />,
     );
 
     expect(screen.getByText("|")).toBeInTheDocument();
@@ -50,9 +55,10 @@ describe("TypewriterText", () => {
     render(
       <TypewriterText
         text="Hi"
+        defaultMarkdown="Hi"
         delay={100}
         onComplete={onComplete}
-        subtitles={mockSubtitles}
+        rotatingText={mockRotatingText}
       />,
     );
 
@@ -73,8 +79,9 @@ describe("TypewriterText", () => {
     render(
       <TypewriterText
         text="Hello {rotating} world"
+        defaultMarkdown="Hello {rotating} world"
         delay={100}
-        subtitles={mockSubtitles}
+        rotatingText={mockRotatingText}
       />,
     );
 
@@ -115,7 +122,13 @@ describe("TypewriterText", () => {
       currentText: "Test",
     });
 
-    const { rerender } = render(<TypewriterText text="Test" delay={100} />);
+    const { rerender } = render(
+      <TypewriterText
+        text="Test"
+        defaultMarkdown="Test"
+        delay={100}
+      />
+    );
 
     // Get the progress bar element
     const progressBar = document.querySelector(".bg-blue-500\\/10");
@@ -130,7 +143,13 @@ describe("TypewriterText", () => {
     });
 
     // Re-render with isPlaying true
-    rerender(<TypewriterText text="Test" delay={100} />);
+    rerender(
+      <TypewriterText
+        text="Test"
+        defaultMarkdown="Test"
+        delay={100}
+      />
+    );
 
     expect(progressBar).toHaveStyle({ opacity: "1" }); // Visible when playing
   });

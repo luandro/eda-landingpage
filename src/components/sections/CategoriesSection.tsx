@@ -51,7 +51,8 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
         <div className="h-[5vh] sm:h-[15vh] md:h-[15vh] font-bold text-eda-green items-start">
           <TypewriterText
             text={currentText}
-            subtitles={subtitlesCategories}
+            defaultMarkdown={currentText}
+            rotatingText={subtitlesCategories}
             rotationSpeed={4000}
             delay={50}
           />
