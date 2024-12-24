@@ -7,7 +7,8 @@ import DividingLine from "../DividingLine";
 import { useNarrative } from "@/contexts/NarrativeContext";
 
 interface ContactSectionProps {
-  currentText: string;
+  text: string;
+  defaultMarkdown: string;
   isPlaying: boolean;
   onPlay: () => void;
   onPause: () => void;
@@ -57,7 +58,8 @@ const subtitlesContact = [
 ];
 
 const ContactSection: React.FC<ContactSectionProps> = ({
-  currentText,
+  text,
+  defaultMarkdown,
   isPlaying,
   onPlay,
   onPause,
@@ -85,8 +87,8 @@ const ContactSection: React.FC<ContactSectionProps> = ({
       <div className="space-y-8 animate-fade-in text-center">
         <div className="text-2xl md:text-3xl lg:text-4xl text-left h-[8vh] sm:h-[15vh] md:h-[15vh] ">
           <TypewriterText
-            text={currentText}
-            defaultMarkdown={currentText}
+            text={text}
+            defaultMarkdown={defaultMarkdown}
             rotatingText={subtitlesContact}
             rotationSpeed={4000}
             delay={50}

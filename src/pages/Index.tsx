@@ -95,7 +95,8 @@ const IndexContent = () => {
         }}
       >
         <HeroSection
-          currentText={currentText || "Olá eu sou a [ÊDA](https://awana.digital)!..."}
+          text={currentText}
+          defaultMarkdown="Olá eu sou a [ÊDA](https://awana.digital), uma assistente"
           isPlaying={isPlaying}
           onPlay={togglePlayback}
           onPause={togglePlayback}
@@ -111,7 +112,8 @@ const IndexContent = () => {
         }}
       >
         <CategoriesSection
-          currentText={currentText || 'Testando um, dois três'}
+          text={currentText}
+          defaultMarkdown="Testando um, dois três"
           selectedCategory={selectedCategory}
           onCategorySelect={handleCategorySelect}
           isPlaying={isPlaying}
@@ -128,7 +130,8 @@ const IndexContent = () => {
         }}
       >
         <FeaturesSection
-          currentText={currentText || 'Testando um, dois três...'}
+          text={currentText}
+          defaultMarkdown="Testando um, dois três..."
           selectedFeature={selectedFeature}
           onFeatureSelect={setSelectedFeature}
           isPlaying={isPlaying}
@@ -147,7 +150,8 @@ const IndexContent = () => {
         background="bg-gradient-to-b from-white to-gray-50"
       >
         <ContactSection
-          currentText={currentText || 'Testando um, dois três. Meu nome é Goku'}
+          text={currentText}
+          defaultMarkdown="Testando um, dois três. Meu nome é Goku"
           isPlaying={isPlaying}
           onPlay={togglePlayback}
           onPause={togglePlayback}
