@@ -9,7 +9,7 @@ export interface SubtitleItem {
   href?: string;
 }
 
-interface RotatingSubtitlesProps {
+interface RotatingTextProps {
   subtitles: SubtitleItem[];
   rotationSpeed?: number;
   className?: string;
@@ -17,7 +17,7 @@ interface RotatingSubtitlesProps {
   typewriterDelay?: number;
 }
 
-const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
+const RotatingText: React.FC<RotatingTextProps> = ({
   subtitles,
   rotationSpeed = 4000,
   className,
@@ -134,4 +134,4 @@ const RotatingSubtitles: React.FC<RotatingSubtitlesProps> = ({
   );
 };
 
-export default RotatingSubtitles;
+export default RotatingText;

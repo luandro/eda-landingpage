@@ -6,7 +6,7 @@ import {
   fireEvent,
   waitFor,
 } from "@testing-library/react";
-import RotatingSubtitles from "../RotatingSubtitles";
+import RotatingSubtitles from "../RotatingText";
 
 jest.useFakeTimers();
 

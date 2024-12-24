@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import RotatingSubtitles from "./RotatingSubtitles";
-import { SubtitleItem } from "./RotatingSubtitles";
+import RotatingText from "./RotatingText";
+import { SubtitleItem } from "./RotatingText";
 import TypewriterEffect from "./TypewriterEffect";
 import { useNarrative } from "@/contexts/NarrativeContext";
 
@@ -108,7 +108,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
           className="[&_a]:text-white [&_a]:hover:text-white/80 [&_a]:transition-colors [&_a]:bg-blue-500 [&_a]:px-1 [&_a]:py-0.5 [&_a]:rounded"
         />
         {showRotating && !isPlaying && rotatingText?.length > 0 && (
-          <RotatingSubtitles
+          <RotatingText
             subtitles={rotatingText}
             rotationSpeed={rotationSpeed}
             className="ml-1 !rounded-none !px-1 !py-0 !inline"
