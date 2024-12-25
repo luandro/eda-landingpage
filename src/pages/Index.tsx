@@ -16,34 +16,20 @@ const sectionHashes = ["hero", "categories", "features", "contact"];
 
 const IndexContent = () => {
   const [autoScroller, setAutoScroller] = useState<AutoScroll | null>(null);
+
   const { activeSection, sectionsRef, scrollToSection } = useSmoothScroll({
     threshold: 50,
     animationDuration: 800,
   });
   
-  const { 
-    currentText, 
-    isPlaying, 
-    togglePlayback, 
-    isComplete,
-    audioRef,
-    currentSection 
-  } = useNarrative();
+  const { currentText, isPlaying, togglePlayback, isComplete, currentSection } = useNarrative();
 
-  // Handle initial scroll sync with audio timestamp
-  useEffect(() => {
-    if (audioRef.current) {
-      const currentTime = audioRef.current.currentTime;
-      console.log('Current audio time:', currentTime, 'Current section:', currentSection);
-      
-      if (currentSection !== activeSection) {
-        console.log('Scrolling to section:', currentSection);
-        scrollToSection(currentSection);
-      }
-    }
-  }, [currentSection, activeSection, scrollToSection, audioRef]);
+  // Handle section changes from narrative playback
+  const handleSectionChange = (section: number) => {
+    console.log('Section change requested:', section);
+    scrollToSection(section);
+  };
 
-  // Handle auto-scrolling during playback
   useEffect(() => {
     const scroller = new AutoScroll({
       scrollInterval: 3000,
@@ -70,13 +56,13 @@ const IndexContent = () => {
     return () => {
       scroller.stop();
     };
-  }, [scrollToSection, isPlaying, isComplete]);
+  }, [scrollToSection, isPlaying]);
 
-  const { selectedCategory, handleCategorySelect } = useCategoryNavigation(scrollToSection);
+  const { selectedCategory, handleCategorySelect } =
+    useCategoryNavigation(scrollToSection);
   const [selectedFeature, setSelectedFeature] = useState<number | null>(null);
   const location = useLocation();
-
-  // Handle hash navigation
+  // Handle hash navigation and restore section
   useEffect(() => {
     const hash = location.hash.replace("#", "");
     const index = sectionHashes.indexOf(hash);
@@ -88,7 +74,9 @@ const IndexContent = () => {
         scrollToSection(index);
       }, 100);
     } else if (!location.hash && sessionStorage.getItem("lastSection")) {
-      const lastSection = parseInt(sessionStorage.getItem("lastSection") || "0");
+      const lastSection = parseInt(
+        sessionStorage.getItem("lastSection") || "0",
+      );
       scrollToSection(lastSection);
     }
   }, [location.hash, scrollToSection]);
@@ -99,9 +87,14 @@ const IndexContent = () => {
     sessionStorage.setItem("lastSection", activeSection.toString());
 
     const newHash = sectionHashes[activeSection];
+
     if (newHash && location.hash !== `#${newHash}`) {
       console.log('Updating URL hash:', { newHash, currentHash: location.hash });
-      window.history.replaceState(null, "", `${window.location.pathname}#${newHash}`);
+      window.history.replaceState(
+        null,
+        "",
+        `${window.location.pathname}#${newHash}`,
+      );
     }
   }, [activeSection, location.hash]);
 
@@ -197,6 +190,9 @@ const Index = () => (
     srtPath="/subtitles.srt"
     audioPath="/audio.mp3"
     scrollInterval={3000}
+    onSectionChange={(section) => {
+      console.log('Section change callback:', section);
+    }}
   >
     <IndexContent />
   </NarrativeProvider>
