@@ -1,10 +1,9 @@
 import React from "react";
 import { Mail, Github } from "lucide-react";
-import { contactInfo, logos, subtitlesContact } from "@/config/content";
+import { contactInfo, organizations } from "@/config/content";
 import AudioPlayer from "../AudioPlayer";
 import TypewriterText from "../TypewriterText";
 import DividingLine from "../DividingLine";
-import ContactButton from "../ContactButton";
 import { useNarrative } from "@/contexts/NarrativeContext";
 
 interface ContactSectionProps {
@@ -16,6 +15,48 @@ interface ContactSectionProps {
   activeSection: number;
 }
 
+const logos = [
+  {
+    category: "funders",
+    name: "HP",
+    logo: "https://banner2.cleanpng.com/20180413/lyw/avfbdsl42.webp",
+    website: "https://www.hp.com",
+    invert: false,
+  },
+  {
+    category: "developers",
+    name: "Awana Digital",
+    logo: "https://cdn.prod.website-files.com/65fdc7abae501de4e3e82a40/664e5bcc334210d16d6b9f70_AD-Temp-Logomark-HiRes.png",
+    website: "https://awanadigital.com",
+    invert: false,
+  },
+  {
+    category: "developers",
+    name: "Terra Krya",
+    logo: "https://www.terrakrya.com/api/uploads/images/Estudo_Terracrya_03-1-1653617568395.png",
+    website: "https://www.terrakrya.com",
+    invert: true,
+  },
+];
+
+const subtitlesContact = [
+  {
+    text: "para saber mais",
+    backgroundColor: "#4CAF50",
+    textColor: "white" as const,
+  },
+  {
+    text: "para tirar dúvidas",
+    backgroundColor: "#FF5722",
+    textColor: "white" as const,
+  },
+  {
+    text: "para fazer parte",
+    backgroundColor: "#2196F3",
+    textColor: "white" as const,
+  },
+];
+
 const ContactSection: React.FC<ContactSectionProps> = ({
   text,
   defaultMarkdown,
@@ -26,28 +67,25 @@ const ContactSection: React.FC<ContactSectionProps> = ({
 }) => {
   const { isComplete, restart } = useNarrative();
 
-  const contactButtons = [
+  const contactItems = [
     {
       icon: Mail,
-      label: "E-Mail",
       href: `mailto:${contactInfo.email}`,
-      color: "bg-gradient-to-r from-eda-green to-eda-green-light",
-      external: false
+      text: "E-Mail",
     },
     {
       icon: Github,
-      label: "GitHub",
       href: contactInfo.github,
-      color: "bg-gradient-to-r from-gray-700 to-gray-600",
-      external: true
-    }
+      text: "GitHub",
+      external: true,
+    },
   ];
 
   return (
     <div className="relative grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
       <DividingLine />
       <div className="space-y-8 animate-fade-in text-center">
-        <div className="text-2xl md:text-3xl lg:text-4xl text-left h-[8vh] sm:h-[15vh] md:h-[15vh]">
+        <div className="text-2xl md:text-3xl lg:text-4xl text-left h-[8vh] sm:h-[15vh] md:h-[15vh] ">
           <TypewriterText
             text={text}
             defaultMarkdown={defaultMarkdown}
@@ -56,9 +94,22 @@ const ContactSection: React.FC<ContactSectionProps> = ({
             delay={50}
           />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {contactButtons.map((button, index) => (
-            <ContactButton key={index} {...button} />
+        <div className="grid grid-cols-2 gap-4">
+          {contactItems.map((item, index) => (
+            <a
+              key={item.href}
+              href={item.href}
+              target={item.external ? "_blank" : undefined}
+              rel={item.external ? "noopener noreferrer" : undefined}
+              className={`flex justify-center items-center text-white font-bold py-2 px-4 rounded transition-colors ${
+                index % 2 === 0
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
+            >
+              <item.icon className="h-5 w-5 mr-2" />
+              <span>{item.text}</span>
+            </a>
           ))}
         </div>
       </div>

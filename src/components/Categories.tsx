@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MessageCircle } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { categories } from "../config/content";
 
 interface CategoriesProps {
@@ -45,7 +45,7 @@ const Categories: React.FC<CategoriesProps> = ({
             <p className="text-sm text-gray-500">{category.description}</p>
           </div>
           <div className="text-gray-400">
-            <MessageCircle className="h-5 w-5" />
+            <ArrowLeft className="h-5 w-5 rotate-180" />
           </div>
         </motion.button>
       ))}
