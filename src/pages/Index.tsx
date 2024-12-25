@@ -21,7 +21,7 @@ const IndexContent = () => {
     threshold: 50,
     animationDuration: 800,
   });
-  const { currentText, isPlaying, togglePlayback } = useNarrative();
+  const { currentText, isPlaying, togglePlayback, isComplete } = useNarrative();
 
   useEffect(() => {
     const scroller = new AutoScroll({
@@ -35,6 +35,12 @@ const IndexContent = () => {
     setAutoScroller(scroller);
 
     if (isPlaying) {
+      console.log('Auto scroll state:', { isPlaying, isComplete });
+      if (isComplete) {
+        console.log('Narrative complete, scrolling to start');
+        scrollToSection(0);
+      }
+      console.log('Starting auto scroll');
       scroller.start();
     } else {
       scroller.stop();
