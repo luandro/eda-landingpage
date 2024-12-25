@@ -1,6 +1,6 @@
 import React from "react";
 import { Mail, Github } from "lucide-react";
-import { contactInfo } from "@/config/content";
+import { contactInfo, logos, subtitlesContact } from "@/config/content";
 import AudioPlayer from "../AudioPlayer";
 import TypewriterText from "../TypewriterText";
 import DividingLine from "../DividingLine";

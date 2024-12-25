@@ -11,50 +11,35 @@ export const subtitles = [
   },
 ];
 
-export const categories = [
-  {
-    id: 1,
-    title: "Sustentabilidade",
-    description: "Práticas sustentáveis e conservação",
-  },
-  {
-    id: 2,
-    title: "Educação",
-    description: "Recursos educacionais ambientais",
-  },
-  {
-    id: 3,
-    title: "Comunidade",
-    description: "Iniciativas comunitárias",
-  },
-  {
-    id: 4,
-    title: "Inovação",
-    description: "Soluções tecnológicas verdes",
-  },
+export const subtitlesContact = [
+  "Let's talk!",
+  "Get in touch",
+  "Contact us",
+  "Reach out"
 ];
 
-export const features = [
+export const logos = [
   {
-    id: 1,
-    title: "Voice Assistant",
-    description: "Advanced AI-powered voice interactions",
+    name: "Developer 1",
+    logo: "/placeholder.svg",
+    website: "https://example.com",
+    category: "developers",
+    invert: false
   },
   {
-    id: 2,
-    title: "Smart Analytics",
-    description: "Data-driven insights and reporting",
+    name: "Developer 2",
+    logo: "/placeholder.svg",
+    website: "https://example.com",
+    category: "developers",
+    invert: true
   },
   {
-    id: 3,
-    title: "Eco Tracking",
-    description: "Monitor environmental impact",
-  },
-  {
-    id: 4,
-    title: "Community Hub",
-    description: "Connect with other eco-warriors",
-  },
+    name: "Funder 1",
+    logo: "/placeholder.svg",
+    website: "https://example.com",
+    category: "funders",
+    invert: false
+  }
 ];
 
 export const contactInfo = {
