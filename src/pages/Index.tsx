@@ -21,7 +21,14 @@ const IndexContent = () => {
     threshold: 50,
     animationDuration: 800,
   });
-  const { currentText, isPlaying, togglePlayback, isComplete } = useNarrative();
+  
+  const { currentText, isPlaying, togglePlayback, isComplete, currentSection } = useNarrative();
+
+  // Handle section changes from narrative playback
+  const handleSectionChange = (section: number) => {
+    console.log('Section change requested:', section);
+    scrollToSection(section);
+  };
 
   useEffect(() => {
     const scroller = new AutoScroll({
@@ -50,6 +57,7 @@ const IndexContent = () => {
       scroller.stop();
     };
   }, [scrollToSection, isPlaying]);
+
   const { selectedCategory, handleCategorySelect } =
     useCategoryNavigation(scrollToSection);
   const [selectedFeature, setSelectedFeature] = useState<number | null>(null);
@@ -182,6 +190,9 @@ const Index = () => (
     srtPath="/subtitles.srt"
     audioPath="/audio.mp3"
     scrollInterval={3000}
+    onSectionChange={(section) => {
+      console.log('Section change callback:', section);
+    }}
   >
     <IndexContent />
   </NarrativeProvider>

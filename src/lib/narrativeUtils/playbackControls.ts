@@ -7,6 +7,7 @@ export const createPlaybackControls = (
   setIsComplete: (complete: boolean) => void,
   setProgress: (progress: number) => void,
   toast: (options: ToastOptions) => void,
+  onRestart?: () => void,
 ) => {
   const togglePlayback = () => {
     const audio = audioRef.current;
@@ -32,13 +33,14 @@ export const createPlaybackControls = (
     const audio = audioRef.current;
     if (!audio) return;
 
-    setIsPlaying(false); // Pause first to ensure state consistency
+    console.log('Restarting playback');
+    setIsPlaying(false);
     audio.currentTime = 0;
     setCurrentSection(0);
     setIsComplete(false);
     setProgress(0);
+    onRestart?.();
 
-    // Small delay to ensure state updates have propagated
     setTimeout(() => {
       audio.play().catch((error) => {
         console.error("Error playing audio:", error);
