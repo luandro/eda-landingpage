@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { features } from "../config/content";
 
 interface FeaturesProps {
@@ -45,7 +45,7 @@ const Features: React.FC<FeaturesProps> = ({
             <p className="text-sm text-gray-500">{feature.description}</p>
           </div>
           <div className="text-gray-400">
-            <ArrowLeft className="h-5 w-5 rotate-180" />
+            <MessageCircle className="h-5 w-5" />
           </div>
         </motion.button>
       ))}
