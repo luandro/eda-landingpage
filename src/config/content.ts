@@ -1,7 +1,7 @@
 export interface SubtitleItem {
   text: string;
   backgroundColor?: string;
-  textColor?: string;
+  textColor?: "white" | "dark";
 }
 
 export interface Category {
