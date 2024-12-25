@@ -8,7 +8,11 @@ export default defineConfig(({ mode }) => ({
     host: "0.0.0.0",
     port: 8080,
     strictPort: true,
-    hmr: true, // Simplified HMR config to use default settings
+    hmr: {
+      port: 8080,
+      overlay: true,
+      clientPort: 8080
+    }
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(
     Boolean,
