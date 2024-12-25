@@ -12,6 +12,16 @@ import {
 import { NarrativeContextType } from "./types";
 import { useNarrativeState } from "./useNarrativeState";
 
+/**
+ * NarrativeContext orchestrates audio playback and subtitle synchronization by utilizing
+ * several specialized utility modules:
+ *
+ * 1. audioHandler - Manages audio playback events and time synchronization
+ * 2. srtLoader - Handles loading and parsing of SRT subtitle files
+ * 3. playbackControls - Provides play/pause and restart functionality
+ * 4. autoScroll - Manages automatic scrolling through subtitle sections
+ */
+
 const NarrativeContext = createContext<NarrativeContextType | undefined>(
   undefined,
 );
@@ -29,7 +39,6 @@ interface NarrativeProviderProps {
   srtPath?: string;
   audioPath?: string;
   scrollInterval?: number;
-  onSectionChange?: (section: number) => void;
 }
 
 export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
@@ -37,7 +46,6 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
   srtPath = "/subtitles.srt",
   audioPath = "/audio.mp3",
   scrollInterval = 3000,
-  onSectionChange,
 }) => {
   const {
     isPlaying,
@@ -85,34 +93,6 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
     };
   }, [subtitles]);
 
-  // Sync section with current playback time
-  useEffect(() => {
-    if (!audioRef.current || !subtitles.length) return;
-
-    const syncSectionWithPlayback = () => {
-      const currentTime = audioRef.current?.currentTime || 0;
-      const timeMs = currentTime * 1000;
-      
-      console.log('Syncing section with playback time:', timeMs);
-      
-      const newSection = subtitles.findIndex((subtitle, index) => {
-        const nextSubtitle = subtitles[index + 1];
-        return timeMs >= subtitle.startTime && (!nextSubtitle || timeMs < nextSubtitle.startTime);
-      });
-
-      if (newSection !== -1 && newSection !== currentSection) {
-        console.log('Updating section to:', newSection);
-        setCurrentSection(newSection);
-        onSectionChange?.(newSection);
-      }
-    };
-
-    if (isPlaying) {
-      console.log('Playback started/resumed, syncing section');
-      syncSectionWithPlayback();
-    }
-  }, [isPlaying, subtitles, currentSection, onSectionChange]);
-
   // Auto-scrolling effect
   useEffect(() => {
     if (isPlaying) {
@@ -128,7 +108,6 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
 
       if (newSection !== -1 && newSection !== currentSection) {
         setCurrentSection(newSection);
-        onSectionChange?.(newSection);
       }
     }
 
@@ -141,20 +120,25 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
       setCurrentText,
       scrollInterval
     );
-  }, [isPlaying, isComplete, currentSection, subtitles, scrollInterval, onSectionChange]);
+  }, [isPlaying, isComplete, currentSection, subtitles, scrollInterval]);
 
-  // Create playback controls with enhanced restart behavior
+  // Update text when section changes
+  useEffect(() => {
+    if (!isPlaying) {
+      setCurrentText(
+        subtitles[currentSection]?.text || subtitles[0]?.text || "",
+      );
+    }
+  }, [currentSection, isPlaying]);
+
+  // Create playback controls
   const { togglePlayback, restart } = createPlaybackControls(
     audioRef,
     setIsPlaying,
     setCurrentSection,
     setIsComplete,
     setProgress,
-    toast,
-    () => {
-      console.log('Restarting narrative and scrolling to first section');
-      onSectionChange?.(0);
-    }
+    toast
   );
 
   return (
