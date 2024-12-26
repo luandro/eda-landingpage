@@ -12,7 +12,7 @@ export interface AnimationConfig {
 }
 
 export interface StepAnimationConfig extends AnimationConfig {
-  stepDelay?: number; // Delay between each step
+  stepDelay?: number;
 }
 
 export interface ChatMessageProps {
@@ -48,19 +48,16 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   stepsAnimation,
 }) => {
   const isAgent = type === "agent";
-
-  // Determine which animations to use
   const animations = Array.isArray(animation)
     ? animation
     : [animation || defaultAnimation];
   const currentAnimation = animations[0];
 
-  // Merge default animation with provided animation
   const finalAnimation: AnimationConfig = {
     initial: {
       ...defaultAnimation.initial,
       ...currentAnimation?.initial,
-      x: currentAnimation?.initial?.x ?? (isAgent ? 20 : -20), // Default x offset if not provided
+      x: currentAnimation?.initial?.x ?? (isAgent ? 20 : -20),
     },
     animate: {
       ...defaultAnimation.animate,
@@ -69,11 +66,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     transition: {
       ...defaultAnimation.transition,
       ...currentAnimation?.transition,
-      layout: true, // Enable smooth layout animations
+      layout: true,
     },
   };
 
-  // Merge default steps animation with provided animation
   const finalStepsAnimation: StepAnimationConfig = {
     ...defaultStepsAnimation,
     ...stepsAnimation,
@@ -93,7 +89,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     >
       <motion.div
         className={cn(
-          "text-white p-3 rounded-2xl shadow-lg transform hover:scale-105 transition-transform",
+          "hidden md:flex text-white p-3 rounded-2xl shadow-lg transform hover:scale-105 transition-transform",
           isAgent
             ? "bg-gradient-to-br from-eda-orange to-eda-orange/80"
             : "bg-gradient-to-br from-eda-green to-eda-green/80",
