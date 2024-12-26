@@ -29,6 +29,8 @@ const Section: React.FC<SectionProps> = ({
         justify-center
         transition-opacity
         duration-1000
+        pt-16
+        md:pt-0
         ${background}
         ${activeSection === index ? "opacity-100" : "opacity-0"}
         ${className}
