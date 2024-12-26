@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { Send } from "lucide-react";
 import { features } from "../config/content";
 
 interface FeaturesProps {
@@ -44,8 +44,13 @@ const Features: React.FC<FeaturesProps> = ({
             </h3>
             <p className="text-sm text-gray-500">{feature.description}</p>
           </div>
-          <div className="text-gray-400">
-            <ArrowLeft className="h-5 w-5 rotate-180" />
+          <div className="text-gray-400 md:hidden">
+            <div className="bg-eda-orange text-white p-2 rounded-full hover:bg-eda-orange-light transition-colors">
+              <Send className="h-5 w-5" />
+            </div>
+          </div>
+          <div className="text-gray-400 hidden md:block">
+            <Send className="h-5 w-5 rotate-180" />
           </div>
         </motion.button>
       ))}
