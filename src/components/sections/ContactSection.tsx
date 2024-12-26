@@ -72,16 +72,12 @@ const ContactSection: React.FC<ContactSectionProps> = ({
       icon: Mail,
       href: `mailto:${contactInfo.email}`,
       text: "E-Mail",
-      bgColor: "bg-gradient-to-r from-blue-500 to-blue-600",
-      hoverBg: "hover:from-blue-600 hover:to-blue-700",
     },
     {
       icon: Github,
       href: contactInfo.github,
       text: "GitHub",
       external: true,
-      bgColor: "bg-gradient-to-r from-gray-700 to-gray-800",
-      hoverBg: "hover:from-gray-800 hover:to-gray-900",
     },
   ];
 
@@ -99,15 +95,19 @@ const ContactSection: React.FC<ContactSectionProps> = ({
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
-          {contactItems.map((item) => (
+          {contactItems.map((item, index) => (
             <a
               key={item.href}
               href={item.href}
               target={item.external ? "_blank" : undefined}
               rel={item.external ? "noopener noreferrer" : undefined}
-              className={`flex justify-center items-center text-white font-medium py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg ${item.bgColor} ${item.hoverBg}`}
+              className={`flex justify-center items-center text-white font-bold py-2 px-4 rounded transition-colors ${
+                index % 2 === 0
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
             >
-              <item.icon className="h-5 w-5 mr-3" />
+              <item.icon className="h-5 w-5 mr-2" />
               <span>{item.text}</span>
             </a>
           ))}
@@ -143,6 +143,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
                     className={`h-12 object-contain mb-4 ${developer.invert ? "invert" : ""}`}
                   />
                 </a>
+                {/* <span className="text-sm text-gray-600">{developer.description}</span> */}
               </div>
             ))}
         </div>
