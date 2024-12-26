@@ -45,9 +45,11 @@ const Categories: React.FC<CategoriesProps> = ({
             <p className="text-sm text-gray-500">{category.description}</p>
           </div>
           <div className="text-gray-400 md:hidden">
-            <div className="bg-eda-green text-white p-2 rounded-full hover:bg-eda-green-light transition-colors">
-              <Send className="h-5 w-5" />
-            </div>
+            <button 
+              className="w-full px-6 py-3 text-center text-eda-green bg-[#F2FCE2] rounded-full hover:bg-[#E5F5D5] transition-colors"
+            >
+              Select
+            </button>
           </div>
           <div className="text-gray-400 hidden md:block">
             <Send className="h-5 w-5 rotate-180" />

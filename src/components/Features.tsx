@@ -45,9 +45,11 @@ const Features: React.FC<FeaturesProps> = ({
             <p className="text-sm text-gray-500">{feature.description}</p>
           </div>
           <div className="text-gray-400 md:hidden">
-            <div className="bg-eda-orange text-white p-2 rounded-full hover:bg-eda-orange-light transition-colors">
-              <Send className="h-5 w-5" />
-            </div>
+            <button 
+              className="w-full px-6 py-3 text-center text-eda-orange bg-[#FFF3E0] rounded-full hover:bg-[#FFE4CC] transition-colors"
+            >
+              Select
+            </button>
           </div>
           <div className="text-gray-400 hidden md:block">
             <Send className="h-5 w-5 rotate-180" />
