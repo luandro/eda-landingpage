@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import TypewriterEffect from "./TypewriterEffect";
+import RotatingTextAnimation from "./RotatingTextAnimation";
 
 export interface SubtitleItem {
   text: string;
@@ -52,22 +52,6 @@ const RotatingText: React.FC<RotatingTextProps> = ({
     return () => clearInterval(intervalId);
   }, [rotationSpeed, subtitles.length]);
 
-  const getTextColorClass = (
-    backgroundColor?: string,
-    textColor?: "white" | "dark",
-  ) => {
-    if (textColor === "white") return "text-white";
-    if (textColor === "dark") return "text-gray-900";
-    if (!backgroundColor) return "text-white";
-
-    const r = parseInt(backgroundColor.slice(1, 3), 16);
-    const g = parseInt(backgroundColor.slice(3, 5), 16);
-    const b = parseInt(backgroundColor.slice(5, 7), 16);
-    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-
-    return brightness > 128 ? "text-gray-900" : "text-white";
-  };
-
   const currentSubtitle = subtitles[currentIndex];
 
   return (
@@ -81,55 +65,13 @@ const RotatingText: React.FC<RotatingTextProps> = ({
         lineHeight: "inherit",
       }}
     >
-      {currentSubtitle.href ? (
-        <a
-          href={currentSubtitle.href}
-          onClick={(e) => {
-            e.preventDefault();
-            if (currentSubtitle.href) {
-              scrollToSection(currentSubtitle.href);
-            }
-          }}
-          className={cn(
-            "transition-colors hover:underline focus:outline-none",
-            getTextColorClass(
-              currentSubtitle.backgroundColor,
-              currentSubtitle.textColor,
-            ),
-          )}
-          style={{ display: "inline" }}
-        >
-          {typewriterEnabled ? (
-            <TypewriterEffect
-              text={currentSubtitle.text}
-              delay={typewriterDelay}
-              showCursor={false}
-            />
-          ) : (
-            currentSubtitle.text
-          )}
-        </a>
-      ) : (
-        <span
-          className={cn(
-            getTextColorClass(
-              currentSubtitle.backgroundColor,
-              currentSubtitle.textColor,
-            ),
-          )}
-          style={{ display: "inline" }}
-        >
-          {typewriterEnabled ? (
-            <TypewriterEffect
-              text={currentSubtitle.text}
-              delay={typewriterDelay}
-              showCursor={false}
-            />
-          ) : (
-            currentSubtitle.text
-          )}
-        </span>
-      )}
+      <RotatingTextAnimation
+        subtitle={currentSubtitle}
+        isVisible={isVisible}
+        typewriterEnabled={typewriterEnabled}
+        typewriterDelay={typewriterDelay}
+        onScrollToSection={scrollToSection}
+      />
     </span>
   );
 };
