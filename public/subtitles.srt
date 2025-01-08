@@ -1,15 +1,15 @@
-1  
-00:00:00,000 --> 00:00:04,000  
-Oi, eu sou a Êda! Estou aqui para conectar você a ferramentas digitais de forma simples e acessível. Vamos começar?  
+1
+00:00:00,000 --> 00:00:04,000
+Oi, eu sou a Êda! Estou aqui para conectar você a ferramentas digitais de forma simples e acessível. Vamos começar?
 
-2  
-00:00:04,000 --> 00:00:08,000  
-Aqui estão algumas das minhas principais funcionalidades para facilitar seu dia a dia.  
+2
+00:00:04,000 --> 00:00:08,000
+Aqui estão algumas das minhas principais funcionalidades para facilitar seu dia a dia.
 
-3  
-00:00:08,000 --> 00:00:12,000  
-Aqui estão algumas formas práticas de usar as ferramentas. O que você quer fazer?  
+3
+00:00:08,000 --> 00:00:12,000
+Aqui estão algumas formas práticas de usar as ferramentas. O que você quer fazer?
 
-4  
-00:00:12,000 --> 00:00:16,000  
+4
+00:00:12,000 --> 00:00:16,000
 Quer falar com a gente ou saber mais? Você pode entrar em contato ou testar o chatbot no WhatsApp. Estamos prontos para ajudar!

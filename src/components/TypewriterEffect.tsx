@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { getCurrentWord } from "../lib/narrativeUtils/wordTiming";
 
 interface TypewriterEffectProps {
   text: string;
@@ -7,6 +8,9 @@ interface TypewriterEffectProps {
   className?: string;
   onComplete?: () => void;
   showCursor?: boolean;
+  currentTime?: number;
+  startTime?: number;
+  endTime?: number;
 }
 
 const TypewriterEffect: React.FC<TypewriterEffectProps> = ({
@@ -15,9 +19,20 @@ const TypewriterEffect: React.FC<TypewriterEffectProps> = ({
   className,
   onComplete,
   showCursor = true,
+  currentTime = 0,
+  startTime = 0,
+  endTime = 0,
 }) => {
   const [displayText, setDisplayText] = useState("0");
   const [isTyping, setIsTyping] = useState(true);
+  const [currentWordIndex, setCurrentWordIndex] = useState(-1);
+
+  useEffect(() => {
+    if (currentTime > 0) {
+      const wordIndex = getCurrentWord(text, currentTime, startTime, endTime);
+      setCurrentWordIndex(wordIndex);
+    }
+  }, [currentTime, text, startTime, endTime]);
 
   useEffect(() => {
     setDisplayText("0");
@@ -31,7 +46,6 @@ const TypewriterEffect: React.FC<TypewriterEffectProps> = ({
       return;
     }
 
-    // Calculate total visible characters by processing the text segments
     const segments = processMarkdownSegments(text);
     const totalLength = segments.reduce((total, segment) =>
       total + Array.from(segment.text).length, 0);
@@ -124,16 +138,15 @@ const TypewriterEffect: React.FC<TypewriterEffectProps> = ({
     return segments;
   };
 
-    // Function to render segments with typewriter effect
   const processMarkdown = (text: string, visibleChars: number) => {
     const segments = processMarkdownSegments(text);
     let result = '';
     let currentPos = 0;
+    let wordCount = 0;
 
     for (const segment of segments) {
       if (currentPos >= visibleChars) break;
 
-      // Ensure proper UTF-8 character handling
       const chars = Array.from(segment.text.normalize('NFC'));
       const remainingChars = visibleChars - currentPos;
       const visibleCount = Math.min(chars.length, remainingChars);
@@ -141,20 +154,27 @@ const TypewriterEffect: React.FC<TypewriterEffectProps> = ({
       if (visibleCount <= 0) continue;
 
       const visibleText = chars.slice(0, visibleCount).join('');
+      const words = visibleText.split(' ');
 
-      // Handle UTF-8 characters and links properly
+      const processedWords = words.map((word, index) => {
+        const isCurrentWord = wordCount + index === currentWordIndex;
+        return isCurrentWord 
+          ? `<span class="bg-blue-200 dark:bg-blue-800 transition-colors duration-200">${word}</span>`
+          : word;
+      }).join(' ');
+
+      wordCount += words.length;
+
       if (segment.isLink) {
-        // Always show the visible text normally while typing
-        result += visibleText;
-
-        // When the full text is visible, wrap it in a link
         if (visibleCount === chars.length) {
           const encoded = encodeURI(segment.url || '');
-          result = result.slice(0, -(visibleText.length)) +
-            `<a href="${encoded}" class="inline-block">${visibleText}</a>`;
+          result = result.slice(0, -(processedWords.length)) +
+            `<a href="${encoded}" class="inline-block">${processedWords}</a>`;
+        } else {
+          result += processedWords;
         }
       } else {
-        result += visibleText;
+        result += processedWords;
       }
 
       currentPos += visibleCount;
@@ -172,7 +192,7 @@ const TypewriterEffect: React.FC<TypewriterEffectProps> = ({
           (showCursor && isTyping ? '<span class="animate-blink ml-0.5">|</span>' : ""),
       }}
     />
-    );
+  );
 };
 
 export default TypewriterEffect;
