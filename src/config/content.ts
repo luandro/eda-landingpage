@@ -1,92 +1,56 @@
-export const subtitles = [
-  {
-    startTime: 0.76,
-    endTime: 3.44,
-    text: "Olá, meu nome é Eda.",
-  },
-  {
-    startTime: 5.84,
-    endTime: 13.6,
-    text: "Sou uma assistente virtual de voz para Guardiões da Terra.",
-  },
-];
-
 export const categories = [
   {
     id: 1,
-    title: "Sustentabilidade",
-    description: "Práticas sustentáveis e conservação",
+    icon: "📊",
   },
   {
     id: 2,
-    title: "Educação",
-    description: "Recursos educacionais ambientais",
+    icon: "🌱",
   },
   {
     id: 3,
-    title: "Comunidade",
-    description: "Iniciativas comunitárias",
+    icon: "🤝",
   },
   {
     id: 4,
-    title: "Inovação",
-    description: "Soluções tecnológicas verdes",
+    icon: "📚",
   },
 ];
 
 export const features = [
   {
     id: 1,
-    title: "Voice Assistant",
-    description: "Advanced AI-powered voice interactions",
+    icon: "💬",
   },
   {
     id: 2,
-    title: "Smart Analytics",
-    description: "Data-driven insights and reporting",
+    icon: "🔧",
   },
   {
     id: 3,
-    title: "Eco Tracking",
-    description: "Monitor environmental impact",
+    icon: "🎯",
   },
   {
     id: 4,
-    title: "Community Hub",
-    description: "Connect with other eco-warriors",
+    icon: "🔄",
   },
 ];
 
 export const contactInfo = {
-  email: "contact@example.com",
-  phone: "+55 (11) 1234-5678",
-  website: "www.example.com",
-  github: "https://github.com/example",
+  email: "contato@eda.com",
+  phone: "5511999999999",
+  github: "https://github.com/eda-project",
 };
 
 export const organizations = [
   {
-    id: 1,
-    name: "Organização 1",
-    description:
-      "Breve descrição da contribuição desta organização para o projeto.",
+    name: "Awana Digital",
+    logo: "/logos/awana.png",
+    website: "https://awanadigital.com",
   },
   {
-    id: 2,
-    name: "Organização 2",
-    description:
-      "Breve descrição da contribuição desta organização para o projeto.",
-  },
-  {
-    id: 3,
-    name: "Organização 3",
-    description:
-      "Breve descrição da contribuição desta organização para o projeto.",
-  },
-  {
-    id: 4,
-    name: "Organização 4",
-    description:
-      "Breve descrição da contribuição desta organização para o projeto.",
+    name: "Terra Krya",
+    logo: "/logos/terrakrya.png",
+    website: "https://terrakrya.com",
   },
 ];

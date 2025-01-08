@@ -1,38 +1,54 @@
 {
   "categories": {
-    "sustainability": {
-      "title": "Sustainability",
-      "description": "Sustainable practices and conservation"
+    "1": {
+      "title": "Organize Data",
+      "description": "Organize data and maps"
     },
-    "education": {
-      "title": "Education",
-      "description": "Environmental educational resources"
+    "2": {
+      "title": "Monitor",
+      "description": "Monitor environmental changes"
     },
-    "community": {
-      "title": "Community",
-      "description": "Community initiatives"
+    "3": {
+      "title": "Strengthen",
+      "description": "Strengthen local rights and initiatives"
     },
-    "innovation": {
-      "title": "Innovation",
-      "description": "Green technology solutions"
+    "4": {
+      "title": "Learn",
+      "description": "Learn from success stories"
     }
   },
   "features": {
-    "voiceAssistant": {
-      "title": "Voice Assistant",
-      "description": "Advanced AI-powered voice interactions"
+    "1": {
+      "title": "WhatsApp",
+      "description": "Connect via WhatsApp"
     },
-    "smartAnalytics": {
-      "title": "Smart Analytics",
-      "description": "Data-driven insights and reporting"
+    "2": {
+      "title": "Access",
+      "description": "Simple access to digital tools"
     },
-    "ecoTracking": {
-      "title": "Eco Tracking",
-      "description": "Monitor environmental impact"
+    "3": {
+      "title": "Intuitive",
+      "description": "Intuitive use, even without tech experience"
     },
-    "communityHub": {
-      "title": "Community Hub",
-      "description": "Connect with other eco-warriors"
+    "4": {
+      "title": "Adaptable",
+      "description": "Solutions that adapt to your needs"
+    }
+  },
+  "sections": {
+    "hero": {
+      "greeting": "Hi, I'm Êda!",
+      "intro": "I'm here to connect you with digital tools in a simple and accessible way. Shall we begin?"
+    },
+    "features": {
+      "title": "Here are some of my main features to make your daily life easier:"
+    },
+    "categories": {
+      "title": "Here are some practical ways to use the tools. What would you like to do?"
+    },
+    "contact": {
+      "title": "Want to talk to us or learn more?",
+      "description": "You can explore our GitHub, send an email, or test the chatbot on WhatsApp. We're ready to help!"
     }
   },
   "common": {
