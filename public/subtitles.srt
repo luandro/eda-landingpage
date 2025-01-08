@@ -1,47 +1,15 @@
 1
-00:00:00,000 --> 00:00:05,000
-Oi, eu sou a Êda! Estou aqui para conectar você a ferramentas digitais de forma simples e acessível. Vamos começar?
+00:00:00,000 --> 00:00:03,000
+Happy birthday to you,
 
 2
-00:00:05,000 --> 00:00:10,000
-Aqui estão algumas das minhas principais funcionalidades para facilitar seu dia a dia:
+00:00:03,000 --> 00:00:06,000
+happy birthday to you,
 
 3
-00:00:10,000 --> 00:00:13,000
-Conexão via WhatsApp.
+00:00:06,000 --> 00:00:09,000
+happy birthday, happy birthday,
 
 4
-00:00:13,000 --> 00:00:16,000
-Acesso simples a ferramentas digitais.
-
-5
-00:00:16,000 --> 00:00:19,000
-Uso intuitivo, mesmo sem experiência tecnológica.
-
-6
-00:00:19,000 --> 00:00:22,000
-Soluções que se adaptam às suas necessidades.
-
-7
-00:00:22,000 --> 00:00:27,000
-Aqui estão algumas formas práticas de usar as ferramentas. O que você quer fazer?
-
-8
-00:00:27,000 --> 00:00:30,000
-Organizar dados e mapas.
-
-9
-00:00:30,000 --> 00:00:33,000
-Monitorar mudanças no ambiente.
-
-10
-00:00:33,000 --> 00:00:36,000
-Fortalecer direitos e iniciativas locais.
-
-11
-00:00:36,000 --> 00:00:39,000
-Aprender com histórias de sucesso.
-
-12
-00:00:39,000 --> 00:00:45,000
-Quer falar com a gente ou saber mais? Você pode explorar nosso GitHub, enviar um e-mail ou testar o chatbot no WhatsApp. Estamos prontos para ajudar!
+00:00:09,000 --> 00:00:11,920
+happy birthday to you.
