@@ -1,0 +1,42 @@
+{
+  "categories": {
+    "sustainability": {
+      "title": "Sustentabilidade",
+      "description": "Práticas sustentáveis e conservação"
+    },
+    "education": {
+      "title": "Educação",
+      "description": "Recursos educacionais ambientais"
+    },
+    "community": {
+      "title": "Comunidade",
+      "description": "Iniciativas comunitárias"
+    },
+    "innovation": {
+      "title": "Inovação",
+      "description": "Soluções tecnológicas verdes"
+    }
+  },
+  "features": {
+    "voiceAssistant": {
+      "title": "Assistente de Voz",
+      "description": "Interações de voz com IA avançada"
+    },
+    "smartAnalytics": {
+      "title": "Análise Inteligente",
+      "description": "Insights e relatórios baseados em dados"
+    },
+    "ecoTracking": {
+      "title": "Rastreamento Ecológico",
+      "description": "Monitore o impacto ambiental"
+    },
+    "communityHub": {
+      "title": "Hub Comunitário",
+      "description": "Conecte-se com outros eco-guerreiros"
+    }
+  },
+  "common": {
+    "select": "Selecionar",
+    "language": "Idioma"
+  }
+}

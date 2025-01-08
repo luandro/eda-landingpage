@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import Category from "./pages/Category";
+import LanguageToggle from "./components/LanguageToggle";
+import "./i18n/config";
 
 const queryClient = new QueryClient();
 
@@ -13,6 +15,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <LanguageToggle />
       <HashRouter>
         <Routes>
           <Route path="/" element={<Index />} />
