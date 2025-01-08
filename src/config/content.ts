@@ -2,18 +2,22 @@ export const categories = [
   {
     id: 1,
     icon: "📊",
+    title: "Financiamentos",
   },
   {
     id: 2,
     icon: "🌱",
+    title: "Cursos Online",
   },
   {
     id: 3,
     icon: "🤝",
+    title: "Ferramentas",
   },
   {
     id: 4,
     icon: "📚",
+    title: "Autonomia",
   },
 ];
 
