@@ -25,6 +25,8 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   onComplete,
   animatedBar = true,
 }) => {
+  console.log('TypewriterText props:', { text, defaultMarkdown, rotatingText, rotationSpeed, delay, initialDelay, animatedBar });
+
   const [showRotating, setShowRotating] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const {
@@ -32,30 +34,49 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
     isComplete,
     isPlaying,
     currentText: narrativeText,
-    audioRef,
   } = useNarrative();
 
+  console.log('TypewriterText state:', { showRotating, hasStarted, progress, isComplete, isPlaying, narrativeText });
+
+  // Use SRT data when playing, defaultMarkdown when not playing
   const displayText = isPlaying ? narrativeText : defaultMarkdown || text;
-  const currentTime = audioRef.current?.currentTime || 0;
+  console.log('Display text:', { displayText, isPlaying });
 
   useEffect(() => {
+    console.log('Setting up initial delay timer:', { initialDelay });
     const startTimeout = setTimeout(() => {
+      console.log('Initial delay complete, setting hasStarted to true');
       setHasStarted(true);
     }, initialDelay);
 
-    return () => clearTimeout(startTimeout);
+    return () => {
+      console.log('Cleaning up initial delay timer');
+      clearTimeout(startTimeout);
+    };
   }, [initialDelay]);
 
   if (!hasStarted) {
+    console.log('Component not started yet, returning null');
     return null;
   }
 
   const handleComplete = () => {
+    console.log('TypewriterEffect complete, enabling rotating subtitles');
     setShowRotating(true);
     onComplete?.();
   };
 
+  console.log('Current text:', displayText);
+
   const getProgressBars = () => {
+    console.log('Progress bars:', {
+      isComplete,
+      progress,
+      isPlaying,
+      calculatedWidth: `${isComplete ? 100 : progress}%`,
+      calculatedOpacity: isPlaying ? 1 : 0
+    });
+
     return (
       <>
         <div
@@ -75,7 +96,6 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
       </>
     );
   };
-
   return (
     <div className="font-mono tabular-nums relative">
       {getProgressBars()}
@@ -85,9 +105,6 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
           delay={delay}
           onComplete={handleComplete}
           showCursor={false}
-          currentTime={currentTime * 1000}
-          startTime={0}
-          endTime={audioRef.current?.duration ? audioRef.current.duration * 1000 : 0}
           className="[&_a]:text-white [&_a]:hover:text-white/80 [&_a]:transition-colors [&_a]:bg-blue-500 [&_a]:px-1 [&_a]:py-0.5 [&_a]:rounded"
         />
         {showRotating && !isPlaying && rotatingText?.length > 0 && (
