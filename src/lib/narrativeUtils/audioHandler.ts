@@ -12,27 +12,33 @@ export const createAudioHandlers = (
 ) => {
   // Handles audio time updates to sync subtitles and progress bar
   const handleTimeUpdate = () => {
-    // Get reference to audio element
     const audio = audioRef.current;
     if (!audio) return;
 
-    // Convert current audio time to milliseconds for subtitle matching
-    const currentTime = audio.currentTime * 1000;
-    console.log('Current time (ms):', currentTime);
+    // Get precise current time in milliseconds
+    const currentTime = Math.floor(audio.currentTime * 1000);
+    console.log('Current audio time (ms):', currentTime);
 
     // Find the subtitle that should be displayed at current time
     const subtitle = getCurrentSubtitle(subtitles, currentTime);
-    console.log('Found subtitle:', subtitle);
+    console.log('Current subtitle:', subtitle);
 
     if (subtitle) {
-      // Update the displayed subtitle text
-      setCurrentText(subtitle.text);
+      // Calculate precise timing within the subtitle
+      const subtitleStart = subtitle.startTime;
+      const subtitleDuration = subtitle.endTime - subtitle.startTime;
+      const subtitleProgress = (currentTime - subtitleStart) / subtitleDuration;
+      console.log('Subtitle timing:', {
+        start: subtitleStart,
+        duration: subtitleDuration,
+        progress: subtitleProgress
+      });
 
-      // Calculate and update progress percentage
-      const duration = audio.duration * 1000;
-      const progress = (currentTime / duration) * 100;
-      console.log('Setting progress:', progress);
-      setProgress(progress);
+      // Update text and progress with precise timing
+      setCurrentText(subtitle.text);
+      const totalDuration = audio.duration * 1000;
+      const progress = (currentTime / totalDuration) * 100;
+      setProgress(Math.min(100, progress));
     }
   };
 
@@ -41,7 +47,6 @@ export const createAudioHandlers = (
     setIsPlaying(false);
     setIsComplete(true);
     const lastSubtitle = subtitles[subtitles.length - 1];
-    console.log('Last subtitle:', lastSubtitle);
     if (lastSubtitle) {
       setCurrentText(lastSubtitle.text);
       setCurrentSection(subtitles.length - 1);

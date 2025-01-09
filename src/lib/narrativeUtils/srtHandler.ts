@@ -2,16 +2,21 @@ import { SubtitleEntry } from "../../contexts/types";
 import { ToastOptions } from "../../types/toast";
 
 /**
- * Converts SRT timestamp to milliseconds
+ * Converts SRT timestamp to milliseconds with high precision
  */
 const timeToMs = (timeStr: string): number => {
   const [time, ms] = timeStr.split(",");
   const [hours, minutes, seconds] = time.split(":").map(Number);
-  return hours * 3600000 + minutes * 60000 + seconds * 1000 + parseInt(ms);
+  return (
+    hours * 3600000 + 
+    minutes * 60000 + 
+    seconds * 1000 + 
+    parseInt(ms)
+  );
 };
 
 /**
- * Parses SRT content into structured subtitle entries
+ * Parses SRT content into structured subtitle entries with precise timing
  */
 const parseSRT = (content: string): SubtitleEntry[] => {
   const entries: SubtitleEntry[] = [];
@@ -25,6 +30,13 @@ const parseSRT = (content: string): SubtitleEntry[] => {
     const [startTime, endTime] = lines[1].split(" --> ").map(timeToMs);
     const text = lines.slice(2).join("\n").trim();
 
+    console.log('Parsed subtitle entry:', {
+      id,
+      startTime,
+      endTime,
+      text
+    });
+
     entries.push({ id, startTime, endTime, text });
   });
 
@@ -32,7 +44,7 @@ const parseSRT = (content: string): SubtitleEntry[] => {
 };
 
 /**
- * Gets the current subtitle based on the playback time
+ * Gets the current subtitle based on precise playback time
  */
 export const getCurrentSubtitle = (
   subtitles: SubtitleEntry[],
@@ -45,19 +57,28 @@ export const getCurrentSubtitle = (
     return null;
   }
 
-  // Handle both property naming conventions (startTime/endTime and start/end)
+  // Find subtitle that matches current time precisely
   const subtitle = subtitles.find((sub) => {
-    const start = 'startTime' in sub ? sub.startTime : (sub as any).start;
-    const end = 'endTime' in sub ? sub.endTime : (sub as any).end;
-    return currentTime >= start && currentTime <= end;
+    const isWithinRange = currentTime >= sub.startTime && currentTime <= sub.endTime;
+    if (isWithinRange) {
+      console.log('Found matching subtitle:', {
+        id: sub.id,
+        text: sub.text,
+        timing: {
+          current: currentTime,
+          start: sub.startTime,
+          end: sub.endTime
+        }
+      });
+    }
+    return isWithinRange;
   });
 
-  console.log('Found subtitle:', subtitle);
   return subtitle;
 };
 
 /**
- * Loads and parses an SRT file from the given path
+ * Loads and parses an SRT file with precise timing information
  */
 export const loadSRTFile = async (
   srtPath: string,
@@ -65,11 +86,13 @@ export const loadSRTFile = async (
   toast?: (options: ToastOptions) => void
 ): Promise<SubtitleEntry[] | null> => {
   try {
+    console.log('Loading SRT file:', srtPath);
     const response = await fetch(srtPath);
     if (!response.ok) throw new Error("Failed to load SRT file");
 
     const content = await response.text();
     const parsed = parseSRT(content);
+    console.log('Successfully parsed subtitles:', parsed);
     setSubtitles(parsed);
     return parsed;
   } catch (error) {
