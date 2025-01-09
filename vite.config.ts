@@ -5,10 +5,12 @@ import { componentTagger } from "lovable-tagger";
 
 export default defineConfig(({ mode }) => ({
   server: {
-    host: "0.0.0.0",
+    host: true, // This allows proper host detection
     port: 8080,
     strictPort: true,
-    hmr: true, // Simplified HMR config to use default settings
+    hmr: {
+      clientPort: 443 // Force client to use HTTPS port
+    }
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(
     Boolean,
