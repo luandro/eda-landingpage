@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { processMarkdown } from "@/lib/textProcessing";
 import TypewriterCursor from "./TypewriterCursor";
+import { calculateWordTimings, getCurrentWord } from "@/lib/narrativeUtils/wordTiming";
 
 interface TypewriterEffectProps {
   text: string;
@@ -9,6 +10,9 @@ interface TypewriterEffectProps {
   className?: string;
   onComplete?: () => void;
   showCursor?: boolean;
+  currentTime?: number;
+  startTime?: number;
+  endTime?: number;
 }
 
 const TypewriterEffect: React.FC<TypewriterEffectProps> = ({
@@ -17,9 +21,13 @@ const TypewriterEffect: React.FC<TypewriterEffectProps> = ({
   className,
   onComplete,
   showCursor = true,
+  currentTime = 0,
+  startTime = 0,
+  endTime = 0,
 }) => {
   const [displayText, setDisplayText] = useState("0");
   const [isTyping, setIsTyping] = useState(true);
+  const [currentHighlightedWord, setCurrentHighlightedWord] = useState<string | null>(null);
 
   useEffect(() => {
     setDisplayText("0");
@@ -49,11 +57,34 @@ const TypewriterEffect: React.FC<TypewriterEffectProps> = ({
     return () => clearTimeout(timeout);
   }, [text, displayText, delay, onComplete]);
 
+  // Word highlighting effect
+  useEffect(() => {
+    if (startTime && endTime && currentTime) {
+      const wordTimings = calculateWordTimings(text, startTime, endTime);
+      const highlightedWord = getCurrentWord(wordTimings, currentTime);
+      setCurrentHighlightedWord(highlightedWord);
+    }
+  }, [text, currentTime, startTime, endTime]);
+
+  const highlightWord = (content: string) => {
+    if (!currentHighlightedWord) return content;
+
+    const parts = content.split(new RegExp(`(${currentHighlightedWord})`, 'gi'));
+    return parts.map((part, i) => 
+      part.toLowerCase() === currentHighlightedWord?.toLowerCase() ? 
+        `<span class="bg-blue-200 dark:bg-blue-800 transition-colors duration-200">${part}</span>` : 
+        part
+    ).join('');
+  };
+
+  const processedContent = processMarkdown(text, parseInt(displayText));
+  const highlightedContent = highlightWord(processedContent);
+
   return (
     <span className={cn("inline-block", className)}>
       <span
         dangerouslySetInnerHTML={{
-          __html: processMarkdown(text, parseInt(displayText)),
+          __html: highlightedContent,
         }}
       />
       <TypewriterCursor isVisible={showCursor && isTyping} />

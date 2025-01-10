@@ -34,6 +34,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
     isComplete,
     isPlaying,
     currentText: narrativeText,
+    audioRef,
   } = useNarrative();
 
   console.log('TypewriterText state:', { showRotating, hasStarted, progress, isComplete, isPlaying, narrativeText });
@@ -66,6 +67,13 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
     onComplete?.();
   };
 
+  const getCurrentTime = () => {
+    if (audioRef.current && isPlaying) {
+      return audioRef.current.currentTime * 1000;
+    }
+    return 0;
+  };
+
   console.log('Current text:', displayText);
 
   const getProgressBars = () => {
@@ -96,6 +104,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
       </>
     );
   };
+
   return (
     <div className="font-mono tabular-nums relative">
       {getProgressBars()}
@@ -105,6 +114,9 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
           delay={delay}
           onComplete={handleComplete}
           showCursor={false}
+          currentTime={getCurrentTime()}
+          startTime={0} // These should come from your SRT data
+          endTime={audioRef.current?.duration ? audioRef.current.duration * 1000 : 0}
           className="[&_a]:text-white [&_a]:hover:text-white/80 [&_a]:transition-colors [&_a]:bg-blue-500 [&_a]:px-1 [&_a]:py-0.5 [&_a]:rounded"
         />
         {showRotating && !isPlaying && rotatingText?.length > 0 && (
