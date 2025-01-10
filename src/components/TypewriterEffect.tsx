@@ -57,11 +57,18 @@ const TypewriterEffect: React.FC<TypewriterEffectProps> = ({
     return () => clearTimeout(timeout);
   }, [text, displayText, delay, onComplete]);
 
-  // Word highlighting effect
+  // Enhanced word highlighting effect
   useEffect(() => {
     if (startTime && endTime && currentTime) {
       const wordTimings = calculateWordTimings(text, startTime, endTime);
       const highlightedWord = getCurrentWord(wordTimings, currentTime);
+      
+      console.log('Updating highlighted word:', {
+        currentTime,
+        highlightedWord,
+        totalWords: wordTimings.length
+      });
+      
       setCurrentHighlightedWord(highlightedWord);
     }
   }, [text, currentTime, startTime, endTime]);
@@ -72,7 +79,7 @@ const TypewriterEffect: React.FC<TypewriterEffectProps> = ({
     const parts = content.split(new RegExp(`(${currentHighlightedWord})`, 'gi'));
     return parts.map((part, i) => 
       part.toLowerCase() === currentHighlightedWord?.toLowerCase() ? 
-        `<span class="bg-blue-200 dark:bg-blue-800 transition-colors duration-200">${part}</span>` : 
+        `<span class="bg-blue-200 dark:bg-blue-800 rounded px-1 py-0.5 transition-colors duration-200">${part}</span>` : 
         part
     ).join('');
   };

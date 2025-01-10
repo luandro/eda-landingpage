@@ -27,13 +27,20 @@ export const useTypewriterState = (initialDelay: number = 0) => {
 
   const getCurrentTime = () => {
     if (audioRef.current && isPlaying) {
-      return audioRef.current.currentTime * 1000;
+      const currentTime = audioRef.current.currentTime * 1000;
+      console.log('Current audio time:', { currentTime });
+      return currentTime;
     }
     return 0;
   };
 
   const getEndTime = () => {
-    return audioRef.current?.duration ? audioRef.current.duration * 1000 : 0;
+    if (audioRef.current?.duration) {
+      const endTime = audioRef.current.duration * 1000;
+      console.log('Audio end time:', { endTime });
+      return endTime;
+    }
+    return 0;
   };
 
   return {
