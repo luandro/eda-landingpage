@@ -1,4 +1,5 @@
 import { SubtitleEntry } from "../../contexts/types";
+import { findCurrentSubtitle } from "./subtitleMatcher";
 
 export const setupAutoScroll = (
   isPlaying: boolean,
@@ -31,33 +32,30 @@ export const setupAutoScroll = (
 
   const handleTimeUpdate = () => {
     const currentTimeMs = Math.floor(audioElement.currentTime * 1000);
+    const totalDurationMs = Math.floor(audioElement.duration * 1000);
     
-    // Find the exact section based on current time
-    const newSectionIndex = subtitles.findIndex((subtitle, index) => {
-      const isInCurrentTimeRange = currentTimeMs >= subtitle.startTime && 
-                                 currentTimeMs <= subtitle.endTime;
-
-      console.log('Section timing check:', {
-        sectionIndex: index,
-        currentTimeMs,
-        subtitleStart: subtitle.startTime,
-        subtitleEnd: subtitle.endTime,
-        isInRange: isInCurrentTimeRange
-      });
-
-      return isInCurrentTimeRange;
-    });
-
-    if (newSectionIndex !== -1 && newSectionIndex !== currentSection) {
-      console.log('Scrolling to new section:', {
-        from: currentSection,
-        to: newSectionIndex,
-        timestamp: currentTimeMs,
-        newText: subtitles[newSectionIndex].text
-      });
+    const { subtitle, progress } = findCurrentSubtitle(subtitles, currentTimeMs);
+    
+    if (subtitle) {
+      const sectionIndex = subtitle.id - 1;
       
-      setCurrentSection(newSectionIndex);
-      setCurrentText(subtitles[newSectionIndex].text);
+      console.log('Auto-scroll timing:', {
+        currentTimeMs,
+        totalDurationMs,
+        progress,
+        currentSection: sectionIndex,
+        subtitle: {
+          id: subtitle.id,
+          text: subtitle.text,
+          start: subtitle.startTime,
+          end: subtitle.endTime
+        }
+      });
+
+      if (sectionIndex !== currentSection) {
+        setCurrentSection(sectionIndex);
+        setCurrentText(subtitle.text);
+      }
     }
   };
 
@@ -72,21 +70,40 @@ export class AutoScroll {
   private currentSection: number;
   private config: { scrollInterval: number; onScroll?: (sectionIndex: number) => void };
   private scrollTimer: NodeJS.Timeout | null;
+  private audioElement: HTMLAudioElement | null;
 
   constructor(config: { scrollInterval: number; onScroll?: (sectionIndex: number) => void }) {
     this.currentSection = 0;
     this.config = config;
     this.scrollTimer = null;
+    this.audioElement = null;
   }
 
   public start() {
-    if (this.scrollTimer) {
-      this.stop();
+    this.stop();
+    this.audioElement = document.querySelector('audio');
+    
+    if (!this.audioElement) {
+      console.error('Audio element not found');
+      return;
     }
 
-    this.scrollTimer = setInterval(() => {
-      this.scrollToNextSection();
-    }, this.config.scrollInterval);
+    const handleScroll = () => {
+      if (this.audioElement) {
+        const progress = (this.audioElement.currentTime / this.audioElement.duration) * 100;
+        const totalSections = 4; // Total number of sections
+        const newSection = Math.floor((progress / 100) * totalSections);
+        
+        if (newSection !== this.currentSection) {
+          this.currentSection = newSection;
+          if (this.config.onScroll) {
+            this.config.onScroll(this.currentSection);
+          }
+        }
+      }
+    };
+
+    this.scrollTimer = setInterval(handleScroll, this.config.scrollInterval);
   }
 
   public stop() {
@@ -99,12 +116,5 @@ export class AutoScroll {
   public reset() {
     this.currentSection = 0;
     this.stop();
-  }
-
-  private scrollToNextSection() {
-    this.currentSection++;
-    if (this.config.onScroll) {
-      this.config.onScroll(this.currentSection);
-    }
   }
 }
