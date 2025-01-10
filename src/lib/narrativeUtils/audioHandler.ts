@@ -10,35 +10,48 @@ export const createAudioHandlers = (
   setCurrentSection: (section: number) => void,
   subtitles: SubtitleEntry[],
 ) => {
-  // Handles audio time updates to sync subtitles and progress bar
   const handleTimeUpdate = () => {
     const audio = audioRef.current;
     if (!audio) return;
 
     // Get precise current time in milliseconds
-    const currentTime = Math.floor(audio.currentTime * 1000);
-    console.log('Current audio time (ms):', currentTime);
+    const currentTimeMs = Math.floor(audio.currentTime * 1000);
+    console.log('Audio time update:', {
+      currentTimeMs,
+      audioCurrentTime: audio.currentTime,
+      audioDuration: audio.duration
+    });
 
-    // Find the subtitle that should be displayed at current time
-    const subtitle = getCurrentSubtitle(subtitles, currentTime);
-    console.log('Current subtitle:', subtitle);
-
-    if (subtitle) {
-      // Calculate precise timing within the subtitle
-      const subtitleStart = subtitle.startTime;
-      const subtitleDuration = subtitle.endTime - subtitle.startTime;
-      const subtitleProgress = (currentTime - subtitleStart) / subtitleDuration;
-      console.log('Subtitle timing:', {
-        start: subtitleStart,
-        duration: subtitleDuration,
-        progress: subtitleProgress
+    // Find the current subtitle with precise timing
+    const currentSubtitle = getCurrentSubtitle(subtitles, currentTimeMs);
+    
+    if (currentSubtitle) {
+      console.log('Subtitle match found:', {
+        id: currentSubtitle.id,
+        text: currentSubtitle.text,
+        startTime: currentSubtitle.startTime,
+        endTime: currentSubtitle.endTime,
+        currentTime: currentTimeMs
       });
 
-      // Update text and progress with precise timing
-      setCurrentText(subtitle.text);
+      // Calculate precise progress within the current subtitle
+      const subtitleProgress = (currentTimeMs - currentSubtitle.startTime) / 
+                             (currentSubtitle.endTime - currentSubtitle.startTime);
+      
+      // Update text and section with exact timing
+      setCurrentText(currentSubtitle.text);
+      setCurrentSection(currentSubtitle.id - 1);
+
+      // Calculate overall progress with high precision
       const totalDuration = audio.duration * 1000;
-      const progress = (currentTime / totalDuration) * 100;
+      const progress = (currentTimeMs / totalDuration) * 100;
       setProgress(Math.min(100, progress));
+
+      console.log('Progress update:', {
+        subtitleProgress,
+        overallProgress: progress,
+        currentSection: currentSubtitle.id - 1
+      });
     }
   };
 
@@ -50,6 +63,7 @@ export const createAudioHandlers = (
     if (lastSubtitle) {
       setCurrentText(lastSubtitle.text);
       setCurrentSection(subtitles.length - 1);
+      setProgress(100);
     }
   };
 

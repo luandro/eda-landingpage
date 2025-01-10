@@ -1,9 +1,6 @@
 import { SubtitleEntry } from "../../contexts/types";
 import { ToastOptions } from "../../types/toast";
 
-/**
- * Converts SRT timestamp to milliseconds with high precision
- */
 const timeToMs = (timeStr: string): number => {
   const [time, ms] = timeStr.split(",");
   const [hours, minutes, seconds] = time.split(":").map(Number);
@@ -15,9 +12,6 @@ const timeToMs = (timeStr: string): number => {
   );
 };
 
-/**
- * Parses SRT content into structured subtitle entries with precise timing
- */
 const parseSRT = (content: string): SubtitleEntry[] => {
   const entries: SubtitleEntry[] = [];
   const blocks = content.trim().split("\n\n");
@@ -32,9 +26,10 @@ const parseSRT = (content: string): SubtitleEntry[] => {
 
     console.log('Parsed subtitle entry:', {
       id,
-      startTime,
-      endTime,
-      text
+      startTimeMs: startTime,
+      endTimeMs: endTime,
+      text,
+      duration: endTime - startTime
     });
 
     entries.push({ id, startTime, endTime, text });
@@ -43,43 +38,37 @@ const parseSRT = (content: string): SubtitleEntry[] => {
   return entries;
 };
 
-/**
- * Gets the current subtitle based on precise playback time
- */
 export const getCurrentSubtitle = (
   subtitles: SubtitleEntry[],
-  currentTime: number,
+  currentTimeMs: number,
 ): SubtitleEntry | null => {
-  console.log('Getting subtitle for time:', currentTime);
-
   if (!subtitles?.length) {
     console.log('No subtitles available');
     return null;
   }
 
-  // Find subtitle that matches current time precisely
   const subtitle = subtitles.find((sub) => {
-    const isWithinRange = currentTime >= sub.startTime && currentTime <= sub.endTime;
+    const isWithinRange = currentTimeMs >= sub.startTime && currentTimeMs <= sub.endTime;
+    
     if (isWithinRange) {
       console.log('Found matching subtitle:', {
         id: sub.id,
         text: sub.text,
         timing: {
-          current: currentTime,
-          start: sub.startTime,
-          end: sub.endTime
+          currentMs: currentTimeMs,
+          startMs: sub.startTime,
+          endMs: sub.endTime,
+          progressWithinSubtitle: (currentTimeMs - sub.startTime) / (sub.endTime - sub.startTime)
         }
       });
     }
+    
     return isWithinRange;
   });
 
   return subtitle;
 };
 
-/**
- * Loads and parses an SRT file with precise timing information
- */
 export const loadSRTFile = async (
   srtPath: string,
   setSubtitles: (subtitles: SubtitleEntry[]) => void,
@@ -92,7 +81,12 @@ export const loadSRTFile = async (
 
     const content = await response.text();
     const parsed = parseSRT(content);
-    console.log('Successfully parsed subtitles:', parsed);
+    
+    console.log('Successfully parsed subtitles:', {
+      count: parsed.length,
+      totalDuration: parsed.reduce((acc, sub) => Math.max(acc, sub.endTime), 0)
+    });
+    
     setSubtitles(parsed);
     return parsed;
   } catch (error) {
