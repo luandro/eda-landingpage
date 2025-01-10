@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
-import RotatingText from "./RotatingText";
+import React from "react";
 import { SubtitleItem } from "./RotatingText";
 import TypewriterEffect from "./TypewriterEffect";
-import { useNarrative } from "@/contexts/NarrativeContext";
+import { ProgressBars } from "./ui/progress-bars";
+import RotatingTextWrapper from "./RotatingTextWrapper";
+import { useTypewriterState } from "@/hooks/useTypewriterState";
 
 interface TypewriterTextProps {
   text: string;
@@ -27,34 +28,20 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
 }) => {
   console.log('TypewriterText props:', { text, defaultMarkdown, rotatingText, rotationSpeed, delay, initialDelay, animatedBar });
 
-  const [showRotating, setShowRotating] = useState(false);
-  const [hasStarted, setHasStarted] = useState(false);
   const {
+    showRotating,
+    setShowRotating,
+    hasStarted,
     progress,
     isComplete,
     isPlaying,
-    currentText: narrativeText,
-    audioRef,
-  } = useNarrative();
+    narrativeText,
+    getCurrentTime,
+    getEndTime,
+  } = useTypewriterState(initialDelay);
 
-  console.log('TypewriterText state:', { showRotating, hasStarted, progress, isComplete, isPlaying, narrativeText });
-
-  // Use SRT data when playing, defaultMarkdown when not playing
   const displayText = isPlaying ? narrativeText : defaultMarkdown || text;
   console.log('Display text:', { displayText, isPlaying });
-
-  useEffect(() => {
-    console.log('Setting up initial delay timer:', { initialDelay });
-    const startTimeout = setTimeout(() => {
-      console.log('Initial delay complete, setting hasStarted to true');
-      setHasStarted(true);
-    }, initialDelay);
-
-    return () => {
-      console.log('Cleaning up initial delay timer');
-      clearTimeout(startTimeout);
-    };
-  }, [initialDelay]);
 
   if (!hasStarted) {
     console.log('Component not started yet, returning null');
@@ -67,47 +54,13 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
     onComplete?.();
   };
 
-  const getCurrentTime = () => {
-    if (audioRef.current && isPlaying) {
-      return audioRef.current.currentTime * 1000;
-    }
-    return 0;
-  };
-
-  console.log('Current text:', displayText);
-
-  const getProgressBars = () => {
-    console.log('Progress bars:', {
-      isComplete,
-      progress,
-      isPlaying,
-      calculatedWidth: `${isComplete ? 100 : progress}%`,
-      calculatedOpacity: isPlaying ? 1 : 0
-    });
-
-    return (
-      <>
-        <div
-          className="absolute bottom-0 left-0 h-0.5 bg-blue-500/30 transition-all duration-1000 ease-linear rounded"
-          style={{
-            width: `${isComplete ? 100 : progress}%`,
-            opacity: isPlaying ? 1 : 0,
-          }}
-        />
-        <div
-          className="absolute inset-0 left-0 bg-blue-500/10 transition-all duration-300 ease-linear rounded"
-          style={{
-            width: `${isComplete ? 100 : Math.min(100, progress * 1.2)}%`,
-            opacity: isPlaying ? 1 : 0,
-          }}
-        />
-      </>
-    );
-  };
-
   return (
     <div className="font-mono tabular-nums relative">
-      {getProgressBars()}
+      <ProgressBars
+        isComplete={isComplete}
+        progress={progress}
+        isPlaying={isPlaying}
+      />
       <div className="relative z-10">
         <TypewriterEffect
           text={displayText}
@@ -115,19 +68,16 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
           onComplete={handleComplete}
           showCursor={false}
           currentTime={getCurrentTime()}
-          startTime={0} // These should come from your SRT data
-          endTime={audioRef.current?.duration ? audioRef.current.duration * 1000 : 0}
+          startTime={0}
+          endTime={getEndTime()}
           className="[&_a]:text-white [&_a]:hover:text-white/80 [&_a]:transition-colors [&_a]:bg-blue-500 [&_a]:px-1 [&_a]:py-0.5 [&_a]:rounded"
         />
-        {showRotating && !isPlaying && rotatingText?.length > 0 && (
-          <RotatingText
-            subtitles={rotatingText}
-            rotationSpeed={rotationSpeed}
-            className="ml-1 !rounded-none !px-1 !py-0 !inline"
-            typewriterEnabled={true}
-            typewriterDelay={delay}
-          />
-        )}
+        <RotatingTextWrapper
+          show={showRotating && !isPlaying}
+          subtitles={rotatingText || []}
+          rotationSpeed={rotationSpeed}
+          delay={delay}
+        />
         {animatedBar && <span className="animate-blink">|</span>}
       </div>
     </div>
