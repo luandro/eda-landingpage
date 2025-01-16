@@ -7,25 +7,23 @@ export const createRestartHandler = ({
   scrollToSection
 }: NarrativeStateHandlers) => {
   return () => {
-    console.log("Handling restart - resetting state and scrolling to first section");
+    console.log("Starting restart sequence");
     
-    // Stop playback first
+    // First stop playback and reset section
     setIsPlaying(false);
-    
-    // Reset section and trigger scroll immediately
     setCurrentSection(0);
+    
+    // Ensure scroll happens before restarting audio
     if (scrollToSection) {
       console.log("Triggering scroll to first section");
       scrollToSection(0);
     }
     
-    // Reset audio and progress
-    restart();
-    
-    // Resume playback after state updates
+    // Small delay to ensure scroll completes before audio restarts
     setTimeout(() => {
-      console.log("Resuming playback after restart");
+      console.log("Restarting audio playback");
+      restart();
       setIsPlaying(true);
-    }, 100); // Increased timeout to ensure scroll completes
+    }, 100);
   };
 };

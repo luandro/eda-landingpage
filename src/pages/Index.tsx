@@ -184,9 +184,12 @@ const Index = () => (
     scrollInterval={3000}
     scrollToSection={(section: number) => {
       console.log("Scrolling to section:", section);
-      const element = document.querySelector(`section:nth-child(${section + 1})`);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
+      const sections = document.querySelectorAll('section');
+      if (sections[section]) {
+        sections[section].scrollIntoView({ 
+          behavior: "smooth",
+          block: "start"
+        });
       }
     }}
   >
