@@ -12,16 +12,6 @@ import {
 import { NarrativeContextType } from "./types";
 import { useNarrativeState } from "./useNarrativeState";
 
-/**
- * NarrativeContext orchestrates audio playback and subtitle synchronization by utilizing
- * several specialized utility modules:
- *
- * 1. audioHandler - Manages audio playback events and time synchronization
- * 2. srtLoader - Handles loading and parsing of SRT subtitle files
- * 3. playbackControls - Provides play/pause and restart functionality
- * 4. autoScroll - Manages automatic scrolling through subtitle sections
- */
-
 const NarrativeContext = createContext<NarrativeContextType | undefined>(
   undefined,
 );
@@ -131,7 +121,7 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
     }
   }, [currentSection, isPlaying]);
 
-  // Create playback controls
+  // Create playback controls with enhanced restart functionality
   const { togglePlayback, restart } = createPlaybackControls(
     audioRef,
     setIsPlaying,
@@ -140,6 +130,17 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
     setProgress,
     toast
   );
+
+  // Enhanced restart handler that ensures scrolling to first section
+  const handleRestart = () => {
+    console.log("Handling restart - scrolling to first section");
+    restart();
+    setCurrentSection(0);
+    // Force scroll to top after a small delay to ensure state updates
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
+  };
 
   return (
     <NarrativeContext.Provider
@@ -150,7 +151,7 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
         isComplete,
         progress,
         togglePlayback,
-        restart,
+        restart: handleRestart, // Use enhanced restart handler
         setCurrentSection,
         audioRef,
       }}
