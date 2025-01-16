@@ -131,15 +131,18 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
     toast
   );
 
-  // Enhanced restart handler that ensures scrolling to first section
+  // Enhanced restart handler that ensures proper section reset
   const handleRestart = () => {
-    console.log("Handling restart - scrolling to first section");
+    console.log("Handling restart - resetting to first section");
     restart();
+    // Reset section first
     setCurrentSection(0);
-    // Force scroll to top after a small delay to ensure state updates
+    // Ensure we're actually stopping playback momentarily
+    setIsPlaying(false);
+    // Small delay to ensure state updates have propagated
     setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 100);
+      setIsPlaying(true);
+    }, 50);
   };
 
   return (
@@ -151,7 +154,7 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
         isComplete,
         progress,
         togglePlayback,
-        restart: handleRestart, // Use enhanced restart handler
+        restart: handleRestart,
         setCurrentSection,
         audioRef,
       }}
