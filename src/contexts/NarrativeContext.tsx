@@ -7,9 +7,10 @@ import {
   createAudioHandlers,
   loadSRTFile,
   createPlaybackControls,
-  setupAutoScroll
+  setupAutoScroll,
 } from "../lib/narrativeUtils";
-import { NarrativeContextType } from "./types";
+import { createRestartHandler } from "../lib/narrativeUtils/restartHandler";
+import { NarrativeContextType } from "../types/narrative";
 import { useNarrativeState } from "./useNarrativeState";
 
 const NarrativeContext = createContext<NarrativeContextType | undefined>(
@@ -29,6 +30,7 @@ interface NarrativeProviderProps {
   srtPath?: string;
   audioPath?: string;
   scrollInterval?: number;
+  scrollToSection?: (section: number) => void;
 }
 
 export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
@@ -36,6 +38,7 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
   srtPath = "/subtitles.srt",
   audioPath = "/audio.mp3",
   scrollInterval = 3000,
+  scrollToSection,
 }) => {
   const {
     isPlaying,
@@ -121,7 +124,7 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
     }
   }, [currentSection, isPlaying]);
 
-  // Create playback controls with enhanced restart functionality
+  // Create playback controls
   const { togglePlayback, restart } = createPlaybackControls(
     audioRef,
     setIsPlaying,
@@ -131,19 +134,13 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
     toast
   );
 
-  // Enhanced restart handler that ensures proper section reset
-  const handleRestart = () => {
-    console.log("Handling restart - resetting to first section");
-    restart();
-    // Reset section first
-    setCurrentSection(0);
-    // Ensure we're actually stopping playback momentarily
-    setIsPlaying(false);
-    // Small delay to ensure state updates have propagated
-    setTimeout(() => {
-      setIsPlaying(true);
-    }, 50);
-  };
+  // Create restart handler with scroll functionality
+  const handleRestart = createRestartHandler({
+    restart,
+    setCurrentSection,
+    setIsPlaying,
+    scrollToSection,
+  });
 
   return (
     <NarrativeContext.Provider
@@ -157,6 +154,7 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
         restart: handleRestart,
         setCurrentSection,
         audioRef,
+        scrollToSection,
       }}
     >
       {children}

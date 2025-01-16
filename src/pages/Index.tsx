@@ -182,6 +182,13 @@ const Index = () => (
     srtPath="/subtitles.srt"
     audioPath="/audio.mp3"
     scrollInterval={3000}
+    scrollToSection={(section: number) => {
+      console.log("Scrolling to section:", section);
+      const element = document.querySelector(`section:nth-child(${section + 1})`);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }}
   >
     <IndexContent />
   </NarrativeProvider>
