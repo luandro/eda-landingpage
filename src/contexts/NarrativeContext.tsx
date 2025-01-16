@@ -1,21 +1,13 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-} from "react";
-import {
-  createAudioHandlers,
-  loadSRTFile,
-  createPlaybackControls,
-  setupAutoScroll,
-} from "../lib/narrativeUtils";
+import React, { createContext, useContext, useEffect } from "react";
+import { loadSRTFile } from "../lib/narrativeUtils";
+import { createPlaybackControls } from "../lib/narrativeUtils/playbackControls";
 import { createRestartHandler } from "../lib/narrativeUtils/restartHandler";
 import { NarrativeContextType } from "../types/narrative";
 import { useNarrativeState } from "./useNarrativeState";
+import { useAudioHandlers } from "@/hooks/useAudioHandlers";
+import { useAutoScroll } from "@/hooks/useAutoScroll";
 
-const NarrativeContext = createContext<NarrativeContextType | undefined>(
-  undefined,
-);
+const NarrativeContext = createContext<NarrativeContextType | undefined>(undefined);
 
 export const useNarrative = () => {
   const context = useContext(NarrativeContext);
@@ -62,20 +54,21 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
     loadSRTFile(srtPath, setSubtitles, toast);
   }, [srtPath, toast]);
 
-  // Handle audio time updates and ended events
+  // Handle audio events
+  const { handleTimeUpdate, handleEnded } = useAudioHandlers(
+    audioRef,
+    setIsPlaying,
+    setIsComplete,
+    setCurrentText,
+    setProgress,
+    setCurrentSection,
+    subtitles
+  );
+
+  // Set up audio event listeners
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-
-    const { handleTimeUpdate, handleEnded } = createAudioHandlers(
-      audioRef,
-      setIsPlaying,
-      setIsComplete,
-      setCurrentText,
-      setProgress,
-      setCurrentSection,
-      subtitles
-    );
 
     audio.addEventListener("timeupdate", handleTimeUpdate);
     audio.addEventListener("ended", handleEnded);
@@ -84,45 +77,19 @@ export const NarrativeProvider: React.FC<NarrativeProviderProps> = ({
       audio.removeEventListener("timeupdate", handleTimeUpdate);
       audio.removeEventListener("ended", handleEnded);
     };
-  }, [subtitles]);
+  }, [handleTimeUpdate, handleEnded]);
 
-  // Auto-scrolling effect
-  useEffect(() => {
-    if (isPlaying) {
-      const audio = audioRef.current;
-      if (!audio) return;
-
-      // Immediate section sync based on current time
-      const currentTime = audio.currentTime;
-      const newSection = subtitles.findIndex((subtitle, index) => {
-        const nextSubtitle = subtitles[index + 1];
-        return currentTime >= subtitle.startTime && (!nextSubtitle || currentTime < nextSubtitle.startTime);
-      });
-
-      if (newSection !== -1 && newSection !== currentSection) {
-        setCurrentSection(newSection);
-      }
-    }
-
-    return setupAutoScroll(
-      isPlaying,
-      isComplete,
-      currentSection,
-      subtitles,
-      setCurrentSection,
-      setCurrentText,
-      scrollInterval
-    );
-  }, [isPlaying, isComplete, currentSection, subtitles, scrollInterval]);
-
-  // Update text when section changes
-  useEffect(() => {
-    if (!isPlaying) {
-      setCurrentText(
-        subtitles[currentSection]?.text || subtitles[0]?.text || "",
-      );
-    }
-  }, [currentSection, isPlaying]);
+  // Handle auto-scrolling
+  useAutoScroll(
+    isPlaying,
+    isComplete,
+    currentSection,
+    subtitles,
+    setCurrentSection,
+    setCurrentText,
+    scrollInterval,
+    scrollToSection
+  );
 
   // Create playback controls
   const { togglePlayback, restart } = createPlaybackControls(
